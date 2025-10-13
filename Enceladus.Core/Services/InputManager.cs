@@ -32,6 +32,9 @@ namespace Enceladus.Core.Services
             if (Raylib.IsKeyDown(KnownInputControls.MoveRight))
                 movement.X += 1f;
 
+            if (movement.Length() > 0)
+                movement = Vector2.Normalize(movement);
+
             return movement;
         }
     }
