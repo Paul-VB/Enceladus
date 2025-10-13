@@ -15,7 +15,7 @@ namespace Enceladus.Entities
 
         public override float Mass { get; set; } = 100f;
 
-        private readonly float _mainEngineThrust = 17500f;
+        private readonly float _mainEngineThrust = 22500f;
         private readonly float _manuveringEnginesThrust = 2000f;
         private readonly float _manuveringEnginesRotationalAuthority = 400f;
         private readonly float _manuveringEnginesDampingStrength = 500f;
@@ -46,7 +46,6 @@ namespace Enceladus.Entities
             }
 
             RotateTowardsVelocityVector(deltaTime);
-            Console.WriteLine($"rotation: {Rotation}");
         }
 
         private void RotateTowardsVelocityVector(float deltaTime)
