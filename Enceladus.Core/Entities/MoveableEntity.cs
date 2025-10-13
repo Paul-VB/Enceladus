@@ -1,3 +1,4 @@
+using Enceladus.Utils;
 using System.Numerics;
 
 namespace Enceladus.Entities
@@ -62,12 +63,12 @@ namespace Enceladus.Entities
             if (Velocity.Length() < _minVelocityThreshold)
                 Velocity = Vector2.Zero;
 
-            Console.WriteLine($"Speed: {Velocity.Length():F2}");
         }
 
         protected virtual void UpdateRotation(float deltaTime)
         {
             Rotation += AngularVelocity * deltaTime;
+            Rotation = AngleHelper.ClampAngle0To360(Rotation);
 
             // Apply angular drag
             var angularDragTorque = -AngularVelocity * AngularDrag;

@@ -23,6 +23,13 @@ namespace Enceladus.Entities
         public float Rotation { get; set; }
         public Texture2D Sprite { get; set; }
         public abstract void Update(float deltaTime);
-        public abstract void Draw();
+        public virtual void Draw()
+        {
+            var origin = new Vector2(Sprite.Width / 2f, Sprite.Height / 2f);
+            var source = new Rectangle(0, 0, Sprite.Width, Sprite.Height);
+            var dest = new Rectangle(Position, Sprite.Width, Sprite.Height);
+
+            Raylib.DrawTexturePro(Sprite, source, dest, origin, Rotation, Color.White);
+        }
     }
 }
