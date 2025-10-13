@@ -5,6 +5,7 @@ namespace Enceladus.Core.Services
     public interface ISpriteService
     {
         Texture2D Load(string path);
+        void UnloadAll();
     }
     public class SpriteService : ISpriteService
     {
