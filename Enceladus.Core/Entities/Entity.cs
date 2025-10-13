@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using Raylib_cs;
+using System.Numerics;
 
 namespace Enceladus.Entities
 {
@@ -6,6 +7,8 @@ namespace Enceladus.Entities
     {
         Guid Guid { get; set; }
         Vector2 Position { get; set; }
+        float Rotation { get; set; }
+        Texture2D Sprite { get; set; }
         void Update(float deltaTime);
         void Draw();
     }
@@ -17,6 +20,8 @@ namespace Enceladus.Entities
         }
         public Guid Guid { get; set; } = Guid.NewGuid();
         public Vector2 Position { get; set; }
+        public float Rotation { get; set; }
+        public Texture2D Sprite { get; set; }
         public abstract void Update(float deltaTime);
         public abstract void Draw();
     }

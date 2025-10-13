@@ -16,14 +16,16 @@ namespace Enceladus.Core.Services
     {
         private readonly IWindowManager _windowManager;
         private readonly IEntityRegistry _entityRegistry;
+        private readonly ISpriteService _spriteService;
         private readonly IInputManager _inputManager;
 
         public bool IsRunning { get; private set; }
 
-        public GameManager(IWindowManager windowManager, IEntityRegistry entityRegistry, IInputManager inputManager)
+        public GameManager(IWindowManager windowManager, IEntityRegistry entityRegistry, ISpriteService spriteService, IInputManager inputManager)
         {
             _windowManager = windowManager;
             _entityRegistry = entityRegistry;
+            _spriteService = spriteService;
             _inputManager = inputManager;
         }
 
@@ -38,7 +40,7 @@ namespace Enceladus.Core.Services
 
         private void SetupEntities()
         {
-            var player = new Player(_inputManager) { Position = new Vector2(50, 50) };
+            var player = new Player(_inputManager, _spriteService) { Position = new Vector2(50, 50) };
             _entityRegistry.Register(player);
         }
 
