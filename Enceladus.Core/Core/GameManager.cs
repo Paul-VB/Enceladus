@@ -1,9 +1,12 @@
+using Enceladus.Core.Input;
+using Enceladus.Core.Rendering;
+using Enceladus.Core.World;
 using Enceladus.Entities;
 using Raylib_cs;
 using System.Numerics;
 using Color = Raylib_cs.Color;
 
-namespace Enceladus.Core.Services
+namespace Enceladus.Core
 {
     public interface IGameManager
     {

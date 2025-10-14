@@ -1,4 +1,4 @@
-﻿using Enceladus.Core.Services;
+﻿using Enceladus.Core.Rendering;
 
 namespace Enceladus.Core.World
 {

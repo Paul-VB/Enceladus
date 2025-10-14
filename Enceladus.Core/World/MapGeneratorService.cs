@@ -1,6 +1,4 @@
-using Enceladus.Core.World;
-
-namespace Enceladus.Core.Services
+namespace Enceladus.Core.World
 {
     public interface IMapGeneratorService
     {

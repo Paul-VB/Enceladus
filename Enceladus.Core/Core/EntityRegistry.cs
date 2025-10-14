@@ -1,6 +1,6 @@
 ﻿using Enceladus.Entities;
 
-namespace Enceladus.Core.Services
+namespace Enceladus.Core
 {
     public interface IEntityRegistry
     {

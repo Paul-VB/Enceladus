@@ -1,0 +1,51 @@
+GAME SUMMARY: ENCELADUS SUBMERSIBLE EXCAVATOR
+=============================================
+
+I. CORE CONCEPT & SETTING
+--------------------------
+Genre: 2D Submersible Action/Mining/Survival
+Setting: The lawless, deep subsurface ocean of Saturn's moon Enceladus.
+Theme: Morally gray resource exploitation and combat against rival mining companies.
+Physics: Low gravity and near-neutral buoyancy create a unique "floaty flying" movement.
+
+II. THE SUBMERSIBLE & CONTROLS
+-----------------------------
+The submersible is a heavy-duty mining rig whose systems are centered on two core modes:
+
+1.  COARSE MODE (Traversal)
+    - Purpose: High-speed movement, dodging, and fleeing in open water.
+    - Movement: WASD translates the sub. Sub auto-levels for max thrust.
+    - Combat: Uses 360-degree Aft Weapons (LMB) for defense while moving.
+
+2.  FINE MODE (Precision)
+    - Purpose: Drilling, careful navigation, and targeted combat.
+    - Movement: WASD slews the sub slowly while holding a fixed attitude.
+    - Combat: Rotates the sub with the mouse to aim the fixed-arc Mining Lasers (RMB).
+
+Mode Switch: Instantly toggled with a single key press (e.g., SHIFT).
+
+III. PROGRESSION & CUSTOMIZATION
+--------------------------------
+Equipment (Weapons, Power Cores, Melt-Beam) is governed by two systems:
+- Mark System: Defines base power and efficiency (Mark 1, 2, 3...).
+- Quality System: Defines the number of Augment Slots (Common, Rare, etc.).
+
+Augment Extraction: Allows a player to destroy an item to salvage its augment and apply it to a preferred item.
+
+Key Augments:
+- Weapons: Rage Rounds (turn enemies against each other), Plasma Lense (Damage over Time), Cryo-Projector (slows targets).
+- Power Cores: Nanite Repair, Phase Shift (Dodge chance), Heat Sink Array (slows tunnel refreeze rate).
+
+IV. ENVIRONMENT & HAZARDS
+-------------------------
+- Iceologic Instability: Drilling too much in one sector causes temporary instability (tunnel collapse risk), forcing the player to move to a new area and return later.
+- Tunnel Refreeze: Mined tunnels slowly freeze over, creating time pressure for deep dives and escape.
+- Biomes & Loot: Different sectors feature unique hostile life and high-value loot:
+    - Minerals: Rare elements embedded in the ice (extracted by the Melt-Beam).
+    - Organics (Goo): Specialized compounds harvested from unique alien life forms (e.g., Catalyst Gel from swarms, Carapace Resins from predators).
+
+V. ECONOMY & META-GAME
+---------------------
+- Hostile Rivals: Competing mining subs attack to steal loot. Destroyed rivals yield scrap, unique upgrades, and their haul.
+- The Base: Always accessible for selling haul, repairs, and refueling (energy is required for drilling/thrusters).
+- Orbital Trader: A high-value vendor who is only accessible at the base for a few minutes each "day." Sells rare, high-tier weapons and core augments, adding a layer of time pressure.

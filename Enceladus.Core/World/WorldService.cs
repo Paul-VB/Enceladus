@@ -1,8 +1,6 @@
-using Enceladus.Core.World;
 using System.Numerics;
-using Raylib_cs;
 
-namespace Enceladus.Core.Services
+namespace Enceladus.Core.World
 {
     public interface IWorldService
     {

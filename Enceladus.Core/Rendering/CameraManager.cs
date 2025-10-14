@@ -2,7 +2,7 @@
 using Raylib_cs;
 using System.Numerics;
 
-namespace Enceladus.Core.Services
+namespace Enceladus.Core.Rendering
 {
     public interface ICameraManager
     {

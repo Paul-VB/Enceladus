@@ -1,4 +1,7 @@
-﻿using Enceladus.Core.Services;
+﻿using Enceladus.Core;
+using Enceladus.Core.Input;
+using Enceladus.Core.Rendering;
+using Enceladus.Core.World;
 using Microsoft.Extensions.DependencyInjection;
 
 class Program

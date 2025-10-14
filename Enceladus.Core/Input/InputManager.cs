@@ -1,7 +1,7 @@
 using Raylib_cs;
 using System.Numerics;
 
-namespace Enceladus.Core.Services
+namespace Enceladus.Core.Input
 {
     public interface IInputManager
     {

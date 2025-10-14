@@ -1,6 +1,6 @@
 ﻿using Raylib_cs;
 
-namespace Enceladus.Core.Services
+namespace Enceladus.Core.Rendering
 {
     public interface IWindowManager
     {
