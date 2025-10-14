@@ -33,5 +33,8 @@ namespace Enceladus.Core.Services
     {
         public const string PlayerSubLeft = "assets/sprites/playerSub/playerSubLeft.png";
         public const string PlayerSubRight = "assets/sprites/playerSub/playerSubRight.png";
+
+        public const string Water = "assets/sprites/cells/0-Water.png";
+        public const string Ice = "assets/sprites/cells/1-Ice.png";
     }
 }
