@@ -6,11 +6,13 @@ namespace Enceladus.Core.Services
 {
     public interface ICameraManager
     {
+        void InitCamera();
         Camera2D Camera { get; }
         void TrackEntity(Entity entity);
         void StopTracking();
         void SetTarget(Vector2 position);
         void Update();
+
     }
 
     public class CameraManager : ICameraManager
@@ -29,14 +31,14 @@ namespace Enceladus.Core.Services
             InitCamera();
         }
 
-        private void InitCamera()
+        public void InitCamera()
         {
             _camera = new Camera2D()
             {
                 Rotation = 0f,
                 Zoom = normalZoom,
-                Offset = new Vector2(960, 540)
             };
+            CenterCamera();
         }
 
         public void TrackEntity(Entity entity)
@@ -54,10 +56,18 @@ namespace Enceladus.Core.Services
 
         public void Update()
         {
+            if (_windowManager.IsResized)
+            {
+                CenterCamera();
+            }
+
             if (_trackedEntity != null)
             {
                 _camera.Target = _trackedEntity.Position;
             }
         }
+
+        private void CenterCamera() =>_camera.Offset = new Vector2(_windowManager.Width / 2f, _windowManager.Height / 2f);
+
     }
 }

@@ -4,18 +4,26 @@ namespace Enceladus.Core.Services
 {
     public interface IWindowManager
     {
-        void CreateWindow();
+        void CreateWindow(int? width, int? height);
+        int Width { get; }
+        int Height { get; }
+        bool IsResized { get; }
     }
     public class WindowManager : IWindowManager
     {
-        const int screenWidth = 1920;
-        const int screenHeight = 1080;
+        const int defaultWindowWidth = 1920;
+        const int defaultWindowHeight = 1080;
         const string title = "Enceladus";
         const int targetFps = 60;
 
-        public void CreateWindow()
+        public int Width => Raylib.GetScreenWidth();
+        public int Height => Raylib.GetScreenHeight();
+        public bool IsResized => Raylib.IsWindowResized();
+
+        public void CreateWindow(int? width, int? height)
         {
-            Raylib.InitWindow(screenWidth, screenHeight, title);
+            Raylib.SetConfigFlags(ConfigFlags.ResizableWindow);
+            Raylib.InitWindow(width ?? defaultWindowWidth, height ?? defaultWindowHeight, title);
             Raylib.SetTargetFPS(targetFps);
         }
     }

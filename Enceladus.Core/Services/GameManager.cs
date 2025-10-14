@@ -37,6 +37,7 @@ namespace Enceladus.Core.Services
         public void Initialize()
         {
             _windowManager.CreateWindow();
+            _cameraManager.InitCamera();
             SetupEntities();
             _cameraManager.TrackEntity(_player);
             Run();
