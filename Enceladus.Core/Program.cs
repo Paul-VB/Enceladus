@@ -21,6 +21,8 @@ class Program
         services.AddSingleton<ISpriteService, SpriteService>();
         services.AddSingleton<ICameraManager, CameraManager>();
         services.AddSingleton<IGameManager, GameManager>();
+        services.AddSingleton<IWorldService, WorldService>();
+        services.AddSingleton<IMapGeneratorService, MapGeneratorService>();
 
         return services.BuildServiceProvider();
     }
