@@ -8,6 +8,7 @@ namespace Enceladus.Entities
         Guid Guid { get; set; }
         Vector2 Position { get; set; }
         float Rotation { get; set; }
+        Vector2 Size { get; set; }
         Texture2D Sprite { get; set; }
         void Update(float deltaTime);
         void Draw();
@@ -22,12 +23,13 @@ namespace Enceladus.Entities
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
         public Texture2D Sprite { get; set; }
+        public Vector2 Size { get; set; } = Vector2.One;
         public abstract void Update(float deltaTime);
         public virtual void Draw()
         {
-            var origin = new Vector2(Sprite.Width / 2f, Sprite.Height / 2f);
+            var origin = Size / 2f;
             var source = new Rectangle(0, 0, Sprite.Width, Sprite.Height);
-            var dest = new Rectangle(Position, Sprite.Width, Sprite.Height);
+            var dest = new Rectangle(Position, Size);
 
             Raylib.DrawTexturePro(Sprite, source, dest, origin, Rotation, Color.White);
         }

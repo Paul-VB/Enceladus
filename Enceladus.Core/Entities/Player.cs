@@ -27,6 +27,7 @@ namespace Enceladus.Entities
 
 
             Sprite = _spriteService.Load(Sprites.PlayerSubRight);
+            Size = new Vector2(8f, 4f);
         }
 
         public override void Update(float deltaTime)

@@ -19,6 +19,7 @@ class Program
         services.AddSingleton<IEntityRegistry, EntityRegistry>();
         services.AddSingleton<IInputManager, InputManager>();
         services.AddSingleton<ISpriteService, SpriteService>();
+        services.AddSingleton<ICameraManager, CameraManager>();
         services.AddSingleton<IGameManager, GameManager>();
 
         return services.BuildServiceProvider();
