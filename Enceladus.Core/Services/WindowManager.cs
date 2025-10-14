@@ -4,7 +4,7 @@ namespace Enceladus.Core.Services
 {
     public interface IWindowManager
     {
-        void CreateWindow(int? width, int? height);
+        void CreateWindow(int? width = null, int? height = null);
         int Width { get; }
         int Height { get; }
         bool IsResized { get; }
