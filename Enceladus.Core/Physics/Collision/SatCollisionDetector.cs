@@ -8,8 +8,8 @@ namespace Enceladus.Core.Physics.Collision
 {
     public interface ISatCollisionDetector
     {
-        bool CheckCollision(Entity entity1, Entity entity2);
-        bool CheckCollision(Entity entity, Cell cell);
+        bool CheckCollision(ICollidableEntity entity1, ICollidableEntity entity2);
+        bool CheckCollision(ICollidableEntity entity, Cell cell);
     }
 
     public class SatCollisionDetector : ISatCollisionDetector
@@ -23,7 +23,7 @@ namespace Enceladus.Core.Physics.Collision
             _axesExtractor = axesExtractor;
         }
 
-        public bool CheckCollision(Entity entity1, Entity entity2)
+        public bool CheckCollision(ICollidableEntity entity1, ICollidableEntity entity2)
         {
             var vertices1 = _vertexExtractor.ExtractWorldVertices(entity1);
             var vertices2 = _vertexExtractor.ExtractWorldVertices(entity2);
@@ -34,7 +34,7 @@ namespace Enceladus.Core.Physics.Collision
             return CheckSatCollision(vertices1, vertices2, axes1.Concat(axes2).ToList());
         }
 
-        public bool CheckCollision(Entity entity, Cell cell)
+        public bool CheckCollision(ICollidableEntity entity, Cell cell)
         {
             var entityVertices = _vertexExtractor.ExtractWorldVertices(entity);
             var cellVertices = _vertexExtractor.ExtractWorldVertices(cell);

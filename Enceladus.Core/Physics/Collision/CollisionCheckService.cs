@@ -8,8 +8,8 @@ namespace Enceladus.Core.Physics.Collision
 {
     public interface ICollisionCheckService
     {
-        List<EntityToCellCollisionResult> CheckEntitiesToCells(List<Entity> entities, Map map);
-        List<BaseCollisionResult> CheckEntitiesToEntities(List<Entity> entities);
+        List<EntityToCellCollisionResult> CheckEntitiesToCells(List<ICollidableEntity> entities, Map map);
+        List<BaseCollisionResult> CheckEntitiesToEntities(List<ICollidableEntity> entities);
     }
 
     public class CollisionCheckService : ICollisionCheckService
@@ -23,17 +23,17 @@ namespace Enceladus.Core.Physics.Collision
             _satCollisionDetector = satCollisionDetector;
         }
 
-        public List<EntityToCellCollisionResult> CheckEntitiesToCells(List<Entity> entities, Map map)
+        public List<EntityToCellCollisionResult> CheckEntitiesToCells(List<ICollidableEntity> entities, Map map)
         {
             var collisions = new List<EntityToCellCollisionResult>();
-            foreach (Entity entity in entities)
+            foreach (var entity in entities)
             {
                 collisions.AddRange(CheckEntityToCells(entity, map));
             }
             return collisions;
         }
 
-        private List<EntityToCellCollisionResult> CheckEntityToCells(Entity entity, Map map)
+        private List<EntityToCellCollisionResult> CheckEntityToCells(ICollidableEntity entity, Map map)
         {
             var collisions = new List<EntityToCellCollisionResult>();
 
@@ -42,10 +42,10 @@ namespace Enceladus.Core.Physics.Collision
             if (cellCollisionCandiates.Count == 0) return collisions;
 
             //temp placeholder
-            var placeHolderCircleAlgo= (Entity e, Cell c) => { return false; };
+            var placeHolderCircleAlgo= (ICollidableEntity e, Cell c) => { return false; };
 
             // Narrow check
-            Func<Entity, Cell, bool> narrowCollisionAlgorithm =
+            Func<ICollidableEntity, Cell, bool> narrowCollisionAlgorithm =
                 entity.Hitbox is RectHitbox || entity.Hitbox is PolygonHitbox ? _satCollisionDetector.CheckCollision : placeHolderCircleAlgo;
 
             foreach (var cell in cellCollisionCandiates)
@@ -64,7 +64,7 @@ namespace Enceladus.Core.Physics.Collision
             return collisions;
         }
 
-        public List<BaseCollisionResult> CheckEntitiesToEntities(List<Entity> entities)
+        public List<BaseCollisionResult> CheckEntitiesToEntities(List<ICollidableEntity> entities)
         {
             throw new NotImplementedException();
         }

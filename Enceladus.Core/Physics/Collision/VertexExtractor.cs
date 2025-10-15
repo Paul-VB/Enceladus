@@ -7,13 +7,13 @@ namespace Enceladus.Core.Physics.Collision
 {
     public interface IVertexExtractor
     {
-        List<Vector2> ExtractWorldVertices(Entity entity);
+        List<Vector2> ExtractWorldVertices(ICollidableEntity entity);
         List<Vector2> ExtractWorldVertices(Cell cell);
     }
 
     public class VertexExtractor : IVertexExtractor
     {
-        public List<Vector2> ExtractWorldVertices(Entity entity)
+        public List<Vector2> ExtractWorldVertices(ICollidableEntity entity)
         {
             // Get local vertices based on hitbox type
             List<Vector2> localVertices = entity.Hitbox switch

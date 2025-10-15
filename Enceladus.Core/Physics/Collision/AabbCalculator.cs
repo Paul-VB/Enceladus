@@ -7,12 +7,12 @@ namespace Enceladus.Core.Physics.Collision
 {
     public interface IAabbCalculator
     {
-        AabbRectangle CalculateAabb(Entity entity);
+        AabbRectangle CalculateAabb(ICollidableEntity entity);
     }
 
     public class AabbCalculator : IAabbCalculator
     {
-        public AabbRectangle CalculateAabb(Entity entity)
+        public AabbRectangle CalculateAabb(ICollidableEntity entity)
         {
             if (entity.Hitbox is RectHitbox rect)
                 return CalculateAabbFromRect(rect, entity.Position, entity.Rotation);

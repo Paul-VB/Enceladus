@@ -9,8 +9,8 @@ namespace Enceladus.Core.Physics.Collision
 {
     public interface IAabbCollisionDetector
     {
-        List<Cell> CheckPotentialCellCollisions(Entity entity, Map map);
-        bool CheckPotentialCollision(Entity entity1, Entity entity2);
+        List<Cell> CheckPotentialCellCollisions(ICollidableEntity entity, Map map);
+        bool CheckPotentialCollision(ICollidableEntity entity1, ICollidableEntity entity2);
     }
     public class AabbCollisionDetector : IAabbCollisionDetector
     {
@@ -19,7 +19,7 @@ namespace Enceladus.Core.Physics.Collision
         {
             _aabbCalculator = aabbCalculator;
         }
-        public List<Cell> CheckPotentialCellCollisions(Entity entity, Map map)
+        public List<Cell> CheckPotentialCellCollisions(ICollidableEntity entity, Map map)
         {
             var candidates = new List<Cell>();
             var aabbRect = _aabbCalculator.CalculateAabb(entity);
@@ -54,7 +54,7 @@ namespace Enceladus.Core.Physics.Collision
                 cell.Y >= aabbRect.MinY && cell.Y <= aabbRect.MaxY;
         }
 
-        public bool CheckPotentialCollision(Entity entity1, Entity entity2)
+        public bool CheckPotentialCollision(ICollidableEntity entity1, ICollidableEntity entity2)
         {
             throw new NotImplementedException();
         }

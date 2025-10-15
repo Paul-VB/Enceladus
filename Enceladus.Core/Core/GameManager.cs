@@ -81,8 +81,8 @@ namespace Enceladus.Core
             }
 
             // Check collisions
-            var entities = _entityRegistry.Entities.Values.OfType<Entity>().ToList();
-            var collisions = _collisionCheckService.CheckEntitiesToCells(entities, _worldService.CurrentMap);
+            var collidableEntities = _entityRegistry.Entities.Values.OfType<ICollidableEntity>().ToList();
+            var collisions = _collisionCheckService.CheckEntitiesToCells(collidableEntities, _worldService.CurrentMap);
 
             if (collisions.Count > 0)
             {

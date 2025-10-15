@@ -9,7 +9,6 @@ namespace Enceladus.Entities
         Guid Guid { get; set; }
         Vector2 Position { get; set; }
         float Rotation { get; set; }
-        Hitbox Hitbox { get; set; }
         Texture2D Sprite { get; set; }
         void Update(float deltaTime);
         void Draw(Camera2D camera);
@@ -24,7 +23,6 @@ namespace Enceladus.Entities
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
         public Texture2D Sprite { get; set; }
-        public abstract Hitbox Hitbox { get; set; }
         public abstract void Update(float deltaTime);
         public virtual void Draw(Camera2D camera)
         {

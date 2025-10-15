@@ -5,12 +5,12 @@ namespace Enceladus.Core.Physics.Collision
 {
     public class BaseCollisionResult
     {
-        public required Entity Entity { get; set; }
+        public required ICollidableEntity Entity { get; set; }
     }
 
     public class EntityToEntityCollisionResult : BaseCollisionResult
     {
-        public required Entity OtherEntity { get; set; }
+        public required ICollidableEntity OtherEntity { get; set; }
 
     }
 

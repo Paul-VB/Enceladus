@@ -10,14 +10,14 @@ namespace Enceladus.Entities
     public interface IPlayer
     {
     }
-    public class Player : MoveableEntity, IPlayer
+    public class Player : MoveableEntity, ICollidableEntity, IPlayer
     {
         private readonly IInputManager _inputManager;
         private readonly ISpriteService _spriteService;
 
         public override float Mass { get; set; } = 100f;
 
-        public override Hitbox Hitbox { get; set; } = new RectHitbox(8f,4f);
+        public Hitbox Hitbox { get; set; } = new RectHitbox(8f,4f);
 
         private readonly float _mainEngineThrust = 22500f;
         private readonly float _manuveringEnginesThrust = 2000f;
