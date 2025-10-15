@@ -1,4 +1,5 @@
 using Enceladus.Core.Input;
+using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.World;
 using Enceladus.Entities;
@@ -23,13 +24,14 @@ namespace Enceladus.Core
         private readonly IInputManager _inputManager;
         private readonly ICameraManager _cameraManager;
         private readonly IWorldService _worldService;
+        private readonly ICollisionCheckService _collisionCheckService;
 
         private Player _player;
 
         public bool IsRunning { get; private set; }
 
         public GameManager(IWindowManager windowManager, IEntityRegistry entityRegistry, ISpriteService spriteService, IInputManager inputManager,
-            ICameraManager cameraManager, IWorldService worldService)
+            ICameraManager cameraManager, IWorldService worldService, ICollisionCheckService collisionCheckService)
         {
             _windowManager = windowManager;
             _entityRegistry = entityRegistry;
@@ -37,6 +39,7 @@ namespace Enceladus.Core
             _inputManager = inputManager;
             _cameraManager = cameraManager;
             _worldService = worldService;
+            _collisionCheckService = collisionCheckService;
         }
 
         public void Initialize()
@@ -75,6 +78,19 @@ namespace Enceladus.Core
             foreach (var entity in _entityRegistry.Entities.Values)
             {
                 entity.Update(deltaTime);
+            }
+
+            // Check collisions
+            var entities = _entityRegistry.Entities.Values.OfType<Entity>().ToList();
+            var collisions = _collisionCheckService.CheckEntitiesToCells(entities, _worldService.CurrentMap);
+
+            if (collisions.Count > 0)
+            {
+                Console.WriteLine($"[COLLISION] {collisions.Count} entity-to-cell collision(s) detected!");
+                foreach (var collision in collisions)
+                {
+                    Console.WriteLine($"  - Entity {collision.Entity.Guid} collided with cell at ({collision.Cell.X}, {collision.Cell.Y})");
+                }
             }
 
             _cameraManager.Update();
