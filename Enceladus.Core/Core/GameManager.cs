@@ -92,7 +92,7 @@ namespace Enceladus.Core
 
             foreach (var entity in _entityRegistry.Entities.Values)
             {
-                entity.Draw();
+                entity.Draw(_cameraManager.Camera);
             }
 
             Raylib.EndMode2D();

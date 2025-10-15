@@ -1,4 +1,5 @@
 ﻿using Enceladus.Core.Input;
+using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Rendering;
 using Enceladus.Utils;
 using Raylib_cs;
@@ -16,6 +17,8 @@ namespace Enceladus.Entities
 
         public override float Mass { get; set; } = 100f;
 
+        public override Hitbox Hitbox { get; set; } = new RectHitbox(8f,4f);
+
         private readonly float _mainEngineThrust = 22500f;
         private readonly float _manuveringEnginesThrust = 2000f;
         private readonly float _manuveringEnginesRotationalAuthority = 400f;
@@ -28,7 +31,6 @@ namespace Enceladus.Entities
 
 
             Sprite = _spriteService.Load(Sprites.PlayerSubRight);
-            Size = new Vector2(8f, 4f);
         }
 
         public override void Update(float deltaTime)
