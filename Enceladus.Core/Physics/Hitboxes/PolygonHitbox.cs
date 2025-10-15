@@ -4,6 +4,11 @@ namespace Enceladus.Core.Physics.Hitboxes
 {
     public class PolygonHitbox : Hitbox
     {
-        public required List<Vector2> Vertices {  get; set; }
+        public PolygonHitbox(List<Vector2> vertices)
+        {
+            Vertices = vertices;
+        }
+
+        public List<Vector2> Vertices {  get; set; }
     }
 }

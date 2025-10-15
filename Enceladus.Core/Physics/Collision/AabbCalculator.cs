@@ -62,12 +62,41 @@ namespace Enceladus.Core.Physics.Collision
 
         private AabbRectangle CalculateAabbFromPolygon(PolygonHitbox polygonHitbox, Vector2 position, float rotation)
         {
-            // TODO: Rotate vertices and find min/max X and Y
-            // 1. Convert rotation to radians
-            // 2. Rotate each vertex around origin
-            // 3. Find min/max X and Y of rotated vertices
-            // 4. Offset by entity position
-            throw new NotImplementedException();
+            // Rotate vertices and find min/max bounds
+            float radians = rotation * (MathF.PI / 180f);
+            float cos = MathF.Cos(radians);
+            float sin = MathF.Sin(radians);
+
+            float minX = float.MaxValue;
+            float maxX = float.MinValue;
+            float minY = float.MaxValue;
+            float maxY = float.MinValue;
+
+            foreach (var vertex in polygonHitbox.Vertices)
+            {
+                // Rotate vertex around origin
+                float rotatedX = vertex.X * cos - vertex.Y * sin;
+                float rotatedY = vertex.X * sin + vertex.Y * cos;
+
+                // Add entity position to get world coordinates
+                float worldX = rotatedX + position.X;
+                float worldY = rotatedY + position.Y;
+
+                // Track min/max
+                minX = MathF.Min(minX, worldX);
+                maxX = MathF.Max(maxX, worldX);
+                minY = MathF.Min(minY, worldY);
+                maxY = MathF.Max(maxY, worldY);
+            }
+
+            var rectangle = new Rectangle(
+                minX,
+                minY,
+                maxX - minX,
+                maxY - minY
+            );
+
+            return new AabbRectangle(rectangle);
         }
     }
 

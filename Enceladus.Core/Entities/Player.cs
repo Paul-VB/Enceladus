@@ -17,7 +17,23 @@ namespace Enceladus.Entities
 
         public override float Mass { get; set; } = 100f;
 
-        public Hitbox Hitbox { get; set; } = new RectHitbox(8f,4f);
+        public Hitbox Hitbox { get; set; }
+
+        // Pixel coordinates of submarine hull (from paint.net)
+        private static readonly Vector2[] _pixelVertices = new[]
+        {
+            new Vector2(111, 0),
+            new Vector2(111, 9),
+            new Vector2(124, 20),
+            new Vector2(127, 31),
+            new Vector2(124, 43),
+            new Vector2(111, 54),
+            new Vector2(111, 63),
+            new Vector2(52, 63),
+            new Vector2(12, 56),
+            new Vector2(12, 8),
+            new Vector2(52, 0)
+        };
 
         private readonly float _mainEngineThrust = 22500f;
         private readonly float _manuveringEnginesThrust = 2000f;
@@ -29,8 +45,9 @@ namespace Enceladus.Entities
             _inputManager = inputManager;
             _spriteService = spriteService;
 
-
             Sprite = _spriteService.Load(Sprites.PlayerSubRight);
+
+            Hitbox = PolygonHitboxBuilder.BuildFromPixelCoordinates(Sprite.Width, Sprite.Height, _pixelVertices);
         }
 
         public override void Update(float deltaTime)
