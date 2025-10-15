@@ -30,6 +30,7 @@ class Program
 
         // Collision services
         services.AddSingleton<ICollisionCheckService, CollisionCheckService>();
+        services.AddSingleton<ICollisionResolverService, CollisionResolverService>();
         services.AddSingleton<IAabbCollisionDetector, AabbCollisionDetector>();
         services.AddSingleton<IAabbCalculator, AabbCalculator>();
         services.AddSingleton<ISatCollisionDetector, SatCollisionDetector>();

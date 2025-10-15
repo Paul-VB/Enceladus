@@ -6,10 +6,11 @@ using System.Numerics;
 
 namespace Enceladus.Core.Physics.Collision
 {
+
     public interface ISatCollisionDetector
     {
-        bool CheckCollision(ICollidableEntity entity1, ICollidableEntity entity2);
-        bool CheckCollision(ICollidableEntity entity, Cell cell);
+        EntityToEntityCollisionResult CheckCollision(ICollidableEntity entity1, ICollidableEntity entity2);
+        EntityToCellCollisionResult CheckCollision(ICollidableEntity entity, Cell cell);
     }
 
     public class SatCollisionDetector : ISatCollisionDetector
@@ -23,7 +24,7 @@ namespace Enceladus.Core.Physics.Collision
             _axesExtractor = axesExtractor;
         }
 
-        public bool CheckCollision(ICollidableEntity entity1, ICollidableEntity entity2)
+        public EntityToEntityCollisionResult CheckCollision(ICollidableEntity entity1, ICollidableEntity entity2)
         {
             var vertices1 = _vertexExtractor.ExtractWorldVertices(entity1);
             var vertices2 = _vertexExtractor.ExtractWorldVertices(entity2);
@@ -31,10 +32,19 @@ namespace Enceladus.Core.Physics.Collision
             var axes1 = _axesExtractor.ExtractAxes(vertices1, entity1.Hitbox);
             var axes2 = _axesExtractor.ExtractAxes(vertices2, entity2.Hitbox);
 
-            return CheckSatCollision(vertices1, vertices2, axes1.Concat(axes2).ToList());
+            var collisionInfo = CheckSatCollision(vertices1, vertices2, axes1.Concat(axes2).ToList());
+
+            var collisionResult = new EntityToEntityCollisionResult()
+            {
+                Entity = entity1,
+                OtherEntity = entity2,
+                PenetrationDepth = collisionInfo.PenetrationDepth,
+                CollisionNormal = collisionInfo.CollisionNormal
+            };
+            return collisionResult;
         }
 
-        public bool CheckCollision(ICollidableEntity entity, Cell cell)
+        public EntityToCellCollisionResult CheckCollision(ICollidableEntity entity, Cell cell)
         {
             var entityVertices = _vertexExtractor.ExtractWorldVertices(entity);
             var cellVertices = _vertexExtractor.ExtractWorldVertices(cell);
@@ -42,29 +52,84 @@ namespace Enceladus.Core.Physics.Collision
             var entityAxes = _axesExtractor.ExtractAxes(entityVertices, entity.Hitbox);
             var cellAxes = _axesExtractor.ExtractAxes(cellVertices, new RectHitbox(1, 1)); // Cell is always 1x1 rect
 
-            return CheckSatCollision(entityVertices, cellVertices, entityAxes.Concat(cellAxes).ToList());
+            var collisionInfo = CheckSatCollision(entityVertices, cellVertices, entityAxes.Concat(cellAxes).ToList());
+
+            var collisionResult = new EntityToCellCollisionResult()
+            {
+                Entity = entity,
+                Cell = cell,
+                PenetrationDepth = collisionInfo.PenetrationDepth,
+                CollisionNormal = collisionInfo.CollisionNormal
+            };
+            return collisionResult;
         }
 
-        private bool CheckSatCollision(List<Vector2> vertices1, List<Vector2> vertices2, List<Vector2> axes)
+        private CollisionInfo CheckSatCollision(List<Vector2> vertices1, List<Vector2> vertices2, List<Vector2> axes)
         {
+            var minPenetration = float.MaxValue;
+            var minAxis = Vector2.Zero;
+
             foreach (var axis in axes)
-                if (!ProjectionsOverlap(axis, vertices1, vertices2))
-                   return false;
+            {
+                var penetration = GetAxisPenetration(axis, vertices1, vertices2);
 
-            return true;
+                if (penetration == 0)
+                {
+                    return new CollisionInfo
+                    {
+                        PenetrationDepth = 0,
+                        CollisionNormal = new Vector2()
+                    };
+                }
+
+                // Track the axis with minimum penetration
+                if (penetration < minPenetration)
+                {
+                    minPenetration = penetration;
+                    minAxis = axis;
+                }
+            }
+
+            // All axes overlap - collision detected
+            // Ensure normal points from shape2 to shape1 (from cell to entity)
+            var centerDiff = GetCenterOfVertices(vertices1) - GetCenterOfVertices(vertices2);
+            if (Vector2.Dot(minAxis, centerDiff) < 0)
+            {
+                minAxis = -minAxis;
+            }
+
+            return new CollisionInfo
+            {
+                PenetrationDepth = minPenetration,
+                CollisionNormal = minAxis
+            };
         }
 
-        private bool ProjectionsOverlap(Vector2 axis, List<Vector2> vertices1, List<Vector2> vertices2)
+        private float GetAxisPenetration(Vector2 axis, List<Vector2> vertices1, List<Vector2> vertices2)
         {
-            // Project shape 1 onto the axis
             var (min1, max1) = ProjectShapeOntoAxis(axis, vertices1);
-
-            // Project shape 2 onto the axis
             var (min2, max2) = ProjectShapeOntoAxis(axis, vertices2);
 
-            // Check if the projections overlap
-            // They overlap if: min1 <= max2 AND min2 <= max1
-            return min1 <= max2 && min2 <= max1;
+            // Check if projections overlap
+            bool overlaps = min1 <= max2 && min2 <= max1;
+            if (!overlaps)
+            {
+                return 0f;
+            }
+
+            // Calculate how deeply the projections penetrate
+            float penetration = Math.Min(max1 - min2, max2 - min1);
+            return penetration;
+        }
+
+        private Vector2 GetCenterOfVertices(List<Vector2> vertices)
+        {
+            Vector2 sum = Vector2.Zero;
+            foreach (var vertex in vertices)
+            {
+                sum += vertex;
+            }
+            return sum / vertices.Count;
         }
 
         private (float min, float max) ProjectShapeOntoAxis(Vector2 axis, List<Vector2> vertices)
@@ -83,5 +148,12 @@ namespace Enceladus.Core.Physics.Collision
 
             return (min, max);
         }
+
+        private class CollisionInfo
+        {
+            public float PenetrationDepth { get; set; }
+            public Vector2 CollisionNormal { get; set; }
+        }
     }
+
 }

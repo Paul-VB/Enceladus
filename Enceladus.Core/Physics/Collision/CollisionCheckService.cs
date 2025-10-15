@@ -1,8 +1,7 @@
 using Enceladus.Core.Physics.Hitboxes;
-using Enceladus.Core.Utils;
 using Enceladus.Core.World;
 using Enceladus.Entities;
-using System.Numerics;
+using System.Collections.Concurrent;
 
 namespace Enceladus.Core.Physics.Collision
 {
@@ -25,12 +24,18 @@ namespace Enceladus.Core.Physics.Collision
 
         public List<EntityToCellCollisionResult> CheckEntitiesToCells(List<ICollidableEntity> entities, Map map)
         {
-            var collisions = new List<EntityToCellCollisionResult>();
-            foreach (var entity in entities)
+            var collisions = new ConcurrentBag<EntityToCellCollisionResult>();
+
+            Parallel.ForEach(entities, entity =>
             {
-                collisions.AddRange(CheckEntityToCells(entity, map));
-            }
-            return collisions;
+                var entityCollisions = CheckEntityToCells(entity, map);
+                foreach (var collision in entityCollisions)
+                {
+                    collisions.Add(collision);
+                }
+            });
+
+            return collisions.ToList();
         }
 
         private List<EntityToCellCollisionResult> CheckEntityToCells(ICollidableEntity entity, Map map)
@@ -42,22 +47,27 @@ namespace Enceladus.Core.Physics.Collision
             if (cellCollisionCandiates.Count == 0) return collisions;
 
             //temp placeholder
-            var placeHolderCircleAlgo= (ICollidableEntity e, Cell c) => { return false; };
+            var placeHolderCircleAlgo = (ICollidableEntity e, Cell c) =>
+            {
+                return new EntityToCellCollisionResult
+                {
+                    Entity = e,
+                    Cell = c,
+                    PenetrationDepth = 0,
+                    CollisionNormal = System.Numerics.Vector2.Zero
+                };
+            };
 
             // Narrow check
-            Func<ICollidableEntity, Cell, bool> narrowCollisionAlgorithm =
+            Func<ICollidableEntity, Cell, EntityToCellCollisionResult> narrowCollisionAlgorithm =
                 entity.Hitbox is RectHitbox || entity.Hitbox is PolygonHitbox ? _satCollisionDetector.CheckCollision : placeHolderCircleAlgo;
 
             foreach (var cell in cellCollisionCandiates)
             {
-                var didCollide = narrowCollisionAlgorithm(entity, cell);
-                if (didCollide)
+                var collision = narrowCollisionAlgorithm(entity, cell);
+                if (collision.PenetrationDepth > 0)
                 {
-                    collisions.Add(new EntityToCellCollisionResult
-                    {
-                        Entity = entity,
-                        Cell = cell
-                    });
+                    collisions.Add(collision);
                 }
             }
 

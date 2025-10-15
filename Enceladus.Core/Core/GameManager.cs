@@ -25,13 +25,14 @@ namespace Enceladus.Core
         private readonly ICameraManager _cameraManager;
         private readonly IWorldService _worldService;
         private readonly ICollisionCheckService _collisionCheckService;
+        private readonly ICollisionResolverService _collisionResolverService;
 
         private Player _player;
 
         public bool IsRunning { get; private set; }
 
         public GameManager(IWindowManager windowManager, IEntityRegistry entityRegistry, ISpriteService spriteService, IInputManager inputManager,
-            ICameraManager cameraManager, IWorldService worldService, ICollisionCheckService collisionCheckService)
+            ICameraManager cameraManager, IWorldService worldService, ICollisionCheckService collisionCheckService, ICollisionResolverService collisionResolverService)
         {
             _windowManager = windowManager;
             _entityRegistry = entityRegistry;
@@ -40,6 +41,7 @@ namespace Enceladus.Core
             _cameraManager = cameraManager;
             _worldService = worldService;
             _collisionCheckService = collisionCheckService;
+            _collisionResolverService = collisionResolverService;
         }
 
         public void Initialize()
@@ -80,17 +82,13 @@ namespace Enceladus.Core
                 entity.Update(deltaTime);
             }
 
-            // Check collisions
+            // Check and resolve collisions
             var collidableEntities = _entityRegistry.Entities.Values.OfType<ICollidableEntity>().ToList();
             var collisions = _collisionCheckService.CheckEntitiesToCells(collidableEntities, _worldService.CurrentMap);
 
-            if (collisions.Count > 0)
+            foreach (var collision in collisions)
             {
-                Console.WriteLine($"[COLLISION] {collisions.Count} entity-to-cell collision(s) detected!");
-                foreach (var collision in collisions)
-                {
-                    Console.WriteLine($"  - Entity {collision.Entity.Guid} collided with cell at ({collision.Cell.X}, {collision.Cell.Y})");
-                }
+                _collisionResolverService.ResolveCollision(collision);
             }
 
             _cameraManager.Update();
