@@ -3,6 +3,7 @@ using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.World;
 using Enceladus.Entities;
+using Enceladus.Entities.TestMonsters;
 using Raylib_cs;
 using System.Numerics;
 using Color = Raylib_cs.Color;
@@ -57,8 +58,34 @@ namespace Enceladus.Core
 
         private void SetupEntities()
         {
-            _player = new Player(_inputManager, _spriteService) { Position = new Vector2(0,0) };
+            _player = new Player(_inputManager, _spriteService) { Position = new Vector2(0, 0) };
             _entityRegistry.Register(_player);
+
+            SpawnTestMonsters();
+
+        }
+
+        private void SpawnTestMonsters()
+        {
+            var triangle = new EvilBlueTriangle(_inputManager)
+            {
+                Position = new Vector2(5, 5)
+            };
+            _entityRegistry.Register(triangle);
+
+            var pentagon = new MenacingRedPentagon
+            {
+                Position = new Vector2(-8, 3),
+                Velocity = new Vector2(-1, 2),
+                AngularVelocity = -30f
+            };
+            _entityRegistry.Register(pentagon);
+
+            var circle = new HorribleYellowCircle(_inputManager)
+            {
+                Position = new Vector2(0, -10)
+            };
+            _entityRegistry.Register(circle);
         }
 
         private void Run()
@@ -84,9 +111,17 @@ namespace Enceladus.Core
 
             // Check and resolve collisions
             var collidableEntities = _entityRegistry.Entities.Values.OfType<ICollidableEntity>().ToList();
-            var collisions = _collisionCheckService.CheckEntitiesToCells(collidableEntities, _worldService.CurrentMap);
 
-            foreach (var collision in collisions)
+            // Entity-to-cell collisions
+            var entityToCellCollisions = _collisionCheckService.CheckEntitiesToCells(collidableEntities, _worldService.CurrentMap);
+            foreach (var collision in entityToCellCollisions)
+            {
+                _collisionResolverService.ResolveCollision(collision);
+            }
+
+            // Entity-to-entity collisions
+            var entityToEntityCollisions = _collisionCheckService.CheckEntitiesToEntities(collidableEntities);
+            foreach (var collision in entityToEntityCollisions)
             {
                 _collisionResolverService.ResolveCollision(collision);
             }

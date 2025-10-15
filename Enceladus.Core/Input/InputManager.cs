@@ -9,6 +9,7 @@ namespace Enceladus.Core.Input
         bool IsKeyDown(KeyboardKey key);
         bool IsKeyReleased(KeyboardKey key);
         Vector2 GetMovementInput();
+        Vector2 GetArrowKeyMovementInput();
     }
 
     public class InputManager : IInputManager
@@ -30,6 +31,25 @@ namespace Enceladus.Core.Input
             if (Raylib.IsKeyDown(KnownInputControls.MoveLeft))
                 movement.X -= 1f;
             if (Raylib.IsKeyDown(KnownInputControls.MoveRight))
+                movement.X += 1f;
+
+            if (movement.Length() > 0)
+                movement = Vector2.Normalize(movement);
+
+            return movement;
+        }
+
+        public Vector2 GetArrowKeyMovementInput()
+        {
+            var movement = Vector2.Zero;
+
+            if (Raylib.IsKeyDown(KeyboardKey.Up))
+                movement.Y -= 1f;
+            if (Raylib.IsKeyDown(KeyboardKey.Down))
+                movement.Y += 1f;
+            if (Raylib.IsKeyDown(KeyboardKey.Left))
+                movement.X -= 1f;
+            if (Raylib.IsKeyDown(KeyboardKey.Right))
                 movement.X += 1f;
 
             if (movement.Length() > 0)

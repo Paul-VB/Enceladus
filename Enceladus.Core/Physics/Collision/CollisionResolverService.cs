@@ -24,7 +24,33 @@ namespace Enceladus.Core.Physics.Collision
 
         public void ResolveCollision(EntityToEntityCollisionResult collision)
         {
-            throw new NotImplementedException();
+            // 1. Position separation (simple equal split)
+            float halfDepth = collision.PenetrationDepth / 2f;
+            collision.Entity.Position += collision.CollisionNormal * halfDepth;
+            collision.OtherEntity.Position -= collision.CollisionNormal * halfDepth;
+
+            // 2. Velocity bounce (mass-based impulse) - only if both are moveable
+            if (collision.Entity is IMoveable moveable1 && collision.OtherEntity is IMoveable moveable2)
+            {
+                // Calculate relative velocity along collision normal
+                Vector2 relativeVelocity = moveable1.Velocity - moveable2.Velocity;
+                float velocityAlongNormal = Vector2.Dot(relativeVelocity, collision.CollisionNormal);
+
+                // Don't resolve if entities are moving apart
+                if (velocityAlongNormal > 0)
+                    return;
+
+                // Calculate impulse (coefficient of restitution = 0.8 for some bounciness)
+                float restitution = 0.8f;
+                float impulseScalar = -(1 + restitution) * velocityAlongNormal;
+                impulseScalar /= (1 / moveable1.Mass + 1 / moveable2.Mass);
+
+                Vector2 impulse = collision.CollisionNormal * impulseScalar;
+
+                // Apply impulse to both entities
+                moveable1.Velocity += impulse / moveable1.Mass;
+                moveable2.Velocity -= impulse / moveable2.Mass;
+            }
         }
     }
 }

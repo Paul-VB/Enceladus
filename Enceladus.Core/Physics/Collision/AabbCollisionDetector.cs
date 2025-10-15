@@ -56,7 +56,12 @@ namespace Enceladus.Core.Physics.Collision
 
         public bool CheckPotentialCollision(ICollidableEntity entity1, ICollidableEntity entity2)
         {
-            throw new NotImplementedException();
+            var aabb1 = _aabbCalculator.CalculateAabb(entity1);
+            var aabb2 = _aabbCalculator.CalculateAabb(entity2);
+
+            // Check if AABBs overlap
+            return aabb1.MinX <= aabb2.MaxX && aabb1.MaxX >= aabb2.MinX &&
+                   aabb1.MinY <= aabb2.MaxY && aabb1.MaxY >= aabb2.MinY;
         }
     }
 }

@@ -8,7 +8,7 @@ namespace Enceladus.Core.Physics.Collision
     public interface ICollisionCheckService
     {
         List<EntityToCellCollisionResult> CheckEntitiesToCells(List<ICollidableEntity> entities, Map map);
-        List<BaseCollisionResult> CheckEntitiesToEntities(List<ICollidableEntity> entities);
+        List<EntityToEntityCollisionResult> CheckEntitiesToEntities(List<ICollidableEntity> entities);
     }
 
     public class CollisionCheckService : ICollisionCheckService
@@ -74,9 +74,36 @@ namespace Enceladus.Core.Physics.Collision
             return collisions;
         }
 
-        public List<BaseCollisionResult> CheckEntitiesToEntities(List<ICollidableEntity> entities)
+        public List<EntityToEntityCollisionResult> CheckEntitiesToEntities(List<ICollidableEntity> entities)
         {
-            throw new NotImplementedException();
+            var collisions = new List<EntityToEntityCollisionResult>();
+
+            // Check each unique pair of entities
+            for (int i = 0; i < entities.Count; i++)
+            {
+                for (int j = i + 1; j < entities.Count; j++)
+                {
+                    var entity1 = entities[i];
+                    var entity2 = entities[j];
+
+                    // Broad phase: AABB check
+                    if (!_aabbCollisionDetector.CheckPotentialCollision(entity1, entity2))
+                        continue;
+
+                    // Narrow phase: For now, only check polygon-to-polygon collisions
+                    if ((entity1.Hitbox is RectHitbox || entity1.Hitbox is PolygonHitbox) &&
+                        (entity2.Hitbox is RectHitbox || entity2.Hitbox is PolygonHitbox))
+                    {
+                        var result = _satCollisionDetector.CheckCollision(entity1, entity2);
+                        if (result.PenetrationDepth > 0)
+                        {
+                            collisions.Add(result);
+                        }
+                    }
+                }
+            }
+
+            return collisions;
         }
     }
 }
