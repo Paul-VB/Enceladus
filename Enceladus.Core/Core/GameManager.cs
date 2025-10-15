@@ -104,23 +104,18 @@ namespace Enceladus.Core
         private void DrawCells()
         {
             var map = _worldService.CurrentMap;
-            int halfWidth = map.Width / 2;
-            int halfHeight = map.Height / 2;
 
-            for (int x = 0; x < map.Width; x++)
+            // Get all chunks (later: filter to only visible chunks)
+            var chunksToRender = map.Chunks.Values;
+
+            foreach (var chunk in chunksToRender)
             {
-                for (int y = 0; y < map.Height; y++)
+                foreach (var cell in chunk.Cells)
                 {
-                    var cell = map.Cells[x][y];
                     var sprite = _spriteService.Load(cell.CellType.SpritePath);
 
-                    // Convert from array indices to world coordinates
-                    // Array [0,0] maps to world position (-halfWidth, -halfHeight)
-                    float worldX = x - halfWidth;
-                    float worldY = y - halfHeight;
-
                     var source = new Rectangle(0, 0, sprite.Width, sprite.Height);
-                    var dest = new Rectangle(worldX, worldY, 1, 1); // 1x1 world unit cell
+                    var dest = new Rectangle(cell.X, cell.Y, 1, 1); // Cell knows its world position
 
                     Raylib.DrawTexturePro(sprite, source, dest, Vector2.Zero, 0f, Color.White);
                 }

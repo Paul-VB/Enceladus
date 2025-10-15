@@ -5,8 +5,6 @@ namespace Enceladus.Core.World
     public interface IWorldService
     {
         Map CurrentMap { get; }
-
-        Vector2 ClampToBounds(Vector2 position);
     }
 
     public class WorldService : IWorldService
@@ -19,17 +17,6 @@ namespace Enceladus.Core.World
         {
             _mapGeneratorService = mapGeneratorService;
             CurrentMap = _mapGeneratorService.GenerateTestMap();
-        }
-
-        public Vector2 ClampToBounds(Vector2 position)
-        {
-            int halfWidth = CurrentMap.Width / 2;
-            int halfHeight = CurrentMap.Height / 2;
-
-            return new Vector2(
-                Math.Clamp(position.X, -halfWidth, halfWidth),
-                Math.Clamp(position.Y, -halfHeight, halfHeight)
-            );
         }
     }
 }

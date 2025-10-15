@@ -5,9 +5,7 @@ namespace Enceladus.Core.World
     public class Map
     {
         public Guid Id { get; set; }
-        public int Height { get; set; }
-        public int Width { get; set; }
-        public Cell[][] Cells { get; set; }
+        public Dictionary<(int, int), MapChunk> Chunks { get; set; } = [];
 
         // TODO: Add biome type, resources, enemy spawns, instability level, etc.
     }
