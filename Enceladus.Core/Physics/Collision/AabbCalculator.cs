@@ -1,5 +1,6 @@
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Entities;
+using Enceladus.Utils;
 using Raylib_cs;
 using System.Numerics;
 
@@ -29,7 +30,7 @@ namespace Enceladus.Core.Physics.Collision
         private AabbRectangle CalculateAabbFromRect(RectHitbox rectHitbox, Vector2 position, float rotation)
         {
             // Use your derived formula: AABB = |W*cos(θ)| + |H*sin(θ)|
-            float radians = rotation * (MathF.PI / 180f);
+            float radians = AngleHelper.DegToRad(rotation);
             float cos = MathF.Abs(MathF.Cos(radians));
             float sin = MathF.Abs(MathF.Sin(radians));
 
@@ -63,7 +64,7 @@ namespace Enceladus.Core.Physics.Collision
         private AabbRectangle CalculateAabbFromPolygon(PolygonHitbox polygonHitbox, Vector2 position, float rotation)
         {
             // Rotate vertices and find min/max bounds
-            float radians = rotation * (MathF.PI / 180f);
+            float radians = AngleHelper.DegToRad(rotation);
             float cos = MathF.Cos(radians);
             float sin = MathF.Sin(radians);
 

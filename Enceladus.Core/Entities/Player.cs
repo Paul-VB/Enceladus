@@ -90,7 +90,7 @@ namespace Enceladus.Entities
             ApplyTorque(totalTorque, deltaTime);
         }
 
-        private float VelocityAngle => MathF.Atan2(Velocity.Y, Velocity.X) * (180f / MathF.PI);
+        private float VelocityAngle => AngleHelper.RadToDeg(MathF.Atan2(Velocity.Y, Velocity.X));
         private float MotionAlignmentError => AngleHelper.ShortestAngleDifference(Rotation, VelocityAngle);
         private float GetMainEngineEffectiveThrust()
         {

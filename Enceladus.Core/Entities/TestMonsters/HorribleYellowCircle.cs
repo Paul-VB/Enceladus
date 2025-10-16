@@ -1,5 +1,6 @@
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Utils;
 using Raylib_cs;
 using System.Numerics;
 
@@ -47,7 +48,7 @@ namespace Enceladus.Entities.TestMonsters
             Raylib.DrawCircleLinesV(Position, circleHitbox.Radius, Color.Gold);
 
             // Draw a line to show rotation
-            float radians = Rotation * (MathF.PI / 180f);
+            float radians = AngleHelper.DegToRad(Rotation);
             var endPoint = new Vector2(
                 Position.X + circleHitbox.Radius * MathF.Cos(radians),
                 Position.Y + circleHitbox.Radius * MathF.Sin(radians)

@@ -1,5 +1,6 @@
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Utils;
 using Raylib_cs;
 using System.Numerics;
 
@@ -49,7 +50,7 @@ namespace Enceladus.Entities.TestMonsters
             var polygonHitbox = (PolygonHitbox)Hitbox;
 
             // Rotate and translate vertices to world space
-            float radians = Rotation * (MathF.PI / 180f);
+            float radians = AngleHelper.DegToRad(Rotation);
             float cos = MathF.Cos(radians);
             float sin = MathF.Sin(radians);
 

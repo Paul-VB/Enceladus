@@ -1,4 +1,5 @@
 using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Utils;
 using Raylib_cs;
 using System.Numerics;
 
@@ -16,7 +17,7 @@ namespace Enceladus.Entities.TestMonsters
 
             for (int i = 0; i < 5; i++)
             {
-                float angle = (i * 72f - 90f) * (MathF.PI / 180f); // Start from top
+                float angle = AngleHelper.DegToRad(i * 72f - 90f); // Start from top
                 float x = radius * MathF.Cos(angle);
                 float y = radius * MathF.Sin(angle);
                 vertices.Add(new Vector2(x, y));
@@ -37,7 +38,7 @@ namespace Enceladus.Entities.TestMonsters
             var polygonHitbox = (PolygonHitbox)Hitbox;
 
             // Rotate and translate vertices to world space
-            float radians = Rotation * (MathF.PI / 180f);
+            float radians = AngleHelper.DegToRad(Rotation);
             float cos = MathF.Cos(radians);
             float sin = MathF.Sin(radians);
 

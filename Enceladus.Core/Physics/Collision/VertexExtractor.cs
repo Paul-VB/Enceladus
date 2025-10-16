@@ -1,6 +1,7 @@
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.World;
 using Enceladus.Entities;
+using Enceladus.Utils;
 using System.Numerics;
 
 namespace Enceladus.Core.Physics.Collision
@@ -59,7 +60,7 @@ namespace Enceladus.Core.Physics.Collision
 
         private List<Vector2> TransformToWorldSpace(List<Vector2> localVertices, Vector2 position, float rotation)
         {
-            float radians = rotation * (MathF.PI / 180f);
+            float radians = AngleHelper.DegToRad(rotation);
             float cos = MathF.Cos(radians);
             float sin = MathF.Sin(radians);
 
