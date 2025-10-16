@@ -4,7 +4,7 @@ using Enceladus.Core.World;
 
 namespace Enceladus.Core.Tests.World
 {
-    //todo: line by line check this test fixture later
+    //todo: (stretch ish goal) the tests are fine but we should refactor this to have a separate test fixture for each function were testing like we used to... but im getting bored of working on this test fixture. do it later lol
     public class ChunkMathTests
     {
         [Theory]
@@ -181,6 +181,26 @@ namespace Enceladus.Core.Tests.World
             Assert.Contains(result, c => c.X == 0 && c.Y == 0);
             Assert.Contains(result, c => c.X == 1 && c.Y == 0);
             Assert.DoesNotContain(result, c => c.X == 2); // Chunk 2 starts at x=32, bounds only goes to 20.1
+        }
+
+        [Fact]
+        public void GetChunksInBounds_FractionalMaxBounds_XOverlap_UsesCeilingNotTruncation()
+        {
+            // Arrange - Rectangle from (10, 10) with size (5.1, 5) extends to (15.1, 15)
+            // Chunk (0,0) contains cells 0-15, so 15.1 extends into chunk (1,0)
+            // Without Ceiling, (int)(15.1) = 15, which misses the overlap into chunk (1,0)
+            // With Ceiling, Ceiling(15.1) = 16, which correctly detects chunk (1,0) overlap
+            var map = MapHelpers.CreateMapWithChunks((0, 0), (1, 0), (0, 1), (1, 1));
+            var bounds = new Raylib_cs.Rectangle(10, 10, 5.1f, 5); // From (10,10) to (15.1, 15)
+
+            // Act
+            var result = ChunkMath.GetChunksInBounds(map, bounds).ToList();
+
+            // Assert - Should include both chunks because x=15.1 extends fractionally into chunk (1,0)
+            Assert.Equal(2, result.Count);
+            Assert.Contains(result, c => c.X == 0 && c.Y == 0);
+            Assert.Contains(result, c => c.X == 1 && c.Y == 0); // x=15.1 extends into next chunk
+            Assert.DoesNotContain(result, c => c.X == 0 && c.Y == 1); // y=15 stays within chunk (0,0)
         }
 
         [Fact]

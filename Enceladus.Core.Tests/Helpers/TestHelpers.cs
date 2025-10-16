@@ -92,4 +92,18 @@ namespace Enceladus.Core.Tests.Helpers
     {
         public override void Update(float deltaTime) { }
     }
+
+    /// <summary>
+    /// Factory methods for creating test entities
+    /// </summary>
+    public static class EntityHelpers
+    {
+        /// <summary>
+        /// Creates a test entity at the specified position
+        /// </summary>
+        public static TestEntity CreateTestEntity(Vector2 position)
+        {
+            return new TestEntity { Position = position };
+        }
+    }
 }

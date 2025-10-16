@@ -62,7 +62,7 @@ namespace Enceladus.Core.Tests.Rendering
         public void TrackEntity_UpdateFollowsEntityPosition()
         {
             // Arrange
-            var entity = CreateTestEntity(new Vector2(100, 200));
+            var entity = EntityHelpers.CreateTestEntity(new Vector2(100, 200));
             _cameraManager.TrackEntity(entity);
 
             // Act
@@ -77,7 +77,7 @@ namespace Enceladus.Core.Tests.Rendering
         public void TrackEntity_UpdateFollowsEntityMovement()
         {
             // Arrange
-            var entity = CreateTestEntity(new Vector2(100, 200));
+            var entity = EntityHelpers.CreateTestEntity(new Vector2(100, 200));
             _cameraManager.TrackEntity(entity);
             _cameraManager.Update();
 
@@ -96,7 +96,7 @@ namespace Enceladus.Core.Tests.Rendering
         public void StopTracking_StopsFollowingEntity()
         {
             // Arrange
-            var entity = CreateTestEntity(new Vector2(100, 200));
+            var entity = EntityHelpers.CreateTestEntity(new Vector2(100, 200));
             _cameraManager.TrackEntity(entity);
             _cameraManager.Update();
 
@@ -114,7 +114,7 @@ namespace Enceladus.Core.Tests.Rendering
         public void SetTarget_StopsTrackingAndSetsPosition()
         {
             // Arrange
-            var entity = CreateTestEntity(new Vector2(100, 200));
+            var entity = EntityHelpers.CreateTestEntity(new Vector2(100, 200));
             _cameraManager.TrackEntity(entity);
             _cameraManager.Update();
 
@@ -191,13 +191,6 @@ namespace Enceladus.Core.Tests.Rendering
             // Assert - Should see negative chunks, not positive ones far away
             Assert.DoesNotContain(result, c => c.X == 5 && c.Y == 5);
             Assert.Contains(result, c => c.X == -2 && c.Y == -2);
-        }
-
-        // Helper methods
-        //todo: can we put this in helpers?
-        private TestEntity CreateTestEntity(Vector2 position)
-        {
-            return new TestEntity { Position = position };
         }
     }
 }
