@@ -1,5 +1,6 @@
 using Enceladus.Core.Entities;
 using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Core.Utils;
 using Enceladus.Utils;
 using Raylib_cs;
 using System.Numerics;
@@ -8,12 +9,12 @@ namespace Enceladus.Core.Physics.Collision
 {
     public interface IAabbCalculator
     {
-        AabbRectangle CalculateAabb(ICollidableEntity entity);
+        Rectangle CalculateAabb(ICollidableEntity entity);
     }
 
     public class AabbCalculator : IAabbCalculator
     {
-        public AabbRectangle CalculateAabb(ICollidableEntity entity)
+        public Rectangle CalculateAabb(ICollidableEntity entity)
         {
             if (entity.Hitbox is RectHitbox rect)
                 return CalculateAabbFromRect(rect, entity.Position, entity.Rotation);
@@ -27,7 +28,7 @@ namespace Enceladus.Core.Physics.Collision
             throw new NotSupportedException($"Hitbox type not supported: {entity.Hitbox?.GetType()}");
         }
 
-        private AabbRectangle CalculateAabbFromRect(RectHitbox rectHitbox, Vector2 position, float rotation)
+        private Rectangle CalculateAabbFromRect(RectHitbox rectHitbox, Vector2 position, float rotation)
         {
             // Use your derived formula: AABB = |W*cos(θ)| + |H*sin(θ)|
             float radians = AngleHelper.DegToRad(rotation);
@@ -44,10 +45,10 @@ namespace Enceladus.Core.Physics.Collision
                     aabbHeight
                 );
 
-            return new AabbRectangle(rectangle);
+            return rectangle;
         }
 
-        private AabbRectangle CalculateAabbFromCircle(CircleHitbox circleHitbox, Vector2 position)
+        private Rectangle CalculateAabbFromCircle(CircleHitbox circleHitbox, Vector2 position)
         {
             float diameter = circleHitbox.Radius * 2f;
 
@@ -58,10 +59,10 @@ namespace Enceladus.Core.Physics.Collision
                 diameter
             );
 
-            return new AabbRectangle(rectangle);
+            return rectangle;
         }
 
-        private AabbRectangle CalculateAabbFromPolygon(PolygonHitbox polygonHitbox, Vector2 position, float rotation)
+        private Rectangle CalculateAabbFromPolygon(PolygonHitbox polygonHitbox, Vector2 position, float rotation)
         {
             // Rotate vertices and find min/max bounds
             float radians = AngleHelper.DegToRad(rotation);
@@ -89,32 +90,9 @@ namespace Enceladus.Core.Physics.Collision
                 minY = MathF.Min(minY, worldY);
                 maxY = MathF.Max(maxY, worldY);
             }
+            var rectangle = GeometryHelper.RectangleFromBounds(minX, maxX, minY, maxY);
 
-            var rectangle = new Rectangle(
-                minX,
-                minY,
-                maxX - minX,
-                maxY - minY
-            );
-
-            return new AabbRectangle(rectangle);
+            return rectangle;
         }
-    }
-
-    public class AabbRectangle
-    {
-        public AabbRectangle()
-        {
-            
-        }
-        public AabbRectangle(Rectangle rectangle)
-        {
-            Rectangle = rectangle;
-        }
-        public Rectangle Rectangle { get; set; }
-        public int MinX => (int)MathF.Floor(Rectangle.X);
-        public int MaxX => (int)MathF.Ceiling(Rectangle.X + Rectangle.Width);
-        public int MinY => (int)MathF.Floor(Rectangle.Y);
-        public int MaxY => (int)MathF.Ceiling(Rectangle.Y + Rectangle.Height);
     }
 }
