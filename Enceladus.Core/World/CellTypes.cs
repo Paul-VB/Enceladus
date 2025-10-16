@@ -8,7 +8,6 @@ namespace Enceladus.Core.World
         {
             Id = 0,
             SpritePath = Sprites.Water,
-            MaxHealth = 0, //health isnt really applicable i guess?
             HasCollision = false,
         };
 
@@ -16,7 +15,6 @@ namespace Enceladus.Core.World
         {
             Id = 1,
             SpritePath = Sprites.Ice,
-            MaxHealth = 100,
             HasCollision = true,
         };
     }

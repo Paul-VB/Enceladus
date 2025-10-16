@@ -1,3 +1,4 @@
+using Enceladus.Core.Config;
 using Enceladus.Utils;
 using System.Numerics;
 
@@ -16,17 +17,24 @@ namespace Enceladus.Entities
 
     public abstract class MoveableEntity : Entity, IMoveable
     {
-        private const float _minVelocityThreshold = 0.05f;
-        private const float _minAngularVelocityThreshold = 0.05f;
-        public virtual Vector2 Velocity { get; set; }
-        public virtual float Mass { get; set; } = 1f;
-        public virtual float Drag { get; set; } = 0.95f;
+        protected readonly IConfigService _configService;
+        public virtual Vector2 Velocity { get; set; } = Vector2.Zero;
+        public virtual float Mass { get; set; }
+        public virtual float Drag { get; set; }
         public virtual float AngularVelocity { get; set; }
-        public virtual float AngularDrag{ get; set; } = 0.95f;
-
-        protected MoveableEntity()
+        public virtual float AngularDrag{ get; set; }
+        protected MoveableEntity(IConfigService configService)
         {
-            Velocity = Vector2.Zero;
+            _configService = configService;
+
+            Init();
+        }
+
+        private void Init()
+        {
+            Mass = _configService.Config.Physics.DefaultMass;
+            Drag = _configService.Config.Physics.DefaultDrag;
+            AngularDrag = _configService.Config.Physics.DefaultAngularDrag;
         }
 
         public virtual void Accelerate(Vector2 force, float deltaTime)
@@ -60,7 +68,7 @@ namespace Enceladus.Entities
             var dragForce = -Velocity * Drag;
             Velocity += dragForce * deltaTime;
 
-            if (Velocity.Length() < _minVelocityThreshold)
+            if (Velocity.Length() < _configService.Config.Physics.MinVelocityThreshold)
                 Velocity = Vector2.Zero;
 
         }
@@ -75,7 +83,7 @@ namespace Enceladus.Entities
             AngularVelocity += angularDragTorque * deltaTime;
 
             // Zero out very small angular velocities
-            if (Math.Abs(AngularVelocity) < _minAngularVelocityThreshold)
+            if (Math.Abs(AngularVelocity) < _configService.Config.Physics.MinAngularVelocityThreshold)
                 AngularVelocity = 0f;
         }
     }

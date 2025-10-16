@@ -1,4 +1,5 @@
 ﻿using Enceladus.Core;
+using Enceladus.Core.Config;
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Rendering;
@@ -19,6 +20,9 @@ class Program
     {
         var services = new ServiceCollection();
 
+        // Config service
+        services.AddSingleton<IConfigService, ConfigService>();
+
         services.AddSingleton<IWindowManager, WindowManager>();
         services.AddSingleton<IEntityRegistry, EntityRegistry>();
         services.AddSingleton<IInputManager, InputManager>();
@@ -27,6 +31,7 @@ class Program
         services.AddSingleton<IGameManager, GameManager>();
         services.AddSingleton<IWorldService, WorldService>();
         services.AddSingleton<IMapGenerator, MapGenerator>();
+        services.AddSingleton<ICellFactory, CellFactory>();
 
         // Rendering services
         services.AddSingleton<IRenderingService, RenderingService>();

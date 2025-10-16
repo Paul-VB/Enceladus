@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Config>
+	<!-- ===== PLAYER SUBMARINE ===== -->
+	<Player>
+		<Mass>100</Mass>
+		<MainEngineThrust>22500</MainEngineThrust>
+		<ManeuveringThrust>2000</ManeuveringThrust>
+		<ManeuveringRotationalAuthority>400</ManeuveringRotationalAuthority>
+		<ManeuveringDampingStrength>500</ManeuveringDampingStrength>
+		<ManeuveringFinsAuthority>4</ManeuveringFinsAuthority>
+		<!-- Manual brake strength multiplier (0.3 = 30% of maneuvering thrust) -->
+		<BrakeStrength>0.3</BrakeStrength>
+		<!-- Minimum velocity before rotation assistance activates -->
+		<MinVelocityForRotation>0.1</MinVelocityForRotation>
+		<!-- Minimum velocity before main engine activates -->
+		<MinVelocityForMainEngine>0.1</MinVelocityForMainEngine>
+		<!-- Max alignment error in degrees for main engine contribution (90° = perpendicular) -->
+		<MaxAlignmentErrorDegrees>90</MaxAlignmentErrorDegrees>
+	</Player>
+
+	<!-- ===== PHYSICS ===== -->
+	<Physics>
+		<!-- Coefficient of restitution: 0.8 = bouncy, 0.0 = no bounce -->
+		<RestitutionCoefficient>0.8</RestitutionCoefficient>
+		<!-- Default resistance due to drag from the water (0.95 = 95% velocity retained per frame) -->
+		<DefaultDrag>0.95</DefaultDrag>
+		<!-- Default rotational water resistance -->
+		<DefaultAngularDrag>0.95</DefaultAngularDrag>
+		<!-- Minimum velocity threshold for movement (below this = stops) -->
+		<MinVelocityThreshold>0.05</MinVelocityThreshold>
+		<!-- Minimum angular velocity threshold for rotation (below this = stops) -->
+		<MinAngularVelocityThreshold>0.05</MinAngularVelocityThreshold>
+		<!-- Default mass for entities -->
+		<DefaultMass>1</DefaultMass>
+	</Physics>
+
+	<!-- ===== CELL TYPES ===== -->
+	<Cell>
+		<CellTypeConfig>
+			<!--water-->
+			<Id>0</Id>
+			<MaxHealth>0</MaxHealth>
+		</CellTypeConfig>
+		<CellTypeConfig>
+			<!--ice-->
+			<Id>1</Id>
+			<MaxHealth>100</MaxHealth>
+		</CellTypeConfig>
+	</Cell>
+</Config>

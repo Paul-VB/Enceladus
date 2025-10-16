@@ -15,7 +15,7 @@ namespace Enceladus.Core.World
     {
         public int Id { get; set; }
         public string SpritePath { get; set; }
-        public int MaxHealth { get; set; }
+        public int MaxHealth { get; set; } = 0;
         public bool HasCollision { get; set; }
     }
 }

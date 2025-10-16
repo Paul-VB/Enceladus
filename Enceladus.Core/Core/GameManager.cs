@@ -1,3 +1,4 @@
+using Enceladus.Core.Config;
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Rendering;
@@ -18,6 +19,7 @@ namespace Enceladus.Core
 
     public class GameManager : IGameManager
     {
+        private readonly IConfigService _configService;
         private readonly IWindowManager _windowManager;
         private readonly IEntityRegistry _entityRegistry;
         private readonly ISpriteService _spriteService;
@@ -31,9 +33,10 @@ namespace Enceladus.Core
 
         public bool IsRunning { get; private set; }
 
-        public GameManager(IWindowManager windowManager, IEntityRegistry entityRegistry, ISpriteService spriteService, IInputManager inputManager,
+        public GameManager(IConfigService configService, IWindowManager windowManager, IEntityRegistry entityRegistry, ISpriteService spriteService, IInputManager inputManager,
             ICameraManager cameraManager, IWorldService worldService, ICollisionService collisionService, IRenderingService renderingService)
         {
+            _configService = configService;
             _windowManager = windowManager;
             _entityRegistry = entityRegistry;
             _spriteService = spriteService;
@@ -57,7 +60,7 @@ namespace Enceladus.Core
 
         private void SetupEntities()
         {
-            _player = new Player(_inputManager, _spriteService) { Position = new Vector2(0, 0) };
+            _player = new Player(_inputManager, _spriteService, _configService) { Position = new Vector2(0, 0) };
             _entityRegistry.Register(_player);
 
             SpawnTestMonsters();
@@ -66,13 +69,13 @@ namespace Enceladus.Core
 
         private void SpawnTestMonsters()
         {
-            var triangle = new EvilBlueTriangle(_inputManager)
+            var triangle = new EvilBlueTriangle(_inputManager, _configService)
             {
                 Position = new Vector2(5, 5)
             };
             _entityRegistry.Register(triangle);
 
-            var pentagon = new MenacingRedPentagon
+            var pentagon = new MenacingRedPentagon(_configService)
             {
                 Position = new Vector2(-8, 3),
                 Velocity = new Vector2(-1, 2),
@@ -80,7 +83,7 @@ namespace Enceladus.Core
             };
             _entityRegistry.Register(pentagon);
 
-            var circle = new HorribleYellowCircle(_inputManager)
+            var circle = new HorribleYellowCircle(_inputManager, _configService)
             {
                 Position = new Vector2(0, -10)
             };

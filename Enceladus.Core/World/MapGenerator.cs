@@ -7,6 +7,12 @@ namespace Enceladus.Core.World
 
     public class MapGenerator : IMapGenerator
     {
+        private readonly ICellFactory _cellFactory;
+
+        public MapGenerator(ICellFactory cellFactory)
+        {
+            _cellFactory = cellFactory;
+        }
         public Map GenerateTestMap()
         {
             // 1000x1000 world = 62.5 chunks (round up to 63 chunks = 1008x1008 world units)
@@ -58,13 +64,7 @@ namespace Enceladus.Core.World
                     int worldX = chunkWorldX + localX;
                     int worldY = chunkWorldY + localY;
 
-                    var cell = new Cell
-                    {
-                        X = worldX,
-                        Y = worldY,
-                        CellType = CellTypes.Water,
-                        Health = CellTypes.Water.MaxHealth
-                    };
+                    var cell = _cellFactory.CreateCell(CellTypes.Water, worldX, worldY);
 
                     chunk.Cells.Add(cell);
                 }
@@ -90,9 +90,7 @@ namespace Enceladus.Core.World
 
                         if (cellIndex >= 0 && cellIndex < chunk.Cells.Count)
                         {
-                            var cell = chunk.Cells[cellIndex];
-                            cell.CellType = CellTypes.Ice;
-                            cell.Health = CellTypes.Ice.MaxHealth;
+                            var cell = _cellFactory.CreateCell(CellTypes.Ice, x, y);
                             chunk.Cells[cellIndex] = cell;
                         }
                     }

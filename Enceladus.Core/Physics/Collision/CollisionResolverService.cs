@@ -1,3 +1,4 @@
+using Enceladus.Core.Config;
 using Enceladus.Entities;
 using System.Numerics;
 
@@ -11,6 +12,12 @@ namespace Enceladus.Core.Physics.Collision
 
     public class CollisionResolverService : ICollisionResolverService
     {
+        private readonly IConfigService _configService;
+
+        public CollisionResolverService(IConfigService configService)
+        {
+            _configService = configService;
+        }
         public void ResolveCollision(EntityToCellCollisionResult collision)
         {
             collision.Entity.Position += collision.CollisionNormal * collision.PenetrationDepth;
@@ -18,7 +25,6 @@ namespace Enceladus.Core.Physics.Collision
             if (collision.Entity is IMoveable moveableEntity)
             {
                 moveableEntity.Velocity = Vector2.Zero;
-                //moveableEntity.AngularVelocity = 0f;
             }
         }
 
@@ -36,12 +42,12 @@ namespace Enceladus.Core.Physics.Collision
                 Vector2 relativeVelocity = moveable1.Velocity - moveable2.Velocity;
                 float velocityAlongNormal = Vector2.Dot(relativeVelocity, collision.CollisionNormal);
 
-                // Don't resolve if entities are moving apart
+                // Don't bounce if entities are moving apart
                 if (velocityAlongNormal > 0)
                     return;
 
-                // Calculate impulse (coefficient of restitution = 0.8 for some bounciness)
-                float restitution = 0.8f;
+                // Calculate bounce impulse
+                float restitution = _configService.Config.Physics.RestitutionCoefficient;
                 float impulseScalar = -(1 + restitution) * velocityAlongNormal;
                 impulseScalar /= (1 / moveable1.Mass + 1 / moveable2.Mass);
 

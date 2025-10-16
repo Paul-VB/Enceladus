@@ -17,4 +17,9 @@
     <Content Include="assets/**" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 
+  <ItemGroup>
+    <!-- Embed default config as resource -->
+    <EmbeddedResource Include="Config\ConfigDefault.xml" />
+  </ItemGroup>
+
 </Project>

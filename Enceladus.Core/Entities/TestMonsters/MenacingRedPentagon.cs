@@ -1,3 +1,4 @@
+using Enceladus.Core.Config;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Utils;
 using Raylib_cs;
@@ -9,7 +10,8 @@ namespace Enceladus.Entities.TestMonsters
     {
         public Hitbox Hitbox { get; set; }
 
-        public MenacingRedPentagon()
+        public MenacingRedPentagon(IConfigService configService)
+            : base(configService)
         {
             // 3x3 unit pentagon - regular pentagon centered at origin
             var vertices = new List<Vector2>();

@@ -1,5 +1,4 @@
-﻿using Enceladus.Core.Physics.Hitboxes;
-using Raylib_cs;
+﻿using Raylib_cs;
 using System.Numerics;
 
 namespace Enceladus.Entities

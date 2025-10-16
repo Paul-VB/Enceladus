@@ -1,3 +1,4 @@
+using Enceladus.Core.Config;
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Utils;
@@ -13,7 +14,8 @@ namespace Enceladus.Entities.TestMonsters
 
         private readonly float _thrust = 5000f;
 
-        public EvilBlueTriangle(IInputManager inputManager)
+        public EvilBlueTriangle(IInputManager inputManager, IConfigService configService)
+            : base(configService)
         {
             _inputManager = inputManager;
 
