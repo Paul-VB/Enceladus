@@ -8,7 +8,7 @@ using Enceladus.Core.Entities.TestMonsters;
 using Raylib_cs;
 using System.Numerics;
 
-namespace Enceladus.Core.Core
+namespace Enceladus.Core
 {
     public interface IGameManager
     {
