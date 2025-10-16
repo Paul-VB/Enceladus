@@ -97,6 +97,8 @@ namespace Enceladus.Core
                 float deltaTime = Raylib.GetFrameTime();
                 UpdateAll(deltaTime);
                 DrawAll();
+
+                _windowManager.SetTitle($"Enceladus - FPS: {_windowManager.GetFps()}");
             }
 
             Cleanup();
@@ -154,8 +156,8 @@ namespace Enceladus.Core
         {
             var map = _worldService.CurrentMap;
 
-            // Get all chunks (later: filter to only visible chunks)
-            var chunksToRender = map.Chunks.Values;
+            // Get only visible chunks for rendering
+            var chunksToRender = _cameraManager.GetVisibleChunks(map);
 
             foreach (var chunk in chunksToRender)
             {

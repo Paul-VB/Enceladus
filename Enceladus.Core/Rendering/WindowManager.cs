@@ -8,6 +8,8 @@ namespace Enceladus.Core.Rendering
         int Width { get; }
         int Height { get; }
         bool IsResized { get; }
+        void SetTitle(string title);
+        int GetFps();
     }
     public class WindowManager : IWindowManager
     {
@@ -26,5 +28,12 @@ namespace Enceladus.Core.Rendering
             Raylib.InitWindow(width ?? defaultWindowWidth, height ?? defaultWindowHeight, title);
             Raylib.SetTargetFPS(targetFps);
         }
+
+        public void SetTitle(string title)
+        {
+            Raylib.SetWindowTitle(title);
+        }
+
+        public int GetFps() => Raylib.GetFPS();
     }
 }
