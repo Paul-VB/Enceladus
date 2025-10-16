@@ -2,6 +2,7 @@ namespace Enceladus.Core.World
 {
     public static class ChunkMath
     {
+        //todo: debatable if we want this in config. its technically a magic number but i cannot see a benefit to changing this or tweaking it ever.
         public const int ChunkSize = 16;
 
         public static (int chunkX, int chunkY) WorldToChunkCoords(int worldX, int worldY)

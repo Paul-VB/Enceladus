@@ -18,6 +18,7 @@ namespace Enceladus.Core.Rendering
 
     public class CameraManager : ICameraManager
     {
+        //todo: put this in the config maybe?
         private const float normalZoom = 16f;
 
         private readonly IWindowManager _windowManager;
@@ -72,6 +73,7 @@ namespace Enceladus.Core.Rendering
 
         public List<MapChunk> GetVisibleChunks(Map map)
         {
+            //todo: invesigate if this code can be reused with the AABB collision code that finds chunks that overlap the AABB rect? it seems similar
             // Calculate camera's visible rectangle in world space
             float screenWidth = _windowManager.Width / _camera.Zoom;
             float screenHeight = _windowManager.Height / _camera.Zoom;

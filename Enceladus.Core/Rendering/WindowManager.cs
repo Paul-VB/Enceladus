@@ -13,6 +13,8 @@ namespace Enceladus.Core.Rendering
     }
     public class WindowManager : IWindowManager
     {
+        //todo. make default window dims be configurable, and make target fps also configurable.
+        //todo: (stretch goal) also i know we are currently putting the fps in the title. i think having a debug overlay that shows the fps (like how minecraft has the f3 overlay) would be cool. thats a strentch goal
         const int defaultWindowWidth = 1920;
         const int defaultWindowHeight = 1080;
         const string title = "Enceladus";

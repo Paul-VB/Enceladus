@@ -35,6 +35,7 @@ namespace Enceladus.Core.Physics.Collision
             collision.Entity.Position += collision.CollisionNormal * halfDepth;
             collision.OtherEntity.Position -= collision.CollisionNormal * halfDepth;
 
+            //todo: if only one entity is movable 
             // 2. Velocity bounce (mass-based impulse) - only if both are moveable
             if (collision.Entity is IMoveable moveable1 && collision.OtherEntity is IMoveable moveable2)
             {

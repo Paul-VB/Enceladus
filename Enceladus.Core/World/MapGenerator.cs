@@ -5,6 +5,7 @@ namespace Enceladus.Core.World
         Map GenerateTestMap();
     }
 
+    //todo: stretch goal, create true proc world gen using seeds and such. id like to learn more about how world gen actually works. for now, crappy random world gen works for testing i suppose
     public class MapGenerator : IMapGenerator
     {
         private readonly ICellFactory _cellFactory;

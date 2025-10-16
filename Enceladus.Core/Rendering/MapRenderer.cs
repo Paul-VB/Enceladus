@@ -67,6 +67,7 @@ namespace Enceladus.Core.Rendering
             foreach (var (spritePath, cells) in cellsBySprite)
             {
                 // Skip water cells
+                //todo: if we are skipping water cells.... maybe we just remove the water cell fully? and treat cell id 0 as nothing. similar to how minecraft does it?
                 if (spritePath == Sprites.Water)
                     continue;
 

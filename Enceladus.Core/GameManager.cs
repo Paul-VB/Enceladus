@@ -106,6 +106,7 @@ namespace Enceladus.Core
             Cleanup();
         }
 
+        //todo: like how we made the _renderingService... maybe we can make a _physicsService too?
         private void UpdateAll(float deltaTime)
         {
             foreach (var entity in _entityRegistry.Entities.Values)

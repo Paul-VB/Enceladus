@@ -16,6 +16,7 @@ class Program
         gameManager.Initialize();
     }
 
+    //todo: maybe pull this out into a DI setter-upper? but we need a good name for it. what do devs normally call the class that does DI?
     private static ServiceProvider ConfigureServices()
     {
         var services = new ServiceCollection();

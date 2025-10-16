@@ -64,6 +64,9 @@ namespace Enceladus.Core.Physics.Collision
             return collisionResult;
         }
 
+        //todo: we need some way of supporting concave polygons too. this would take care of one of the critical things on the main todo from claudeCode. 
+        //whats an effiicent way to do this? split up the polygon into the smallest number of convex polygons? maybe we could add a function somewhere to take in a polygon, and if its already convex return it. if its concave, do math and eventually return a list of convex polygons.
+        //but also wait... this seems like expensive math to do each frame. i think if we have a hitbox that is concave we can compute the convex component hotboxes once and save it to the entity. maybe the polygon hitbox should be a list<ConcavePolygon> and we make a new class ConcavePolygon : List<Vector2> 
         private CollisionInfo CheckSatCollision(List<Vector2> vertices1, List<Vector2> vertices2, List<Vector2> axes)
         {
             var minPenetration = float.MaxValue;
@@ -75,6 +78,7 @@ namespace Enceladus.Core.Physics.Collision
 
                 if (penetration == 0)
                 {
+                    //found at least one axis where we can find a gap. the shapes cannot be colliding
                     return new CollisionInfo
                     {
                         PenetrationDepth = 0,
@@ -91,6 +95,9 @@ namespace Enceladus.Core.Physics.Collision
             }
 
             // All axes overlap - collision detected
+
+            //todo: explain why we need to make sure the normal is from cell to entity? this function gets used by entity to entity collisions so logic that pertains to cells dosnt go here
+            //todo: also explain why we need the center of vertecies?
             // Ensure normal points from shape2 to shape1 (from cell to entity)
             var centerDiff = GetCenterOfVertices(vertices1) - GetCenterOfVertices(vertices2);
             if (Vector2.Dot(minAxis, centerDiff) < 0)

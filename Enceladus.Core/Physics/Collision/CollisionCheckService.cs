@@ -11,6 +11,7 @@ namespace Enceladus.Core.Physics.Collision
         List<EntityToEntityCollisionResult> CheckEntitiesToEntities(List<ICollidableEntity> entities);
     }
 
+    //todo: maybe rename this to CollisionChecker? i feel like if something has the honor of being a service, then it should be directly used by game manager. not a code change just a style idea. this should apply to all files that are *Service or *Manager
     public class CollisionCheckService : ICollisionCheckService
     {
         private readonly IAabbCollisionDetector _aabbCollisionDetector;
@@ -25,7 +26,7 @@ namespace Enceladus.Core.Physics.Collision
         public List<EntityToCellCollisionResult> CheckEntitiesToCells(List<ICollidableEntity> entities, Map map)
         {
             var collisions = new ConcurrentBag<EntityToCellCollisionResult>();
-
+            //todo: stretch goal, can we leverage GPU for this?
             Parallel.ForEach(entities, entity =>
             {
                 var entityCollisions = CheckEntityToCells(entity, map);
@@ -47,6 +48,7 @@ namespace Enceladus.Core.Physics.Collision
             if (cellCollisionCandiates.Count == 0) return collisions;
 
             //temp placeholder
+            //todo: actually implement narrow circle to anything collision
             var placeHolderCircleAlgo = (ICollidableEntity e, Cell c) =>
             {
                 return new EntityToCellCollisionResult
@@ -89,6 +91,8 @@ namespace Enceladus.Core.Physics.Collision
                     // Broad phase: AABB check
                     if (!_aabbCollisionDetector.CheckPotentialCollision(entity1, entity2))
                         continue;
+
+                    //todo: also implement circle to anything for e to e collisions
 
                     // Narrow phase: For now, only check polygon-to-polygon collisions
                     if ((entity1.Hitbox is RectHitbox || entity1.Hitbox is PolygonHitbox) &&

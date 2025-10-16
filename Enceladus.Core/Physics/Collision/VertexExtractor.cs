@@ -69,6 +69,7 @@ namespace Enceladus.Core.Physics.Collision
             foreach (var vertex in localVertices)
             {
                 // Rotate vertex
+                //todo: is this the only place we rotate vertecies? should we pull this out?
                 var rotated = new Vector2(
                     vertex.X * cos - vertex.Y * sin,
                     vertex.X * sin + vertex.Y * cos

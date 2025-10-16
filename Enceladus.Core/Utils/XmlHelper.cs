@@ -68,6 +68,7 @@ namespace Enceladus.Core.Utils
 
 
         //left join
+        //todo: maybe we make this such that it does modify the first xmlDoc and we expect the caller to pass in a clone first? whats cleaner? lets discuss
         public static XDocument Merge(XDocument baseDoc, XDocument overrideDoc)
         {
             var mergedDoc = new XDocument(baseDoc);

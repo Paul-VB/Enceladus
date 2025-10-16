@@ -41,6 +41,7 @@ namespace Enceladus.Core.Physics.Collision
 
         private List<Vector2> GetPolygonAxes(List<Vector2> vertices)
         {
+            //todo: verify this gets the perpendicular axis between the final vertex and the firts vertex. it seems it does not do this at first glance. we need a test for this!
             // Get perpendicular axis for each edge
             var axes = new List<Vector2>();
 

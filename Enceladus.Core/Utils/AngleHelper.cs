@@ -36,20 +36,8 @@ namespace Enceladus.Utils
             return ConvertToSignedAngle(result);
         }
 
-        /// <summary>
-        /// Converts degrees to radians.
-        /// </summary>
-        public static float DegToRad(float degrees)
-        {
-            return degrees * (MathF.PI / 180f);
-        }
+        public static float DegToRad(float degrees) => degrees * (MathF.PI / 180f);
 
-        /// <summary>
-        /// Converts radians to degrees.
-        /// </summary>
-        public static float RadToDeg(float radians)
-        {
-            return radians * (180f / MathF.PI);
-        }
+        public static float RadToDeg(float radians) => radians * (180f / MathF.PI);
     }
 }
