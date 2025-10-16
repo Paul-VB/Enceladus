@@ -1,4 +1,5 @@
 
+using Enceladus.Core.Tests.Helpers;
 using Enceladus.Core.World;
 
 namespace Enceladus.Core.Tests.World
@@ -67,7 +68,7 @@ namespace Enceladus.Core.Tests.World
         public void GetChunksInBounds_ExactChunkBoundary_ReturnsSingleChunk()
         {
             // Arrange - Map with single chunk at (0, 0)
-            var map = CreateMapWithChunks((0, 0));
+            var map = MapHelpers.CreateMapWithChunks((0, 0));
             var bounds = new Raylib_cs.Rectangle(0, 0, 16, 16); // Exact chunk size
 
             // Act
@@ -82,7 +83,7 @@ namespace Enceladus.Core.Tests.World
         public void GetChunksInBounds_PartialOverlapWithMultipleChunks_ReturnsAllOverlappingChunks()
         {
             // Arrange - Map with 4 chunks in 2x2 grid
-            var map = CreateMapWithChunks((0, 0), (1, 0), (0, 1), (1, 1));
+            var map = MapHelpers.CreateMapWithChunks((0, 0), (1, 0), (0, 1), (1, 1));
             var bounds = new Raylib_cs.Rectangle(8, 8, 16, 16); // Overlaps all 4 chunks
 
             // Act
@@ -100,7 +101,7 @@ namespace Enceladus.Core.Tests.World
         public void GetChunksInBounds_SlightOverlapIntoNextChunk_IncludesNextChunk()
         {
             // Arrange - This tests the Floor/Ceiling bug fix
-            var map = CreateMapWithChunks((0, 0), (1, 0));
+            var map = MapHelpers.CreateMapWithChunks((0, 0), (1, 0));
             var bounds = new Raylib_cs.Rectangle(0, 0, 16.1f, 16); // Extends 0.1 into chunk (1, 0)
 
             // Act
@@ -116,7 +117,7 @@ namespace Enceladus.Core.Tests.World
         public void GetChunksInBounds_NoOverlappingChunks_ReturnsEmpty()
         {
             // Arrange
-            var map = CreateMapWithChunks((0, 0), (1, 1));
+            var map = MapHelpers.CreateMapWithChunks((0, 0), (1, 1));
             var bounds = new Raylib_cs.Rectangle(100, 100, 10, 10); // Far away from any chunks
 
             // Act
@@ -130,7 +131,7 @@ namespace Enceladus.Core.Tests.World
         public void GetChunksInBounds_NegativeCoordinates_WorksCorrectly()
         {
             // Arrange
-            var map = CreateMapWithChunks((-1, -1), (0, 0));
+            var map = MapHelpers.CreateMapWithChunks((-1, -1), (0, 0));
             var bounds = new Raylib_cs.Rectangle(-16, -16, 32, 32); // Covers both chunks
 
             // Act
@@ -148,7 +149,7 @@ namespace Enceladus.Core.Tests.World
             // Arrange - This tests the Floor bug fix for negative coords
             // Without Floor, (int)(-0.5) = 0 (truncates toward zero), missing chunk -1
             // With Floor, Floor(-0.5) = -1 (correct)
-            var map = CreateMapWithChunks((-1, -1), (0, -1), (-1, 0), (0, 0));
+            var map = MapHelpers.CreateMapWithChunks((-1, -1), (0, -1), (-1, 0), (0, 0));
             var bounds = new Raylib_cs.Rectangle(-0.5f, -0.5f, 1f, 1f); // Small rect from (-0.5, -0.5) to (0.5, 0.5)
 
             // Act
@@ -169,7 +170,7 @@ namespace Enceladus.Core.Tests.World
             // Rectangle from (0, 0) with width 20.1 extends to x=20.1
             // Without Ceiling, (int)(20.1) = 20, WorldToChunkCoords(20) = chunk 1
             // But we need chunk containing x=20.1, which requires Ceiling(20.1) = 21
-            var map = CreateMapWithChunks((0, 0), (1, 0), (2, 0));
+            var map = MapHelpers.CreateMapWithChunks((0, 0), (1, 0), (2, 0));
             var bounds = new Raylib_cs.Rectangle(0, 0, 20.1f, 16); // Extends 0.1 into chunk 2 (at x=32)
 
             // Act
@@ -186,7 +187,7 @@ namespace Enceladus.Core.Tests.World
         public void GetCellsInBounds_ReturnsOnlyCellsInBounds()
         {
             // Arrange - Create chunk with cells
-            var map = CreateMapWithCells((0, 0),
+            var map = MapHelpers.CreateMapWithCells(
                 (0, 0), (1, 0), (2, 0), // First row
                 (0, 1), (1, 1), (2, 1)  // Second row
             );
@@ -208,7 +209,7 @@ namespace Enceladus.Core.Tests.World
         public void GetCellsInBounds_PartialCellOverlap_IncludesCell()
         {
             // Arrange
-            var map = CreateMapWithCells((0, 0), (0, 0), (1, 0));
+            var map = MapHelpers.CreateMapWithCells((0, 0), (1, 0));
             var bounds = new Raylib_cs.Rectangle(0, 0, 1.1f, 1); // Extends 0.1 into cell (1, 0)
 
             // Act
@@ -224,7 +225,7 @@ namespace Enceladus.Core.Tests.World
         public void GetCellsInBounds_PartialCellOverlap_NegativeCoords_IncludesCell()
         {
             // Arrange
-            var map = CreateMapWithCells((-1, -1), (-1, -1), (0, -1), (-1, 0));
+            var map = MapHelpers.CreateMapWithCells((-1, -1), (0, -1), (-1, 0));
             var bounds = new Raylib_cs.Rectangle(-1, -1, 1.1f, 1.1f); // Extends slightly into positive cells
 
             // Act
@@ -237,35 +238,5 @@ namespace Enceladus.Core.Tests.World
             Assert.Contains(result, c => c.X == -1 && c.Y == 0);
         }
 
-        // Helper methods
-        private Map CreateMapWithChunks(params (int x, int y)[] chunkCoords)
-        {
-            var map = new Map();
-            foreach (var (x, y) in chunkCoords)
-            {
-                var chunk = new MapChunk(x, y);
-                map.Chunks[(x, y)] = chunk;
-            }
-            return map;
-        }
-
-        private Map CreateMapWithCells((int chunkX, int chunkY) chunkCoord, params (int x, int y)[] cellCoords)
-        {
-            var map = new Map();
-            var chunk = new MapChunk(chunkCoord.chunkX, chunkCoord.chunkY);
-
-            foreach (var (x, y) in cellCoords)
-            {
-                chunk.Cells.Add(new Cell
-                {
-                    X = x,
-                    Y = y,
-                    CellType = CellTypes.Ice // Ice has collision
-                });
-            }
-
-            map.Chunks[chunkCoord] = chunk;
-            return map;
-        }
     }
 }
