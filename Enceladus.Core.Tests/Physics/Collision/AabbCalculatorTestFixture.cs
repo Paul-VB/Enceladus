@@ -131,32 +131,5 @@ namespace Enceladus.Core.Tests.Physics.Collision
             Assert.Equal(expectedSize, result.Width, precision: 2);
             Assert.Equal(expectedSize, result.Height, precision: 2);
         }
-
-        // Helper class for testing
-        private class TestCollidableEntity : ICollidableEntity
-        {
-            public TestCollidableEntity(Hitbox hitbox, Vector2 position, float rotation)
-            {
-                Hitbox = hitbox;
-                Position = position;
-                Rotation = rotation;
-            }
-
-            public Hitbox Hitbox { get; set; }
-            public Vector2 Position { get; set; }
-            public float Rotation { get; set; }
-            public Guid Guid { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-            public Texture2D Sprite { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-            public void Draw(Camera2D camera)
-            {
-                throw new NotImplementedException();
-            }
-
-            public void Update(float deltaTime)
-            {
-                throw new NotImplementedException();
-            }
-        }
     }
 }
