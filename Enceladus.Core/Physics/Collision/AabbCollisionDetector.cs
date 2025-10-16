@@ -1,5 +1,6 @@
 using Enceladus.Core.Entities;
 using Enceladus.Core.World;
+using Raylib_cs;
 
 
 namespace Enceladus.Core.Physics.Collision
@@ -22,23 +23,16 @@ namespace Enceladus.Core.Physics.Collision
             var aabbRect = _aabbCalculator.CalculateAabb(entity);
 
             //todo: explain why we loop on each chunk instead of looping on cells?
-            // Find chunk range that overlaps this AABB
-            var (minChunkX, minChunkY) = ChunkMath.WorldToChunkCoords(aabbRect.MinX, aabbRect.MinY);
-            var (maxChunkX, maxChunkY) = ChunkMath.WorldToChunkCoords(aabbRect.MaxX, aabbRect.MaxY);
+            // Find all chunks that overlap this AABB
+            var overlappingChunks = ChunkMath.GetChunksInBounds(map, aabbRect.MinX, aabbRect.MaxX, aabbRect.MinY, aabbRect.MaxY);
 
-            for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++)
+            foreach (var chunk in overlappingChunks)
             {
-                for (int chunkY = minChunkY; chunkY <= maxChunkY; chunkY++)
+                foreach (var cell in chunk.Cells)
                 {
-                    if (map.Chunks.TryGetValue((chunkX, chunkY), out var chunk))
+                    if (cell.HasCollision && CellCollidesWithAabbRect(cell, aabbRect))
                     {
-                        foreach (var cell in chunk.Cells)
-                        {
-                            if (cell.HasCollision && CellCollidesWithAabbRect(cell, aabbRect))
-                            {
-                                candidates.Add(cell);
-                            }
-                        }
+                        candidates.Add(cell);
                     }
                 }
             }
@@ -48,10 +42,15 @@ namespace Enceladus.Core.Physics.Collision
 
         private bool CellCollidesWithAabbRect(Cell cell, AabbRectangle aabbRect)
         {
-            //todo: this seems very similar to the code in check potential collisions. DRY, pull it out into a helpper func? also this code here
-            //seems wrong. if these are in world coords (1 cell = 1.0 world units), then dont we need to do cell.X - 1 >= aabbRect.minX??
-            return cell.X >= aabbRect.MinX && cell.X <= aabbRect.MaxX &&
-                cell.Y >= aabbRect.MinY && cell.Y <= aabbRect.MaxY;
+            // Cell is a 1x1 square: [cell.X, cell.X+1] x [cell.Y, cell.Y+1]
+            // Create AABB for the cell and check overlap
+            var cellRect = new AabbRectangle(new Rectangle(
+                cell.X,     // x
+                cell.Y,     // y
+                1,          // width
+                1           // height
+            ));
+            return DoAabbsOverlap(cellRect, aabbRect);
         }
 
         public bool CheckPotentialCollision(ICollidableEntity entity1, ICollidableEntity entity2)
@@ -59,10 +58,13 @@ namespace Enceladus.Core.Physics.Collision
             var aabb1 = _aabbCalculator.CalculateAabb(entity1);
             var aabb2 = _aabbCalculator.CalculateAabb(entity2);
 
-            //todo: maybe combine this with the above logic?
-            // Check if AABBs overlap
-            return aabb1.MinX <= aabb2.MaxX && aabb1.MaxX >= aabb2.MinX &&
-                   aabb1.MinY <= aabb2.MaxY && aabb1.MaxY >= aabb2.MinY;
+            return DoAabbsOverlap(aabb1, aabb2);
+        }
+
+        private bool DoAabbsOverlap(AabbRectangle rect1, AabbRectangle rect2)
+        {
+            return rect1.MinX <= rect2.MaxX && rect1.MaxX >= rect2.MinX &&
+                   rect1.MinY <= rect2.MaxY && rect1.MaxY >= rect2.MinY;
         }
     }
 }

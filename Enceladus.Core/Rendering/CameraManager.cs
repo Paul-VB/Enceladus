@@ -73,35 +73,17 @@ namespace Enceladus.Core.Rendering
 
         public List<MapChunk> GetVisibleChunks(Map map)
         {
-            //todo: invesigate if this code can be reused with the AABB collision code that finds chunks that overlap the AABB rect? it seems similar
             // Calculate camera's visible rectangle in world space
             float screenWidth = _windowManager.Width / _camera.Zoom;
             float screenHeight = _windowManager.Height / _camera.Zoom;
 
-            float minX = _camera.Target.X - screenWidth / 2f;
-            float maxX = _camera.Target.X + screenWidth / 2f;
-            float minY = _camera.Target.Y - screenHeight / 2f;
-            float maxY = _camera.Target.Y + screenHeight / 2f;
+            // Add 1 padding for safety to avoid pop-in at screen edges
+            float minX = (_camera.Target.X - screenWidth / 2f) - 1;
+            float maxX = (_camera.Target.X + screenWidth / 2f) + 1;
+            float minY = (_camera.Target.Y - screenHeight / 2f) - 1 ;
+            float maxY = (_camera.Target.Y + screenHeight / 2f) + 1 ;
 
-            // Convert to chunk coordinates (with padding for safety)
-            var (minChunkX, minChunkY) = ChunkMath.WorldToChunkCoords((int)minX - 1, (int)minY - 1);
-            var (maxChunkX, maxChunkY) = ChunkMath.WorldToChunkCoords((int)maxX + 1, (int)maxY + 1);
-
-            // Collect visible chunks
-            var visibleChunks = new List<MapChunk>();
-
-            for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++)
-            {
-                for (int chunkY = minChunkY; chunkY <= maxChunkY; chunkY++)
-                {
-                    if (map.Chunks.TryGetValue((chunkX, chunkY), out var chunk))
-                    {
-                        visibleChunks.Add(chunk);
-                    }
-                }
-            }
-
-            return visibleChunks;
+            return ChunkMath.GetChunksInBounds(map, minX, maxX , minY, maxY);
         }
     }
 }

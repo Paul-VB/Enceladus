@@ -25,5 +25,31 @@ namespace Enceladus.Core.World
             int localY = worldY - chunkY * ChunkSize;
             return (localX, localY);
         }
+
+        /// <summary>
+        /// Returns all chunks that overlap the given rectangular bounds in world space.
+        /// </summary>
+        public static List<MapChunk> GetChunksInBounds(Map map, float minX, float maxX, float minY, float maxY)
+        {
+            var chunks = new List<MapChunk>();
+
+            // Convert world bounds to chunk coordinates
+            var (minChunkX, minChunkY) = WorldToChunkCoords((int)minX, (int)minY);
+            var (maxChunkX, maxChunkY) = WorldToChunkCoords((int)maxX, (int)maxY);
+
+            // Iterate through chunk range and collect existing chunks
+            for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++)
+            {
+                for (int chunkY = minChunkY; chunkY <= maxChunkY; chunkY++)
+                {
+                    if (map.Chunks.TryGetValue((chunkX, chunkY), out var chunk))
+                    {
+                        chunks.Add(chunk);
+                    }
+                }
+            }
+
+            return chunks;
+        }
     }
 }
