@@ -1,4 +1,5 @@
-﻿using Enceladus.Core.Entities;
+﻿using Enceladus.Core.Config;
+using Enceladus.Core.Entities;
 using Enceladus.Core.World;
 using Raylib_cs;
 using System.Numerics;
@@ -18,18 +19,17 @@ namespace Enceladus.Core.Rendering
 
     public class CameraManager : ICameraManager
     {
-        //todo: put this in the config maybe?
-        private const float normalZoom = 16f;
-
         private readonly IWindowManager _windowManager;
+        private readonly IConfigService _configService;
         private Entity? _trackedEntity;
 
         private Camera2D _camera;
         public Camera2D Camera => _camera;
 
-        public CameraManager(IWindowManager windowManager)
+        public CameraManager(IWindowManager windowManager, IConfigService configService)
         {
             _windowManager = windowManager;
+            _configService = configService;
             InitCamera();
         }
 
@@ -38,7 +38,7 @@ namespace Enceladus.Core.Rendering
             _camera = new Camera2D()
             {
                 Rotation = 0f,
-                Zoom = normalZoom,
+                Zoom = _configService.Config.Display.CameraZoom,
             };
             CenterCamera();
         }

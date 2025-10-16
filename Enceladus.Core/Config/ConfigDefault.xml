@@ -34,6 +34,17 @@
 		<DefaultMass>1</DefaultMass>
 	</Physics>
 
+	<!-- ===== DISPLAY / RENDERING ===== -->
+	<Display>
+		<!-- Default window dimensions (resizable at runtime) -->
+		<DefaultWindowWidth>1920</DefaultWindowWidth>
+		<DefaultWindowHeight>1080</DefaultWindowHeight>
+		<!-- Target frames per second -->
+		<TargetFps>60</TargetFps>
+		<!-- Camera zoom level (higher = more zoomed in) -->
+		<CameraZoom>16</CameraZoom>
+	</Display>
+
 	<!-- ===== CELL TYPES ===== -->
 	<Cell>
 		<CellTypeConfig>

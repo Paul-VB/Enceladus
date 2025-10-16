@@ -24,6 +24,9 @@ namespace Enceladus.Core.Config
         public void Load()
         {
             var defaultXml = LoadDefaultXml();
+#if DEBUG
+            _config = XmlHelper.Deserialize<Config>(defaultXml);
+#else
 
             //if no config file found, use defaults and write out a default file
             if (!File.Exists(_configPath))
@@ -45,6 +48,7 @@ namespace Enceladus.Core.Config
                 Console.WriteLine($"Warning: Failed to load config ({ex.Message}). Using defaults.");
                 _config = XmlHelper.Deserialize<Config>(defaultXml);
             }
+#endif
         }
 
         private XDocument LoadDefaultXml()

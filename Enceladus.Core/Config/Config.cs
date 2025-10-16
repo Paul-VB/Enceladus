@@ -4,6 +4,7 @@ namespace Enceladus.Core.Config
     {
         public PlayerConfig Player { get; set; }
         public PhysicsConfig Physics { get; set; }
+        public DisplayConfig Display { get; set; }
         public List<CellTypeConfig> Cell { get; set; } = [];
     }
 
@@ -35,5 +36,13 @@ namespace Enceladus.Core.Config
     {
         public int Id { get; set; }
         public int MaxHealth { get; set; }
+    }
+
+    public class DisplayConfig
+    {
+        public int DefaultWindowWidth { get; set; }
+        public int DefaultWindowHeight { get; set; }
+        public int TargetFps { get; set; }
+        public float CameraZoom { get; set; }
     }
 }
