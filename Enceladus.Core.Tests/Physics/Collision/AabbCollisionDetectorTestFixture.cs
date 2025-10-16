@@ -11,17 +11,17 @@ namespace Enceladus.Core.Tests.Physics.Collision
     public class AabbCollisionDetectorTestFixture
     {
         private readonly IAabbCollisionDetector _aabbCollisionDetector;
-        private readonly Mock<IAabbCalculator> _mockAabbCalculator;
+        private readonly Mock<IAabbCalculator> _aabbCalculator;
 
         public AabbCollisionDetectorTestFixture()
         {
-            _mockAabbCalculator = new Mock<IAabbCalculator>();
-            _aabbCollisionDetector = new AabbCollisionDetector(_mockAabbCalculator.Object);
+            _aabbCalculator = new Mock<IAabbCalculator>();
+            _aabbCollisionDetector = new AabbCollisionDetector(_aabbCalculator.Object);
         }
 
         private void GivenEntityHasCalculatedAabb(ICollidableEntity entity, Rectangle aabb)
         {
-            _mockAabbCalculator
+            _aabbCalculator
                 .Setup(calc => calc.CalculateAabb(entity))
                 .Returns(aabb);
         }
