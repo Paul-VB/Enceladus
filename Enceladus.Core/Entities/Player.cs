@@ -5,7 +5,7 @@ using Enceladus.Core.Rendering;
 using Enceladus.Utils;
 using System.Numerics;
 
-namespace Enceladus.Entities
+namespace Enceladus.Core.Entities
 {
     public interface IPlayer
     {

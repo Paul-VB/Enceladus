@@ -2,7 +2,7 @@ using Enceladus.Core.Config;
 using Enceladus.Utils;
 using System.Numerics;
 
-namespace Enceladus.Entities
+namespace Enceladus.Core.Entities
 {
     public interface IMoveable
     {

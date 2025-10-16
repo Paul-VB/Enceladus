@@ -1,4 +1,4 @@
-﻿using Enceladus.Entities;
+﻿using Enceladus.Core.Entities;
 
 namespace Enceladus.Core
 {

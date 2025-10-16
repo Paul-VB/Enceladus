@@ -1,6 +1,6 @@
 ﻿using Enceladus.Core.Physics.Hitboxes;
 
-namespace Enceladus.Entities
+namespace Enceladus.Core.Entities
 {
     public interface ICollidableEntity : IEntity
     {

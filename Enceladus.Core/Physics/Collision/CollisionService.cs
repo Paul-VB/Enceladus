@@ -1,5 +1,5 @@
+using Enceladus.Core.Entities;
 using Enceladus.Core.World;
-using Enceladus.Entities;
 
 namespace Enceladus.Core.Physics.Collision
 {

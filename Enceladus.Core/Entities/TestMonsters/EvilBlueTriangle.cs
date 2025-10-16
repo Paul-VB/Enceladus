@@ -5,7 +5,7 @@ using Enceladus.Utils;
 using Raylib_cs;
 using System.Numerics;
 
-namespace Enceladus.Entities.TestMonsters
+namespace Enceladus.Core.Entities.TestMonsters
 {
     public class EvilBlueTriangle : MoveableEntity, ICollidableEntity
     {

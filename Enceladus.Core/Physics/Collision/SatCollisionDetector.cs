@@ -1,6 +1,6 @@
+using Enceladus.Core.Entities;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.World;
-using Enceladus.Entities;
 using Raylib_cs;
 using System.Numerics;
 

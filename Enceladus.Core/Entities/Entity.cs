@@ -1,7 +1,7 @@
 ﻿using Raylib_cs;
 using System.Numerics;
 
-namespace Enceladus.Entities
+namespace Enceladus.Core.Entities
 {
     public interface IEntity
     {

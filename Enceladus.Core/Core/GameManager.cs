@@ -1,10 +1,10 @@
 using Enceladus.Core.Config;
+using Enceladus.Core.Entities;
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.World;
-using Enceladus.Entities;
-using Enceladus.Entities.TestMonsters;
+using Enceladus.Core.Entities.TestMonsters;
 using Raylib_cs;
 using System.Numerics;
 

@@ -1,4 +1,4 @@
-using Enceladus.Entities;
+using Enceladus.Core.Entities;
 using Raylib_cs;
 
 namespace Enceladus.Core.Rendering

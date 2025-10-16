@@ -1,6 +1,6 @@
+using Enceladus.Core.Entities;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.World;
-using Enceladus.Entities;
 using System.Collections.Concurrent;
 
 namespace Enceladus.Core.Physics.Collision
