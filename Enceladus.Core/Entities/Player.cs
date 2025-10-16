@@ -18,8 +18,8 @@ namespace Enceladus.Core.Entities
         public Hitbox Hitbox { get; set; }
 
         // Pixel coordinates of submarine hull (from paint.net)
-        private static readonly Vector2[] _pixelVertices = new[]
-        {
+        private static readonly Vector2[] _pixelVertices =
+        [
             new Vector2(111, 0),
             new Vector2(111, 9),
             new Vector2(124, 20),
@@ -31,7 +31,7 @@ namespace Enceladus.Core.Entities
             new Vector2(12, 56),
             new Vector2(12, 8),
             new Vector2(52, 0)
-        };
+        ];
 
         public Player(IInputManager inputManager, ISpriteService spriteService, IConfigService configService)
             : base(configService)
@@ -51,11 +51,11 @@ namespace Enceladus.Core.Entities
 
         public override void Update(float deltaTime)
         {
-            handleMovementInput(deltaTime);
+            HandleMovementInput(deltaTime);
             base.Update(deltaTime);
         }
 
-        private void handleMovementInput(float deltaTime)
+        private void HandleMovementInput(float deltaTime)
         {
             var config = _configService.Config.Player;
             var movementInput = _inputManager.GetMovementInput();

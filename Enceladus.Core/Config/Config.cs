@@ -4,7 +4,7 @@ namespace Enceladus.Core.Config
     {
         public PlayerConfig Player { get; set; }
         public PhysicsConfig Physics { get; set; }
-        public List<CellTypeConfig> Cell { get; set; } = new();
+        public List<CellTypeConfig> Cell { get; set; } = [];
     }
 
     public class PlayerConfig

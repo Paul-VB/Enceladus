@@ -1,5 +1,6 @@
 ﻿using Enceladus.Core;
 using Enceladus.Core.Config;
+using Enceladus.Core.Core;
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Rendering;

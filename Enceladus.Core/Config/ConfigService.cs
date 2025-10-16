@@ -1,6 +1,5 @@
 using Enceladus.Core.Utils;
 using System.Xml.Linq;
-using System.Xml.Serialization;
 
 namespace Enceladus.Core.Config
 {
@@ -14,7 +13,7 @@ namespace Enceladus.Core.Config
         private readonly string _configPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Config.xml");
         private readonly string _defaultConfigPath = "Enceladus.Core.Config.ConfigDefault.xml";
 
-        private Config _config = new();
+        private Config _config;
         public Config Config => _config;
 
         public ConfigService()

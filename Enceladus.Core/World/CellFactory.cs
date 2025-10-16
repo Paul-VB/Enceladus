@@ -10,7 +10,7 @@ namespace Enceladus.Core.World
 	public class CellFactory : ICellFactory
 	{
 		private readonly IConfigService _configService;
-		private Lazy<Dictionary<int, CellTypeConfig>> _cellTypeConfigs;
+		private Lazy<Dictionary<int, CellTypeConfig>> _cellTypeConfigs = new();
 
         public CellFactory(IConfigService configService)
 		{

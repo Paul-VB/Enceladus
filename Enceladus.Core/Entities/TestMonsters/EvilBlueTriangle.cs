@@ -22,9 +22,9 @@ namespace Enceladus.Core.Entities.TestMonsters
             // 3x3 unit triangle - equilateral triangle centered at origin
             var vertices = new List<Vector2>
             {
-                new Vector2(0f, -1.5f),      // Top point
-                new Vector2(-1.5f, 1.5f),    // Bottom left
-                new Vector2(1.5f, 1.5f)      // Bottom right
+                new(0f, -1.5f),      // Top point
+                new(-1.5f, 1.5f),    // Bottom left
+                new(1.5f, 1.5f)      // Bottom right
             };
 
             Hitbox = new PolygonHitbox(vertices);
