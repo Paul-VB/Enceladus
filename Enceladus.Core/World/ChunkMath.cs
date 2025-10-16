@@ -1,3 +1,6 @@
+using Enceladus.Core.Utils;
+using Raylib_cs;
+
 namespace Enceladus.Core.World
 {
     public static class ChunkMath
@@ -28,28 +31,52 @@ namespace Enceladus.Core.World
 
         /// <summary>
         /// Returns all chunks that overlap the given rectangular bounds in world space.
+        /// Uses lazy evaluation - chunks are yielded as they're found.
         /// </summary>
-        public static List<MapChunk> GetChunksInBounds(Map map, float minX, float maxX, float minY, float maxY)
+        public static IEnumerable<MapChunk> GetChunksInBounds(Map map, Rectangle bounds)
         {
-            var chunks = new List<MapChunk>();
+            float minX = bounds.X;
+            float maxX = bounds.X + bounds.Width;
+            float minY = bounds.Y;
+            float maxY = bounds.Y + bounds.Height;
 
-            // Convert world bounds to chunk coordinates
-            var (minChunkX, minChunkY) = WorldToChunkCoords((int)minX, (int)minY);
-            var (maxChunkX, maxChunkY) = WorldToChunkCoords((int)maxX, (int)maxY);
+            var (minChunkX, minChunkY) = WorldToChunkCoords((int)MathF.Floor(minX), (int)MathF.Floor(minY));
+            var (maxChunkX, maxChunkY) = WorldToChunkCoords((int)MathF.Ceiling(maxX), (int)MathF.Ceiling(maxY));
 
-            // Iterate through chunk range and collect existing chunks
+            // Iterate through chunk range and yield existing chunks
             for (int chunkX = minChunkX; chunkX <= maxChunkX; chunkX++)
             {
                 for (int chunkY = minChunkY; chunkY <= maxChunkY; chunkY++)
                 {
                     if (map.Chunks.TryGetValue((chunkX, chunkY), out var chunk))
                     {
-                        chunks.Add(chunk);
+                        yield return chunk;
                     }
                 }
             }
+        }
 
-            return chunks;
+        /// <summary>
+        /// Returns all cells that overlap the given rectangular bounds in world space.
+        /// Filters to only cells whose 1x1 area actually intersects the bounds.
+        /// Uses lazy evaluation - cells are yielded as chunks are iterated.
+        /// </summary>
+        public static IEnumerable<Cell> GetCellsInBounds(Map map, Rectangle bounds)
+        {
+            var chunks = GetChunksInBounds(map, bounds);
+
+            foreach (var chunk in chunks)
+            {
+                foreach (var cell in chunk.Cells)
+                {
+                    // Check if cell's 1x1 bounds overlap with the query bounds
+                    var cellBounds = GeometryHelper.GetCellBounds(cell.X, cell.Y);
+                    if (GeometryHelper.DoRectanglesOverlap(cellBounds, bounds))
+                    {
+                        yield return cell;
+                    }
+                }
+            }
         }
     }
 }

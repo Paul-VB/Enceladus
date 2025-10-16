@@ -3,6 +3,7 @@ using Enceladus.Core.World;
 
 namespace Enceladus.Core.Tests.World
 {
+    //todo: line by line check this test fixture later
     public class ChunkMathTests
     {
         [Theory]
@@ -41,21 +42,230 @@ namespace Enceladus.Core.Tests.World
             Assert.Equal(expectedLocalY, localY);
         }
 
-        [Fact]
-        public void WorldToLocalCoords_AlwaysReturnsValidRange()
+        [Theory]
+        [InlineData(0, 0)]
+        [InlineData(500, -750)]
+        [InlineData(-999, 888)]
+        [InlineData(12345, -6789)]
+        [InlineData(-5000, -5000)]
+        [InlineData(777, 333)]
+        [InlineData(-100, 200)]
+        [InlineData(16384, -16384)]
+        [InlineData(-1, -1)]
+        [InlineData(31, 47)]
+        public void WorldToLocalCoords_AlwaysReturnsValidRange(int worldX, int worldY)
         {
-            // Test a bunch of random coordinates to ensure local coords are always 0-15
-            var random = new Random(42);
-            for (int i = 0; i < 1000; i++)
+            // Act
+            var (localX, localY) = ChunkMath.WorldToLocalCoords(worldX, worldY);
+
+            // Assert - Local coords must always be in range [0, 15]
+            Assert.InRange(localX, 0, 15);
+            Assert.InRange(localY, 0, 15);
+        }
+
+        [Fact]
+        public void GetChunksInBounds_ExactChunkBoundary_ReturnsSingleChunk()
+        {
+            // Arrange - Map with single chunk at (0, 0)
+            var map = CreateMapWithChunks((0, 0));
+            var bounds = new Raylib_cs.Rectangle(0, 0, 16, 16); // Exact chunk size
+
+            // Act
+            var result = ChunkMath.GetChunksInBounds(map, bounds).ToList();
+
+            // Assert
+            Assert.Single(result);
+            Assert.Contains(result, c => c.X == 0 && c.Y == 0);
+        }
+
+        [Fact]
+        public void GetChunksInBounds_PartialOverlapWithMultipleChunks_ReturnsAllOverlappingChunks()
+        {
+            // Arrange - Map with 4 chunks in 2x2 grid
+            var map = CreateMapWithChunks((0, 0), (1, 0), (0, 1), (1, 1));
+            var bounds = new Raylib_cs.Rectangle(8, 8, 16, 16); // Overlaps all 4 chunks
+
+            // Act
+            var result = ChunkMath.GetChunksInBounds(map, bounds).ToList();
+
+            // Assert
+            Assert.Equal(4, result.Count);
+            Assert.Contains(result, c => c.X == 0 && c.Y == 0);
+            Assert.Contains(result, c => c.X == 1 && c.Y == 0);
+            Assert.Contains(result, c => c.X == 0 && c.Y == 1);
+            Assert.Contains(result, c => c.X == 1 && c.Y == 1);
+        }
+
+        [Fact]
+        public void GetChunksInBounds_SlightOverlapIntoNextChunk_IncludesNextChunk()
+        {
+            // Arrange - This tests the Floor/Ceiling bug fix
+            var map = CreateMapWithChunks((0, 0), (1, 0));
+            var bounds = new Raylib_cs.Rectangle(0, 0, 16.1f, 16); // Extends 0.1 into chunk (1, 0)
+
+            // Act
+            var result = ChunkMath.GetChunksInBounds(map, bounds).ToList();
+
+            // Assert - Should include both chunks because bounds extends into second chunk
+            Assert.Equal(2, result.Count);
+            Assert.Contains(result, c => c.X == 0 && c.Y == 0);
+            Assert.Contains(result, c => c.X == 1 && c.Y == 0);
+        }
+
+        [Fact]
+        public void GetChunksInBounds_NoOverlappingChunks_ReturnsEmpty()
+        {
+            // Arrange
+            var map = CreateMapWithChunks((0, 0), (1, 1));
+            var bounds = new Raylib_cs.Rectangle(100, 100, 10, 10); // Far away from any chunks
+
+            // Act
+            var result = ChunkMath.GetChunksInBounds(map, bounds).ToList();
+
+            // Assert
+            Assert.Empty(result);
+        }
+
+        [Fact]
+        public void GetChunksInBounds_NegativeCoordinates_WorksCorrectly()
+        {
+            // Arrange
+            var map = CreateMapWithChunks((-1, -1), (0, 0));
+            var bounds = new Raylib_cs.Rectangle(-16, -16, 32, 32); // Covers both chunks
+
+            // Act
+            var result = ChunkMath.GetChunksInBounds(map, bounds).ToList();
+
+            // Assert
+            Assert.Equal(2, result.Count);
+            Assert.Contains(result, c => c.X == -1 && c.Y == -1);
+            Assert.Contains(result, c => c.X == 0 && c.Y == 0);
+        }
+
+        [Fact]
+        public void GetChunksInBounds_NegativeFractionalCoordinates_UsesFloorNotTruncation()
+        {
+            // Arrange - This tests the Floor bug fix for negative coords
+            // Without Floor, (int)(-0.5) = 0 (truncates toward zero), missing chunk -1
+            // With Floor, Floor(-0.5) = -1 (correct)
+            var map = CreateMapWithChunks((-1, -1), (0, -1), (-1, 0), (0, 0));
+            var bounds = new Raylib_cs.Rectangle(-0.5f, -0.5f, 1f, 1f); // Small rect from (-0.5, -0.5) to (0.5, 0.5)
+
+            // Act
+            var result = ChunkMath.GetChunksInBounds(map, bounds).ToList();
+
+            // Assert - Should include all 4 chunks that the bounds touches
+            Assert.Equal(4, result.Count);
+            Assert.Contains(result, c => c.X == -1 && c.Y == -1);
+            Assert.Contains(result, c => c.X == 0 && c.Y == -1);
+            Assert.Contains(result, c => c.X == -1 && c.Y == 0);
+            Assert.Contains(result, c => c.X == 0 && c.Y == 0);
+        }
+
+        [Fact]
+        public void GetChunksInBounds_PositiveFractionalMaxBounds_UsesCeilingNotTruncation()
+        {
+            // Arrange - This tests the Ceiling bug fix for maxX/maxY
+            // Rectangle from (0, 0) with width 20.1 extends to x=20.1
+            // Without Ceiling, (int)(20.1) = 20, WorldToChunkCoords(20) = chunk 1
+            // But we need chunk containing x=20.1, which requires Ceiling(20.1) = 21
+            var map = CreateMapWithChunks((0, 0), (1, 0), (2, 0));
+            var bounds = new Raylib_cs.Rectangle(0, 0, 20.1f, 16); // Extends 0.1 into chunk 2 (at x=32)
+
+            // Act
+            var result = ChunkMath.GetChunksInBounds(map, bounds).ToList();
+
+            // Assert - Should include chunks 0, 1 (bounds goes from 0 to 20.1)
+            Assert.Equal(2, result.Count);
+            Assert.Contains(result, c => c.X == 0 && c.Y == 0);
+            Assert.Contains(result, c => c.X == 1 && c.Y == 0);
+            Assert.DoesNotContain(result, c => c.X == 2); // Chunk 2 starts at x=32, bounds only goes to 20.1
+        }
+
+        [Fact]
+        public void GetCellsInBounds_ReturnsOnlyCellsInBounds()
+        {
+            // Arrange - Create chunk with cells
+            var map = CreateMapWithCells((0, 0),
+                (0, 0), (1, 0), (2, 0), // First row
+                (0, 1), (1, 1), (2, 1)  // Second row
+            );
+            var bounds = new Raylib_cs.Rectangle(0, 0, 2, 2); // Should include cells (0,0), (1,0), (0,1), (1,1)
+
+            // Act
+            var result = ChunkMath.GetCellsInBounds(map, bounds).ToList();
+
+            // Assert
+            Assert.Equal(4, result.Count);
+            Assert.Contains(result, c => c.X == 0 && c.Y == 0);
+            Assert.Contains(result, c => c.X == 1 && c.Y == 0);
+            Assert.Contains(result, c => c.X == 0 && c.Y == 1);
+            Assert.Contains(result, c => c.X == 1 && c.Y == 1);
+            Assert.DoesNotContain(result, c => c.X == 2); // Cell at (2, y) should be excluded
+        }
+
+        [Fact]
+        public void GetCellsInBounds_PartialCellOverlap_IncludesCell()
+        {
+            // Arrange
+            var map = CreateMapWithCells((0, 0), (0, 0), (1, 0));
+            var bounds = new Raylib_cs.Rectangle(0, 0, 1.1f, 1); // Extends 0.1 into cell (1, 0)
+
+            // Act
+            var result = ChunkMath.GetCellsInBounds(map, bounds).ToList();
+
+            // Assert - Should include both cells
+            Assert.Equal(2, result.Count);
+            Assert.Contains(result, c => c.X == 0 && c.Y == 0);
+            Assert.Contains(result, c => c.X == 1 && c.Y == 0);
+        }
+
+        [Fact]
+        public void GetCellsInBounds_PartialCellOverlap_NegativeCoords_IncludesCell()
+        {
+            // Arrange
+            var map = CreateMapWithCells((-1, -1), (-1, -1), (0, -1), (-1, 0));
+            var bounds = new Raylib_cs.Rectangle(-1, -1, 1.1f, 1.1f); // Extends slightly into positive cells
+
+            // Act
+            var result = ChunkMath.GetCellsInBounds(map, bounds).ToList();
+
+            // Assert - Should include all cells that partially overlap
+            Assert.Equal(3, result.Count);
+            Assert.Contains(result, c => c.X == -1 && c.Y == -1);
+            Assert.Contains(result, c => c.X == 0 && c.Y == -1);
+            Assert.Contains(result, c => c.X == -1 && c.Y == 0);
+        }
+
+        // Helper methods
+        private Map CreateMapWithChunks(params (int x, int y)[] chunkCoords)
+        {
+            var map = new Map();
+            foreach (var (x, y) in chunkCoords)
             {
-                int worldX = random.Next(-1000, 1000);
-                int worldY = random.Next(-1000, 1000);
-
-                var (localX, localY) = ChunkMath.WorldToLocalCoords(worldX, worldY);
-
-                Assert.InRange(localX, 0, 15);
-                Assert.InRange(localY, 0, 15);
+                var chunk = new MapChunk(x, y);
+                map.Chunks[(x, y)] = chunk;
             }
+            return map;
+        }
+
+        private Map CreateMapWithCells((int chunkX, int chunkY) chunkCoord, params (int x, int y)[] cellCoords)
+        {
+            var map = new Map();
+            var chunk = new MapChunk(chunkCoord.chunkX, chunkCoord.chunkY);
+
+            foreach (var (x, y) in cellCoords)
+            {
+                chunk.Cells.Add(new Cell
+                {
+                    X = x,
+                    Y = y,
+                    CellType = CellTypes.Ice // Ice has collision
+                });
+            }
+
+            map.Chunks[chunkCoord] = chunk;
+            return map;
         }
     }
 }
