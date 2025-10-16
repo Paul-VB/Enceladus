@@ -1,7 +1,7 @@
 using Enceladus.Core.Config;
 using Enceladus.Core.Entities;
 using Enceladus.Core.Input;
-using Enceladus.Core.Physics.Collision;
+using Enceladus.Core.Physics;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.World;
 using Enceladus.Core.Entities.TestMonsters;
@@ -26,7 +26,7 @@ namespace Enceladus.Core
         private readonly IInputManager _inputManager;
         private readonly ICameraManager _cameraManager;
         private readonly IWorldService _worldService;
-        private readonly ICollisionService _collisionService;
+        private readonly IPhysicsService _physicsService;
         private readonly IRenderingService _renderingService;
 
         private Player _player;
@@ -34,7 +34,7 @@ namespace Enceladus.Core
         public bool IsRunning { get; private set; }
 
         public GameManager(IConfigService configService, IWindowManager windowManager, IEntityRegistry entityRegistry, ISpriteService spriteService, IInputManager inputManager,
-            ICameraManager cameraManager, IWorldService worldService, ICollisionService collisionService, IRenderingService renderingService)
+            ICameraManager cameraManager, IWorldService worldService, IPhysicsService physicsService, IRenderingService renderingService)
         {
             _configService = configService;
             _windowManager = windowManager;
@@ -43,7 +43,7 @@ namespace Enceladus.Core
             _inputManager = inputManager;
             _cameraManager = cameraManager;
             _worldService = worldService;
-            _collisionService = collisionService;
+            _physicsService = physicsService;
             _renderingService = renderingService;
         }
 
@@ -97,26 +97,13 @@ namespace Enceladus.Core
             while (IsRunning && !Raylib.WindowShouldClose())
             {
                 float deltaTime = Raylib.GetFrameTime();
-                UpdateAll(deltaTime);
+                _physicsService.Update(deltaTime);
                 _renderingService.Render();
 
                 _windowManager.SetTitle($"Enceladus - FPS: {_windowManager.GetFps()}");
             }
 
             Cleanup();
-        }
-
-        //todo: like how we made the _renderingService... maybe we can make a _physicsService too?
-        private void UpdateAll(float deltaTime)
-        {
-            foreach (var entity in _entityRegistry.Entities.Values)
-            {
-                entity.Update(deltaTime);
-            }
-
-            _collisionService.HandleCollisions(_entityRegistry.Entities.Values, _worldService.CurrentMap);
-
-            _cameraManager.Update();
         }
 
         private void Cleanup()
