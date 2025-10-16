@@ -11,25 +11,36 @@ namespace Enceladus.Core.World
     {
         public Map GenerateTestMap()
         {
-            const int chunksWide = 6;
-            const int chunksHigh = 6;
+            // 1000x1000 world = 62.5 chunks (round up to 63 chunks = 1008x1008 world units)
+            const int chunksWide = 63;
+            const int chunksHigh = 63;
             const int halfWidth = chunksWide / 2;
             const int halfHeight = chunksHigh / 2;
 
             var map = new Map();
 
-            for (int chunkX = -halfWidth; chunkX < halfWidth; chunkX++)
+            for (int chunkX = -halfWidth; chunkX <= halfWidth; chunkX++)
             {
-                for (int chunkY = -halfHeight; chunkY < halfHeight; chunkY++)
+                for (int chunkY = -halfHeight; chunkY <= halfHeight; chunkY++)
                 {
                     var chunk = GenerateChunk(chunkX, chunkY);
                     map.Chunks[(chunkX, chunkY)] = chunk;
                 }
             }
 
-            // Add some ice patches for testing
-            AddIcePatch(map, -10, -10, 10, 10);
-            AddIcePatch(map, 5, 5, 15, 8);
+            // Add randomly dispersed ice blocks
+            var random = new Random(42); // Seed for consistency
+            int iceBlockCount = 500; // Number of random ice blocks
+
+            for (int i = 0; i < iceBlockCount; i++)
+            {
+                int x = random.Next(-500, 500);
+                int y = random.Next(-500, 500);
+                int width = random.Next(3, 12);
+                int height = random.Next(3, 12);
+
+                AddIcePatch(map, x, y, width, height);
+            }
 
             return map;
         }
