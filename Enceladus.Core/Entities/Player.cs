@@ -65,6 +65,11 @@ namespace Enceladus.Entities
                 var totalThrust = _manuveringEnginesThrust + mainEngineEffectiveThrust;
                 Accelerate(movementInput * totalThrust, deltaTime);
             }
+            if (_inputManager.IsKeyDown(KnownInputControls.Brake))
+            {
+                var brakeSrength = 0.3f;
+                Accelerate(-Velocity * _manuveringEnginesThrust * brakeSrength, deltaTime);
+            }
 
             RotateTowardsVelocityVector(deltaTime);
         }

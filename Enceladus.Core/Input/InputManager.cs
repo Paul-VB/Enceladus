@@ -65,6 +65,7 @@ namespace Enceladus.Core.Input
         public const KeyboardKey MoveDown = KeyboardKey.S;
         public const KeyboardKey MoveLeft = KeyboardKey.A;
         public const KeyboardKey MoveRight = KeyboardKey.D;
+        public const KeyboardKey Brake = KeyboardKey.LeftControl;
         public const KeyboardKey Pause = KeyboardKey.Escape;
     }
 }
