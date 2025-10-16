@@ -82,8 +82,8 @@ namespace Enceladus.Core.Rendering
             float maxY = _camera.Target.Y + screenHeight / 2f;
 
             // Convert to chunk coordinates (with padding for safety)
-            var (minChunkX, minChunkY) = Utils.ChunkMath.WorldToChunkCoords((int)minX - 1, (int)minY - 1);
-            var (maxChunkX, maxChunkY) = Utils.ChunkMath.WorldToChunkCoords((int)maxX + 1, (int)maxY + 1);
+            var (minChunkX, minChunkY) = ChunkMath.WorldToChunkCoords((int)minX - 1, (int)minY - 1);
+            var (maxChunkX, maxChunkY) = ChunkMath.WorldToChunkCoords((int)maxX + 1, (int)maxY + 1);
 
             // Collect visible chunks
             var visibleChunks = new List<MapChunk>();

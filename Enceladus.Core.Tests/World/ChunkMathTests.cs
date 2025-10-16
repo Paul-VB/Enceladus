@@ -1,6 +1,7 @@
-using Enceladus.Core.Utils;
 
-namespace Enceladus.Core.Tests.Utils
+using Enceladus.Core.World;
+
+namespace Enceladus.Core.Tests.World
 {
     public class ChunkMathTests
     {

@@ -9,14 +9,14 @@ namespace Enceladus.Core.World
 
     public class WorldService : IWorldService
     {
-        private readonly IMapGeneratorService _mapGeneratorService;
+        private readonly IMapGenerator _mapGenerator;
 
         public Map CurrentMap { get; private set; }
 
-        public WorldService(IMapGeneratorService mapGeneratorService)
+        public WorldService(IMapGenerator mapGenerator)
         {
-            _mapGeneratorService = mapGeneratorService;
-            CurrentMap = _mapGeneratorService.GenerateTestMap();
+            _mapGenerator = mapGenerator;
+            CurrentMap = _mapGenerator.GenerateTestMap();
         }
     }
 }

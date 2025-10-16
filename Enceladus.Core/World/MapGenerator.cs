@@ -1,13 +1,11 @@
-using Enceladus.Core.Utils;
-
 namespace Enceladus.Core.World
 {
-    public interface IMapGeneratorService
+    public interface IMapGenerator
     {
         Map GenerateTestMap();
     }
 
-    public class MapGeneratorService : IMapGeneratorService
+    public class MapGenerator : IMapGenerator
     {
         public Map GenerateTestMap()
         {
@@ -50,13 +48,15 @@ namespace Enceladus.Core.World
             var chunk = new MapChunk(chunkX, chunkY);
 
             // Generate 16x16 cells for this chunk
+            var (chunkWorldX, chunkWorldY) = ChunkMath.ChunkToWorldCoords(chunkX, chunkY);
+
             for (int localX = 0; localX < ChunkMath.ChunkSize; localX++)
             {
                 for (int localY = 0; localY < ChunkMath.ChunkSize; localY++)
                 {
                     // Calculate world position
-                    int worldX = chunkX * ChunkMath.ChunkSize + localX;
-                    int worldY = chunkY * ChunkMath.ChunkSize + localY;
+                    int worldX = chunkWorldX + localX;
+                    int worldY = chunkWorldY + localY;
 
                     var cell = new Cell
                     {

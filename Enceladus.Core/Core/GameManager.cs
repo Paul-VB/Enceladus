@@ -6,7 +6,6 @@ using Enceladus.Entities;
 using Enceladus.Entities.TestMonsters;
 using Raylib_cs;
 using System.Numerics;
-using Color = Raylib_cs.Color;
 
 namespace Enceladus.Core
 {
@@ -25,15 +24,15 @@ namespace Enceladus.Core
         private readonly IInputManager _inputManager;
         private readonly ICameraManager _cameraManager;
         private readonly IWorldService _worldService;
-        private readonly ICollisionCheckService _collisionCheckService;
-        private readonly ICollisionResolverService _collisionResolverService;
+        private readonly ICollisionService _collisionService;
+        private readonly IRenderingService _renderingService;
 
         private Player _player;
 
         public bool IsRunning { get; private set; }
 
         public GameManager(IWindowManager windowManager, IEntityRegistry entityRegistry, ISpriteService spriteService, IInputManager inputManager,
-            ICameraManager cameraManager, IWorldService worldService, ICollisionCheckService collisionCheckService, ICollisionResolverService collisionResolverService)
+            ICameraManager cameraManager, IWorldService worldService, ICollisionService collisionService, IRenderingService renderingService)
         {
             _windowManager = windowManager;
             _entityRegistry = entityRegistry;
@@ -41,8 +40,8 @@ namespace Enceladus.Core
             _inputManager = inputManager;
             _cameraManager = cameraManager;
             _worldService = worldService;
-            _collisionCheckService = collisionCheckService;
-            _collisionResolverService = collisionResolverService;
+            _collisionService = collisionService;
+            _renderingService = renderingService;
         }
 
         public void Initialize()
@@ -96,7 +95,7 @@ namespace Enceladus.Core
             {
                 float deltaTime = Raylib.GetFrameTime();
                 UpdateAll(deltaTime);
-                DrawAll();
+                _renderingService.Render();
 
                 _windowManager.SetTitle($"Enceladus - FPS: {_windowManager.GetFps()}");
             }
@@ -111,66 +110,9 @@ namespace Enceladus.Core
                 entity.Update(deltaTime);
             }
 
-            // Check and resolve collisions
-            var collidableEntities = _entityRegistry.Entities.Values.OfType<ICollidableEntity>().ToList();
-
-            // Entity-to-cell collisions
-            var entityToCellCollisions = _collisionCheckService.CheckEntitiesToCells(collidableEntities, _worldService.CurrentMap);
-            foreach (var collision in entityToCellCollisions)
-            {
-                _collisionResolverService.ResolveCollision(collision);
-            }
-
-            // Entity-to-entity collisions
-            var entityToEntityCollisions = _collisionCheckService.CheckEntitiesToEntities(collidableEntities);
-            foreach (var collision in entityToEntityCollisions)
-            {
-                _collisionResolverService.ResolveCollision(collision);
-            }
+            _collisionService.HandleCollisions(_entityRegistry.Entities.Values, _worldService.CurrentMap);
 
             _cameraManager.Update();
-        }
-
-        private void DrawAll()
-        {
-            Raylib.BeginDrawing();
-            Raylib.ClearBackground(Color.White);
-
-            // Begin camera mode for world-space rendering
-            Raylib.BeginMode2D(_cameraManager.Camera);
-
-            DrawCells();
-
-            foreach (var entity in _entityRegistry.Entities.Values)
-            {
-                entity.Draw(_cameraManager.Camera);
-            }
-
-            Raylib.EndMode2D();
-            // UI/HUD would be drawn here (outside camera mode)
-
-            Raylib.EndDrawing();
-        }
-
-        private void DrawCells()
-        {
-            var map = _worldService.CurrentMap;
-
-            // Get only visible chunks for rendering
-            var chunksToRender = _cameraManager.GetVisibleChunks(map);
-
-            foreach (var chunk in chunksToRender)
-            {
-                foreach (var cell in chunk.Cells)
-                {
-                    var sprite = _spriteService.Load(cell.CellType.SpritePath);
-
-                    var source = new Rectangle(0, 0, sprite.Width, sprite.Height);
-                    var dest = new Rectangle(cell.X, cell.Y, 1, 1); // Cell knows its world position
-
-                    Raylib.DrawTexturePro(sprite, source, dest, Vector2.Zero, 0f, Color.White);
-                }
-            }
         }
 
         private void Cleanup()

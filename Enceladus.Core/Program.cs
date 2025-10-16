@@ -26,9 +26,15 @@ class Program
         services.AddSingleton<ICameraManager, CameraManager>();
         services.AddSingleton<IGameManager, GameManager>();
         services.AddSingleton<IWorldService, WorldService>();
-        services.AddSingleton<IMapGeneratorService, MapGeneratorService>();
+        services.AddSingleton<IMapGenerator, MapGenerator>();
+
+        // Rendering services
+        services.AddSingleton<IRenderingService, RenderingService>();
+        services.AddSingleton<IMapRenderer, MapRenderer>();
+        services.AddSingleton<IEntityRenderer, EntityRenderer>();
 
         // Collision services
+        services.AddSingleton<ICollisionService, CollisionService>();
         services.AddSingleton<ICollisionCheckService, CollisionCheckService>();
         services.AddSingleton<ICollisionResolverService, CollisionResolverService>();
         services.AddSingleton<IAabbCollisionDetector, AabbCollisionDetector>();
