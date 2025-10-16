@@ -4,17 +4,17 @@ using System.Numerics;
 
 namespace Enceladus.Core.Physics.Collision
 {
-    public interface ICollisionResolverService
+    public interface ICollisionResolver
     {
         void ResolveCollision(EntityToCellCollisionResult collision);
         void ResolveCollision(EntityToEntityCollisionResult collision);
     }
 
-    public class CollisionResolverService : ICollisionResolverService
+    public class CollisionResolver : ICollisionResolver
     {
         private readonly IConfigService _configService;
 
-        public CollisionResolverService(IConfigService configService)
+        public CollisionResolver(IConfigService configService)
         {
             _configService = configService;
         }

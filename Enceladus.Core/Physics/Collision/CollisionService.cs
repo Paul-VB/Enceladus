@@ -10,13 +10,13 @@ namespace Enceladus.Core.Physics.Collision
 
     public class CollisionService : ICollisionService
     {
-        private readonly ICollisionCheckService _collisionCheckService;
-        private readonly ICollisionResolverService _collisionResolverService;
+        private readonly ICollisionChecker _collisionChecker;
+        private readonly ICollisionResolver _collisionResolver;
 
-        public CollisionService(ICollisionCheckService collisionCheckService, ICollisionResolverService collisionResolverService)
+        public CollisionService(ICollisionChecker collisionChecker, ICollisionResolver collisionResolver)
         {
-            _collisionCheckService = collisionCheckService;
-            _collisionResolverService = collisionResolverService;
+            _collisionChecker = collisionChecker;
+            _collisionResolver = collisionResolver;
         }
 
         public void HandleCollisions(IEnumerable<IEntity> entities, Map map)
@@ -25,17 +25,17 @@ namespace Enceladus.Core.Physics.Collision
             var collidableEntities = entities.OfType<ICollidableEntity>().ToList();
 
             // Entity-to-cell collisions
-            var entityToCellCollisions = _collisionCheckService.CheckEntitiesToCells(collidableEntities, map);
+            var entityToCellCollisions = _collisionChecker.CheckEntitiesToCells(collidableEntities, map);
             foreach (var collision in entityToCellCollisions)
             {
-                _collisionResolverService.ResolveCollision(collision);
+                _collisionResolver.ResolveCollision(collision);
             }
 
             // Entity-to-entity collisions
-            var entityToEntityCollisions = _collisionCheckService.CheckEntitiesToEntities(collidableEntities);
+            var entityToEntityCollisions = _collisionChecker.CheckEntitiesToEntities(collidableEntities);
             foreach (var collision in entityToEntityCollisions)
             {
-                _collisionResolverService.ResolveCollision(collision);
+                _collisionResolver.ResolveCollision(collision);
             }
         }
     }

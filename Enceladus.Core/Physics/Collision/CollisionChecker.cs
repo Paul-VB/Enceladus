@@ -5,19 +5,18 @@ using System.Collections.Concurrent;
 
 namespace Enceladus.Core.Physics.Collision
 {
-    public interface ICollisionCheckService
+    public interface ICollisionChecker
     {
         List<EntityToCellCollisionResult> CheckEntitiesToCells(List<ICollidableEntity> entities, Map map);
         List<EntityToEntityCollisionResult> CheckEntitiesToEntities(List<ICollidableEntity> entities);
     }
 
-    //todo: maybe rename this to CollisionChecker? i feel like if something has the honor of being a service, then it should be directly used by game manager. not a code change just a style idea. this should apply to all files that are *Service or *Manager
-    public class CollisionCheckService : ICollisionCheckService
+    public class CollisionChecker : ICollisionChecker
     {
         private readonly IAabbCollisionDetector _aabbCollisionDetector;
         private readonly ISatCollisionDetector _satCollisionDetector;
 
-        public CollisionCheckService(IAabbCollisionDetector aabbCollisionDetector, ISatCollisionDetector satCollisionDetector)
+        public CollisionChecker(IAabbCollisionDetector aabbCollisionDetector, ISatCollisionDetector satCollisionDetector)
         {
             _aabbCollisionDetector = aabbCollisionDetector;
             _satCollisionDetector = satCollisionDetector;
