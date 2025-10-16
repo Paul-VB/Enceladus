@@ -1,5 +1,6 @@
 ﻿using Enceladus.Core.Config;
 using Enceladus.Core.Entities;
+using Enceladus.Core.Utils;
 using Enceladus.Core.World;
 using Raylib_cs;
 using System.Numerics;
@@ -80,10 +81,11 @@ namespace Enceladus.Core.Rendering
             // Add 1 padding for safety to avoid pop-in at screen edges
             float minX = (_camera.Target.X - screenWidth / 2f) - 1;
             float maxX = (_camera.Target.X + screenWidth / 2f) + 1;
-            float minY = (_camera.Target.Y - screenHeight / 2f) - 1 ;
-            float maxY = (_camera.Target.Y + screenHeight / 2f) + 1 ;
+            float minY = (_camera.Target.Y - screenHeight / 2f) - 1;
+            float maxY = (_camera.Target.Y + screenHeight / 2f) + 1;
 
-            return ChunkMath.GetChunksInBounds(map, minX, maxX , minY, maxY);
+            var visibleBounds = GeometryHelper.RectangleFromBounds(minX, maxX, minY, maxY);
+            return ChunkMath.GetChunksInBounds(map, visibleBounds).ToList();
         }
     }
 }
