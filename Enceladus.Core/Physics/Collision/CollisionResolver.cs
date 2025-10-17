@@ -22,7 +22,7 @@ namespace Enceladus.Core.Physics.Collision
         {
             collision.Entity.Position += collision.CollisionNormal * collision.PenetrationDepth;
 
-            if (collision.Entity is IMoveable moveableEntity)
+            if (collision.Entity is IMoveableEntity moveableEntity)
             {
                 moveableEntity.Velocity = Vector2.Zero;
             }
@@ -37,7 +37,7 @@ namespace Enceladus.Core.Physics.Collision
 
             //todo: if only one entity is movable 
             // 2. Velocity bounce (mass-based impulse) - only if both are moveable
-            if (collision.Entity is IMoveable moveable1 && collision.OtherEntity is IMoveable moveable2)
+            if (collision.Entity is IMoveableEntity moveable1 && collision.OtherEntity is IMoveableEntity moveable2)
             {
                 // Calculate relative velocity along collision normal
                 Vector2 relativeVelocity = moveable1.Velocity - moveable2.Velocity;

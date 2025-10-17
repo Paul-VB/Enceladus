@@ -4,7 +4,7 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities
 {
-    public interface IMoveable
+    public interface IMoveableEntity
     {
         Vector2 Velocity { get; set; }
         float Mass { get; set; }
@@ -15,7 +15,7 @@ namespace Enceladus.Core.Entities
         void ApplyTorque(float torque, float deltaTime);
     }
 
-    public abstract class MoveableEntity : Entity, IMoveable
+    public abstract class MoveableEntity : Entity, IMoveableEntity
     {
         protected readonly IConfigService _configService;
         public virtual Vector2 Velocity { get; set; } = Vector2.Zero;
