@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
-    public class MenacingRedPentagon : MoveableEntity, ICollidable
+    public class MenacingRedPentagon : MovableEntity, ICollidable
     {
         public override Hitbox Hitbox { get; set; }
 

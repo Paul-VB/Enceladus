@@ -8,7 +8,7 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
-    public class EvilBlueTriangle : MoveableEntity, ICollidable
+    public class EvilBlueTriangle : MovableEntity, ICollidable
     {
         private readonly IInputManager _inputManager;
         public override Hitbox Hitbox { get; set; }

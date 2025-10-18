@@ -6,7 +6,7 @@ namespace Enceladus.Core.Physics.Collision
 
     public interface ISatCollisionDetector
     {
-        BaseCollisionResult CheckCollision(MoveableEntity entity, ICollidable otherObject);
+        BaseCollisionResult CheckCollision(MovableEntity entity, ICollidable otherObject);
     }
 
     public class SatCollisionDetector : ISatCollisionDetector
@@ -20,7 +20,7 @@ namespace Enceladus.Core.Physics.Collision
             _axesExtractor = axesExtractor;
         }
 
-        public BaseCollisionResult CheckCollision(MoveableEntity entity1, ICollidable otherObject)
+        public BaseCollisionResult CheckCollision(MovableEntity entity1, ICollidable otherObject)
         {
             var vertices1 = _vertexExtractor.ExtractWorldVertices(entity1);
             var vertices2 = _vertexExtractor.ExtractWorldVertices(otherObject);

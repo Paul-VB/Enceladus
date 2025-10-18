@@ -20,7 +20,7 @@ namespace Enceladus.Core.Physics.Collision
 
         public void ResolveCollision(BaseCollisionResult collision)
         {
-            if(collision.OtherObject is MoveableEntity otherObject)
+            if(collision.OtherObject is MovableEntity otherObject)
             {
                 ResolveEntityToMovable(collision, otherObject);
 
@@ -39,7 +39,7 @@ namespace Enceladus.Core.Physics.Collision
 
 
         //entity to entity
-        private void ResolveEntityToMovable(BaseCollisionResult collision, MoveableEntity otherEntity)
+        private void ResolveEntityToMovable(BaseCollisionResult collision, MovableEntity otherEntity)
         {
             var entity = collision.Entity;
             // 1. Position separation (simple equal split)

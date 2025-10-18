@@ -5,12 +5,12 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities
 {
-    public abstract class MoveableEntity : Entity, IMovable
+    public abstract class MovableEntity : Entity, IMovable
     {
         private readonly MovableComponent _movableComponent;
         protected readonly IConfigService ConfigService;
 
-        public MoveableEntity(IConfigService configService)
+        public MovableEntity(IConfigService configService)
         {
             ConfigService = configService;
             _movableComponent = new(ConfigService);

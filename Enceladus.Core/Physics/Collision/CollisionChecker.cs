@@ -7,7 +7,7 @@ namespace Enceladus.Core.Physics.Collision
 {
     public interface ICollisionChecker
     {
-        List<BaseCollisionResult> CheckEntitiesToCells(IEnumerable<MoveableEntity> entities, Map map);
+        List<BaseCollisionResult> CheckEntitiesToCells(IEnumerable<MovableEntity> entities, Map map);
         List<BaseCollisionResult> CheckEntitiesToEntities(IEntityRegistry entityRegistry);
     }
 
@@ -22,7 +22,7 @@ namespace Enceladus.Core.Physics.Collision
             _satCollisionDetector = satCollisionDetector;
         }
 
-        public List<BaseCollisionResult> CheckEntitiesToCells(IEnumerable<MoveableEntity> entities, Map map)
+        public List<BaseCollisionResult> CheckEntitiesToCells(IEnumerable<MovableEntity> entities, Map map)
         {
             var collisions = new ConcurrentBag<BaseCollisionResult>();
             //todo: stretch goal, can we leverage GPU for this?
@@ -38,7 +38,7 @@ namespace Enceladus.Core.Physics.Collision
             return collisions.ToList();
         }
 
-        private List<BaseCollisionResult> CheckEntityToCells(MoveableEntity entity, Map map)
+        private List<BaseCollisionResult> CheckEntityToCells(MovableEntity entity, Map map)
         {
             var collisions = new List<BaseCollisionResult>();
 
@@ -48,7 +48,7 @@ namespace Enceladus.Core.Physics.Collision
 
             //temp placeholder
             //todo: actually implement narrow circle to anything collision
-            var placeHolderCircleAlgo = (MoveableEntity e, ICollidable c) =>
+            var placeHolderCircleAlgo = (MovableEntity e, ICollidable c) =>
             {
                 return new BaseCollisionResult
                 {
@@ -60,7 +60,7 @@ namespace Enceladus.Core.Physics.Collision
             };
 
             // Narrow check
-            Func<MoveableEntity, ICollidable, BaseCollisionResult> narrowCollisionAlgorithm =
+            Func<MovableEntity, ICollidable, BaseCollisionResult> narrowCollisionAlgorithm =
                 entity.Hitbox is RectHitbox || entity.Hitbox is PolygonHitbox ? _satCollisionDetector.CheckCollision : placeHolderCircleAlgo;
 
             foreach (var cell in cellCollisionCandiates)
@@ -102,7 +102,7 @@ namespace Enceladus.Core.Physics.Collision
             return collisions;
         }
 
-        private void CheckPair(MoveableEntity moveable, Entity other, List<BaseCollisionResult> collisions)
+        private void CheckPair(MovableEntity moveable, Entity other, List<BaseCollisionResult> collisions)
         {
             // Broad phase: AABB check
             if (!_aabbCollisionDetector.CheckPotentialCollision(moveable, other))

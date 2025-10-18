@@ -7,7 +7,7 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities
 {
-    public class Player : MoveableEntity
+    public class Player : MovableEntity
     {
         private readonly IInputManager _inputManager;
         private readonly ISpriteService _spriteService;

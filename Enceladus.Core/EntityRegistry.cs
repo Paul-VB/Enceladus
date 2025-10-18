@@ -6,7 +6,7 @@ namespace Enceladus.Core
     public interface IEntityRegistry
     {
         IReadOnlyDictionary<Guid, Entity> Entities { get; }
-        IReadOnlyList<MoveableEntity> MovableEntities { get; }
+        IReadOnlyList<MovableEntity> MovableEntities { get; }
         IReadOnlyList<Entity> StaticEntities { get; }
         T Register<T>(T entity) where T : Entity;
         void Unregister(Guid guid);
@@ -15,18 +15,18 @@ namespace Enceladus.Core
     public class EntityRegistry : IEntityRegistry
     {
         private readonly Dictionary<Guid, Entity> _entities = new();
-        private readonly List<MoveableEntity> _movableEntities = new();
+        private readonly List<MovableEntity> _movableEntities = new();
         private readonly List<Entity> _staticEntities = new();
 
         public IReadOnlyDictionary<Guid, Entity> Entities => _entities;
-        public IReadOnlyList<MoveableEntity> MovableEntities => _movableEntities;
+        public IReadOnlyList<MovableEntity> MovableEntities => _movableEntities;
         public IReadOnlyList<Entity> StaticEntities => _staticEntities;
 
         public T Register<T>(T entity) where T : Entity
         {
             _entities[entity.Guid] = entity;
 
-            if (entity is MoveableEntity moveable)
+            if (entity is MovableEntity moveable)
                 _movableEntities.Add(moveable);
             else
                 _staticEntities.Add(entity);
@@ -40,7 +40,7 @@ namespace Enceladus.Core
             {
                 _entities.Remove(guid);
 
-                if (entity is MoveableEntity moveable)
+                if (entity is MovableEntity moveable)
                     _movableEntities.Remove(moveable);
                 else
                     _staticEntities.Remove(entity);
