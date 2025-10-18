@@ -1,28 +1,15 @@
 # Claude Code Context - Enceladus
 
+## Related Documentation
+- **todo.md**: Track bugs and implementation goals
+- **gameplayDetails.md**: Full gameplay design, mechanics, and systems
+
 ## Game Overview
+**Genre**: 2D Submersible Action/Mining/Survival
+**Setting**: Deep subsurface ocean of Saturn's moon Enceladus
+**Physics**: Low gravity, near-neutral buoyancy = unique "floaty flying" movement
 
-### Core Concept
-- **Genre**: 2D Submersible Action/Mining/Survival
-- **Setting**: Deep subsurface ocean of Saturn's moon Enceladus (lawless resource exploitation)
-- **Physics**: Low gravity, near-neutral buoyancy = unique "floaty flying" movement
-
-### Key Gameplay Systems (Future Implementation)
-- **Dual Mode Controls**:
-  - Coarse Mode (traversal): High-speed movement, auto-levels for thrust
-  - Fine Mode (precision): Slow slewing, fixed attitude for drilling/combat
-- **Equipment Systems**:
-  - Mark System (defines base power/efficiency)
-  - Quality System (defines augment slots)
-  - Augment Extraction (salvage augments from items)
-- **Environment**:
-  - Tunnel refreeze (time pressure)
-  - Iceologic instability (drilling limits per sector)
-  - Biomes with unique hostile life and loot
-- **Economy**:
-  - Hostile rival mining subs
-  - Base trading (sell haul, repairs, refuel)
-  - Orbital trader (rare high-tier items, time-limited)
+See `gameplayDetails.md` for complete gameplay design.
 
 ## Current Architecture
 
@@ -72,7 +59,7 @@
 ## Architecture Principles
 
 ### Todo tracking/roadmap
-- Make sure that the todo.md file in the root of the repo is kept up to date so we cna track bugs and goals
+- Keep todo.md updated with bugs and goals
 
 ### When to Use Components
 **USE** components when:
