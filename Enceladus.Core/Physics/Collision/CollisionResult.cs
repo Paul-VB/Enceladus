@@ -3,7 +3,7 @@ using System.Numerics;
 
 namespace Enceladus.Core.Physics.Collision
 {
-    public class BaseCollisionResult
+    public class CollisionResult
     {
         public required MovableEntity Entity { get; set; }
         public required ICollidable OtherObject { get; set; }

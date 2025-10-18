@@ -7,8 +7,8 @@ namespace Enceladus.Core.Physics.Collision
 {
     public interface ICollisionChecker
     {
-        List<BaseCollisionResult> CheckEntitiesToCells(IEnumerable<MovableEntity> entities, Map map);
-        List<BaseCollisionResult> CheckEntitiesToEntities(IEntityRegistry entityRegistry);
+        List<CollisionResult> CheckEntitiesToCells(IEnumerable<MovableEntity> entities, Map map);
+        List<CollisionResult> CheckEntitiesToEntities(IEntityRegistry entityRegistry);
     }
 
     public class CollisionChecker : ICollisionChecker
@@ -22,9 +22,9 @@ namespace Enceladus.Core.Physics.Collision
             _satCollisionDetector = satCollisionDetector;
         }
 
-        public List<BaseCollisionResult> CheckEntitiesToCells(IEnumerable<MovableEntity> entities, Map map)
+        public List<CollisionResult> CheckEntitiesToCells(IEnumerable<MovableEntity> entities, Map map)
         {
-            var collisions = new ConcurrentBag<BaseCollisionResult>();
+            var collisions = new ConcurrentBag<CollisionResult>();
             //todo: stretch goal, can we leverage GPU for this?
             Parallel.ForEach(entities, entity =>
             {
@@ -38,9 +38,9 @@ namespace Enceladus.Core.Physics.Collision
             return collisions.ToList();
         }
 
-        private List<BaseCollisionResult> CheckEntityToCells(MovableEntity entity, Map map)
+        private List<CollisionResult> CheckEntityToCells(MovableEntity entity, Map map)
         {
-            var collisions = new List<BaseCollisionResult>();
+            var collisions = new List<CollisionResult>();
 
             // Broad check (AABB)
             var cellCollisionCandiates = _aabbCollisionDetector.CheckPotentialCellCollisions(entity, map);
@@ -50,7 +50,7 @@ namespace Enceladus.Core.Physics.Collision
             //todo: actually implement narrow circle to anything collision
             var placeHolderCircleAlgo = (MovableEntity e, ICollidable c) =>
             {
-                return new BaseCollisionResult
+                return new CollisionResult
                 {
                     Entity = e,
                     OtherObject = c,
@@ -60,7 +60,7 @@ namespace Enceladus.Core.Physics.Collision
             };
 
             // Narrow check
-            Func<MovableEntity, ICollidable, BaseCollisionResult> narrowCollisionAlgorithm =
+            Func<MovableEntity, ICollidable, CollisionResult> narrowCollisionAlgorithm =
                 entity.Hitbox is RectHitbox || entity.Hitbox is PolygonHitbox ? _satCollisionDetector.CheckCollision : placeHolderCircleAlgo;
 
             foreach (var cell in cellCollisionCandiates)
@@ -75,9 +75,9 @@ namespace Enceladus.Core.Physics.Collision
             return collisions;
         }
 
-        public List<BaseCollisionResult> CheckEntitiesToEntities(IEntityRegistry entityRegistry)
+        public List<CollisionResult> CheckEntitiesToEntities(IEntityRegistry entityRegistry)
         {
-            var collisions = new List<BaseCollisionResult>();
+            var collisions = new List<CollisionResult>();
             var moveables = entityRegistry.MovableEntities;
             var statics = entityRegistry.StaticEntities;
 
@@ -102,7 +102,7 @@ namespace Enceladus.Core.Physics.Collision
             return collisions;
         }
 
-        private void CheckPair(MovableEntity moveable, Entity other, List<BaseCollisionResult> collisions)
+        private void CheckPair(MovableEntity moveable, Entity other, List<CollisionResult> collisions)
         {
             // Broad phase: AABB check
             if (!_aabbCollisionDetector.CheckPotentialCollision(moveable, other))

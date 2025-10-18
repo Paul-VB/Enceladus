@@ -6,7 +6,7 @@ namespace Enceladus.Core.Physics.Collision
 {
     public interface ICollisionResolver
     {
-        void ResolveCollision(BaseCollisionResult collision);
+        void ResolveCollision(CollisionResult collision);
     }
 
     public class CollisionResolver : ICollisionResolver
@@ -18,7 +18,7 @@ namespace Enceladus.Core.Physics.Collision
             _configService = configService;
         }
 
-        public void ResolveCollision(BaseCollisionResult collision)
+        public void ResolveCollision(CollisionResult collision)
         {
             if(collision.OtherObject is MovableEntity otherObject)
             {
@@ -31,7 +31,7 @@ namespace Enceladus.Core.Physics.Collision
         }
 
         //entity to cell
-        private void ResolveEntityToStatic(BaseCollisionResult collision)
+        private void ResolveEntityToStatic(CollisionResult collision)
         {
             collision.Entity.Position += collision.CollisionNormal * collision.PenetrationDepth;
             collision.Entity.Velocity = Vector2.Zero;
@@ -39,7 +39,7 @@ namespace Enceladus.Core.Physics.Collision
 
 
         //entity to entity
-        private void ResolveEntityToMovable(BaseCollisionResult collision, MovableEntity otherEntity)
+        private void ResolveEntityToMovable(CollisionResult collision, MovableEntity otherEntity)
         {
             var entity = collision.Entity;
             // 1. Position separation (simple equal split)
