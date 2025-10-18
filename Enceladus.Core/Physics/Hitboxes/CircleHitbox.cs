@@ -1,6 +1,6 @@
 ﻿namespace Enceladus.Core.Physics.Hitboxes
 {
-    public class CircleHitbox : Hitbox
+    public class CircleHitbox : IHitbox
     {
         public float Radius { get; set; }
 

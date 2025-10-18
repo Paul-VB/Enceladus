@@ -12,7 +12,7 @@ namespace Enceladus.Core.Entities
         private readonly IInputManager _inputManager;
         private readonly ISpriteService _spriteService;
 
-        public override Hitbox Hitbox { get; set; }
+        public override IHitbox Hitbox { get; set; }
 
         // Pixel coordinates of submarine hull (from paint.net)
         private static readonly Vector2[] _pixelVertices =

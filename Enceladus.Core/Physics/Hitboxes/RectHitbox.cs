@@ -2,7 +2,7 @@
 
 namespace Enceladus.Core.Physics.Hitboxes
 {
-    public class RectHitbox : Hitbox
+    public class RectHitbox : IHitbox
     {
         public RectHitbox(Vector2 size)
         {

@@ -11,7 +11,7 @@ namespace Enceladus.Core.Entities.TestMonsters
     public class EvilBlueTriangle : MovableEntity, ICollidable
     {
         private readonly IInputManager _inputManager;
-        public override Hitbox Hitbox { get; set; }
+        public override IHitbox Hitbox { get; set; }
 
         private readonly float _thrust = 5000f;
 

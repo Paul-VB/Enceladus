@@ -7,6 +7,6 @@ namespace Enceladus.Core.Physics.Collision
     {
         Vector2 Position { get; }
         float Rotation { get; }
-        Hitbox Hitbox { get; set; }
+        IHitbox Hitbox { get; set; }
     }
 }

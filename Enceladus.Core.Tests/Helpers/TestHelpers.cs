@@ -74,7 +74,7 @@ namespace Enceladus.Core.Tests.Helpers
             Hitbox = new RectHitbox(1, 1); // Default hitbox
         }
 
-        public override Hitbox Hitbox { get; set; }
+        public override IHitbox Hitbox { get; set; }
         public override void Update(float deltaTime) { }
     }
 
@@ -86,7 +86,7 @@ namespace Enceladus.Core.Tests.Helpers
         /// <summary>
         /// Creates a test entity at the specified position
         /// </summary>
-        public static TestEntity CreateTestEntity(Vector2 position, Hitbox? hitbox = null, float rotation = 0f)
+        public static TestEntity CreateTestEntity(Vector2 position, IHitbox? hitbox = null, float rotation = 0f)
         {
             hitbox ??= new RectHitbox(1,1);
             return new TestEntity { 

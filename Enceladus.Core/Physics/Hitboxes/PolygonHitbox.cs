@@ -2,7 +2,7 @@
 
 namespace Enceladus.Core.Physics.Hitboxes
 {
-    public class PolygonHitbox : Hitbox
+    public class PolygonHitbox : IHitbox
     {
         public PolygonHitbox(List<Vector2> vertices)
         {
@@ -11,4 +11,5 @@ namespace Enceladus.Core.Physics.Hitboxes
 
         public List<Vector2> Vertices {  get; set; }
     }
+
 }

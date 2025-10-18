@@ -5,12 +5,12 @@ namespace Enceladus.Core.Physics.Collision
 {
     public interface IAxesExtractor
     {
-        List<Vector2> ExtractAxes(List<Vector2> vertices, Hitbox hitbox);
+        List<Vector2> ExtractAxes(List<Vector2> vertices, IHitbox hitbox);
     }
 
     public class AxesExtractor : IAxesExtractor
     {
-        public List<Vector2> ExtractAxes(List<Vector2> vertices, Hitbox hitbox)
+        public List<Vector2> ExtractAxes(List<Vector2> vertices, IHitbox hitbox)
         {
             if (hitbox is RectHitbox)
                 return GetRectAxes(vertices);

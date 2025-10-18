@@ -16,7 +16,7 @@ namespace Enceladus.Core.Entities
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
         public Texture2D Sprite { get; set; }
-        public abstract Hitbox Hitbox { get; set; }
+        public abstract IHitbox Hitbox { get; set; }
         public abstract void Update(float deltaTime);
         public virtual void Draw(Camera2D camera)
         {

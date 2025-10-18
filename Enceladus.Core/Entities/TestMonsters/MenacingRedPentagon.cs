@@ -9,7 +9,7 @@ namespace Enceladus.Core.Entities.TestMonsters
 {
     public class MenacingRedPentagon : MovableEntity, ICollidable
     {
-        public override Hitbox Hitbox { get; set; }
+        public override IHitbox Hitbox { get; set; }
 
         public MenacingRedPentagon(IConfigService configService)
             : base(configService)
