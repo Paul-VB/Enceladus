@@ -5,26 +5,6 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities
 {
-    //todo: Component-based architecture - Track progress and future work
-    //
-    //      ✅ COMPLETED - Interface cleanup:
-    //        ✅ IMovable interface exists (Physics.Motion namespace) with complex methods (Accelerate, ApplyTorque)
-    //        ✅ ICollidable interface exists (Physics.Collision namespace) with simple properties only
-    //        ✅ Removed redundant interfaces (IEntity, ICollidableEntity, IPlayer)
-    //        ✅ MovableComponent exists - delegates complex physics logic (avoids diamond problem)
-    //        ✅ MovableEntity delegates to MovableComponent
-    //        ✅ All entities are ICollidable (nullable Hitbox for non-collidables like ghosts)
-    //
-    //      ⏳ FUTURE WORK - When needed:
-    //        - Add collision properties to ICollidable (Restitution, CollisionLayer, CollisionMask, etc.)
-    //          Note: These are just properties, NOT complex logic, so NO CollisionComponent needed!
-    //        - Add DamageComponent if we need complex damage calculation logic (health, armor math, etc.)
-    //        - Add InventoryComponent if we need complex inventory management logic
-    //
-    //      Architecture principle:
-    //        - Use COMPONENTS for interfaces with COMPLEX METHOD LOGIC (e.g., IMovable.Accelerate)
-    //        - Use SIMPLE PROPERTIES for interfaces with just data (e.g., ICollidable.Hitbox)
-    //        - This avoids the diamond problem without unnecessary abstraction
 
     public abstract class Entity : ICollidable
     {
