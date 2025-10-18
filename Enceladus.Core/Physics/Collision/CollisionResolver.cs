@@ -6,8 +6,7 @@ namespace Enceladus.Core.Physics.Collision
 {
     public interface ICollisionResolver
     {
-        void ResolveCollision(EntityToCellCollisionResult collision);
-        void ResolveCollision(EntityToEntityCollisionResult collision);
+        void ResolveCollision(BaseCollisionResult collision);
     }
 
     public class CollisionResolver : ICollisionResolver
@@ -18,46 +17,56 @@ namespace Enceladus.Core.Physics.Collision
         {
             _configService = configService;
         }
-        public void ResolveCollision(EntityToCellCollisionResult collision)
-        {
-            collision.Entity.Position += collision.CollisionNormal * collision.PenetrationDepth;
 
-            if (collision.Entity is IMoveableEntity moveableEntity)
+        public void ResolveCollision(BaseCollisionResult collision)
+        {
+            if(collision.OtherObject is MoveableEntity otherObject)
             {
-                moveableEntity.Velocity = Vector2.Zero;
+                ResolveEntityToMovable(collision, otherObject);
+
+            } else
+            {
+                ResolveEntityToStatic(collision);
             }
         }
 
-        public void ResolveCollision(EntityToEntityCollisionResult collision)
+        //entity to cell
+        private void ResolveEntityToStatic(BaseCollisionResult collision)
         {
+            collision.Entity.Position += collision.CollisionNormal * collision.PenetrationDepth;
+            collision.Entity.Velocity = Vector2.Zero;
+        }
+
+
+        //entity to entity
+        private void ResolveEntityToMovable(BaseCollisionResult collision, MoveableEntity otherEntity)
+        {
+            var entity = collision.Entity;
             // 1. Position separation (simple equal split)
-            float halfDepth = collision.PenetrationDepth / 2f;
-            collision.Entity.Position += collision.CollisionNormal * halfDepth;
-            collision.OtherEntity.Position -= collision.CollisionNormal * halfDepth;
+            var halfDepth = collision.PenetrationDepth / 2f;
+            entity.Position += collision.CollisionNormal * halfDepth;
+            otherEntity.Position -= collision.CollisionNormal * halfDepth;
+            // 2. Velocity bounce (mass-based impulse)
 
-            //todo: if only one entity is movable 
-            // 2. Velocity bounce (mass-based impulse) - only if both are moveable
-            if (collision.Entity is IMoveableEntity moveable1 && collision.OtherEntity is IMoveableEntity moveable2)
-            {
                 // Calculate relative velocity along collision normal
-                Vector2 relativeVelocity = moveable1.Velocity - moveable2.Velocity;
-                float velocityAlongNormal = Vector2.Dot(relativeVelocity, collision.CollisionNormal);
+            var relativeVelocity = entity.Velocity - otherEntity.Velocity;
+            var velocityAlongNormal = Vector2.Dot(relativeVelocity, collision.CollisionNormal);
 
-                // Don't bounce if entities are moving apart
-                if (velocityAlongNormal > 0)
-                    return;
+            // Don't bounce if entities are moving apart
+            if (velocityAlongNormal > 0)
+                return;
 
-                // Calculate bounce impulse
-                float restitution = _configService.Config.Physics.RestitutionCoefficient;
-                float impulseScalar = -(1 + restitution) * velocityAlongNormal;
-                impulseScalar /= (1 / moveable1.Mass + 1 / moveable2.Mass);
+            // Calculate bounce impulse
+            var restitution = _configService.Config.Physics.RestitutionCoefficient;
+            var impulseScalar = -(1 + restitution) * velocityAlongNormal;
+            impulseScalar /= (1 / entity.Mass + 1 / otherEntity.Mass);
 
-                Vector2 impulse = collision.CollisionNormal * impulseScalar;
+            Vector2 impulse = collision.CollisionNormal * impulseScalar;
 
-                // Apply impulse to both entities
-                moveable1.Velocity += impulse / moveable1.Mass;
-                moveable2.Velocity -= impulse / moveable2.Mass;
-            }
+            // Apply impulse to both entities
+            entity.Velocity += impulse / entity.Mass;
+            otherEntity.Velocity -= impulse / otherEntity.Mass;
+            
         }
     }
 }

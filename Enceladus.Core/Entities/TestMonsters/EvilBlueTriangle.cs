@@ -1,5 +1,6 @@
 using Enceladus.Core.Config;
 using Enceladus.Core.Input;
+using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Utils;
 using Raylib_cs;
@@ -7,10 +8,10 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
-    public class EvilBlueTriangle : MoveableEntity, ICollidableEntity
+    public class EvilBlueTriangle : MoveableEntity, ICollidable
     {
         private readonly IInputManager _inputManager;
-        public Hitbox Hitbox { get; set; }
+        public override Hitbox Hitbox { get; set; }
 
         private readonly float _thrust = 5000f;
 

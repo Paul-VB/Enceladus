@@ -1,4 +1,5 @@
 using Enceladus.Core.Config;
+using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Utils;
 using Raylib_cs;
@@ -6,9 +7,9 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
-    public class MenacingRedPentagon : MoveableEntity, ICollidableEntity
+    public class MenacingRedPentagon : MoveableEntity, ICollidable
     {
-        public Hitbox Hitbox { get; set; }
+        public override Hitbox Hitbox { get; set; }
 
         public MenacingRedPentagon(IConfigService configService)
             : base(configService)

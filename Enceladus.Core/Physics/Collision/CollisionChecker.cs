@@ -7,8 +7,8 @@ namespace Enceladus.Core.Physics.Collision
 {
     public interface ICollisionChecker
     {
-        List<EntityToCellCollisionResult> CheckEntitiesToCells(List<ICollidableEntity> entities, Map map);
-        List<EntityToEntityCollisionResult> CheckEntitiesToEntities(List<ICollidableEntity> entities);
+        List<BaseCollisionResult> CheckEntitiesToCells(IEnumerable<MoveableEntity> entities, Map map);
+        List<BaseCollisionResult> CheckEntitiesToEntities(IEntityRegistry entityRegistry);
     }
 
     public class CollisionChecker : ICollisionChecker
@@ -22,9 +22,9 @@ namespace Enceladus.Core.Physics.Collision
             _satCollisionDetector = satCollisionDetector;
         }
 
-        public List<EntityToCellCollisionResult> CheckEntitiesToCells(List<ICollidableEntity> entities, Map map)
+        public List<BaseCollisionResult> CheckEntitiesToCells(IEnumerable<MoveableEntity> entities, Map map)
         {
-            var collisions = new ConcurrentBag<EntityToCellCollisionResult>();
+            var collisions = new ConcurrentBag<BaseCollisionResult>();
             //todo: stretch goal, can we leverage GPU for this?
             Parallel.ForEach(entities, entity =>
             {
@@ -38,9 +38,9 @@ namespace Enceladus.Core.Physics.Collision
             return collisions.ToList();
         }
 
-        private List<EntityToCellCollisionResult> CheckEntityToCells(ICollidableEntity entity, Map map)
+        private List<BaseCollisionResult> CheckEntityToCells(MoveableEntity entity, Map map)
         {
-            var collisions = new List<EntityToCellCollisionResult>();
+            var collisions = new List<BaseCollisionResult>();
 
             // Broad check (AABB)
             var cellCollisionCandiates = _aabbCollisionDetector.CheckPotentialCellCollisions(entity, map);
@@ -48,19 +48,19 @@ namespace Enceladus.Core.Physics.Collision
 
             //temp placeholder
             //todo: actually implement narrow circle to anything collision
-            var placeHolderCircleAlgo = (ICollidableEntity e, Cell c) =>
+            var placeHolderCircleAlgo = (MoveableEntity e, ICollidable c) =>
             {
-                return new EntityToCellCollisionResult
+                return new BaseCollisionResult
                 {
                     Entity = e,
-                    Cell = c,
+                    OtherObject = c,
                     PenetrationDepth = 0,
                     CollisionNormal = System.Numerics.Vector2.Zero
                 };
             };
 
             // Narrow check
-            Func<ICollidableEntity, Cell, EntityToCellCollisionResult> narrowCollisionAlgorithm =
+            Func<MoveableEntity, ICollidable, BaseCollisionResult> narrowCollisionAlgorithm =
                 entity.Hitbox is RectHitbox || entity.Hitbox is PolygonHitbox ? _satCollisionDetector.CheckCollision : placeHolderCircleAlgo;
 
             foreach (var cell in cellCollisionCandiates)
@@ -75,38 +75,51 @@ namespace Enceladus.Core.Physics.Collision
             return collisions;
         }
 
-        public List<EntityToEntityCollisionResult> CheckEntitiesToEntities(List<ICollidableEntity> entities)
+        public List<BaseCollisionResult> CheckEntitiesToEntities(IEntityRegistry entityRegistry)
         {
-            var collisions = new List<EntityToEntityCollisionResult>();
+            var collisions = new List<BaseCollisionResult>();
+            var moveables = entityRegistry.MovableEntities;
+            var statics = entityRegistry.StaticEntities;
 
-            // Check each unique pair of entities
-            for (int i = 0; i < entities.Count; i++)
+            // Moveable vs Moveable
+            for (int i = 0; i < moveables.Count; i++)
             {
-                for (int j = i + 1; j < entities.Count; j++)
+                for (int j = i + 1; j < moveables.Count; j++)
                 {
-                    var entity1 = entities[i];
-                    var entity2 = entities[j];
+                    CheckPair(moveables[i], moveables[j], collisions);
+                }
+            }
 
-                    // Broad phase: AABB check
-                    if (!_aabbCollisionDetector.CheckPotentialCollision(entity1, entity2))
-                        continue;
-
-                    //todo: also implement circle to anything for e to e collisions
-
-                    // Narrow phase: For now, only check polygon-to-polygon collisions
-                    if ((entity1.Hitbox is RectHitbox || entity1.Hitbox is PolygonHitbox) &&
-                        (entity2.Hitbox is RectHitbox || entity2.Hitbox is PolygonHitbox))
-                    {
-                        var result = _satCollisionDetector.CheckCollision(entity1, entity2);
-                        if (result.PenetrationDepth > 0)
-                        {
-                            collisions.Add(result);
-                        }
-                    }
+            // Moveable vs Static
+            foreach (var moveable in moveables)
+            {
+                foreach (var staticEntity in statics)
+                {
+                    CheckPair(moveable, staticEntity, collisions);
                 }
             }
 
             return collisions;
+        }
+
+        private void CheckPair(MoveableEntity moveable, Entity other, List<BaseCollisionResult> collisions)
+        {
+            // Broad phase: AABB check
+            if (!_aabbCollisionDetector.CheckPotentialCollision(moveable, other))
+                return;
+
+            //todo: also implement circle to anything for e to e collisions
+
+            // Narrow phase: For now, only check polygon-to-polygon collisions
+            if ((moveable.Hitbox is RectHitbox || moveable.Hitbox is PolygonHitbox) &&
+                (other.Hitbox is RectHitbox || other.Hitbox is PolygonHitbox))
+            {
+                var result = _satCollisionDetector.CheckCollision(moveable, other);
+                if (result.PenetrationDepth > 0)
+                {
+                    collisions.Add(result);
+                }
+            }
         }
     }
 }

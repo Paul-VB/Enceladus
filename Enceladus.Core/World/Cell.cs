@@ -1,14 +1,27 @@
-﻿using Raylib_cs;
+﻿using Enceladus.Core.Physics.Collision;
+using Enceladus.Core.Physics.Hitboxes;
+using System.Numerics;
 
 namespace Enceladus.Core.World
 {
-    public struct Cell
+    public struct Cell : ICollidable
     {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public CellType CellType { get; set; }
+        public Cell()
+        {
+        }
+
+        //todo: maybe refactor cell to just have vector position and not separate x,y?
+        public int X { get; set; } = 0;
+        public int Y { get; set; } = 0;
+        public required CellType CellType { get; set; }
         public int Health { get; set; }
         public readonly bool HasCollision => CellType.HasCollision;
+
+        public readonly Vector2 Position => new(X, Y);
+
+        public readonly float Rotation => 0; //cells dont rotate
+
+        public Hitbox Hitbox { get; set; } = new RectHitbox(1, 1);
     }
 
     public class CellType

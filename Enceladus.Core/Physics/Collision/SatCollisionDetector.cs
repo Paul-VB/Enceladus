@@ -1,7 +1,4 @@
 using Enceladus.Core.Entities;
-using Enceladus.Core.Physics.Hitboxes;
-using Enceladus.Core.World;
-using Raylib_cs;
 using System.Numerics;
 
 namespace Enceladus.Core.Physics.Collision
@@ -9,8 +6,7 @@ namespace Enceladus.Core.Physics.Collision
 
     public interface ISatCollisionDetector
     {
-        EntityToEntityCollisionResult CheckCollision(ICollidableEntity entity1, ICollidableEntity entity2);
-        EntityToCellCollisionResult CheckCollision(ICollidableEntity entity, Cell cell);
+        BaseCollisionResult CheckCollision(MoveableEntity entity, ICollidable otherObject);
     }
 
     public class SatCollisionDetector : ISatCollisionDetector
@@ -24,40 +20,20 @@ namespace Enceladus.Core.Physics.Collision
             _axesExtractor = axesExtractor;
         }
 
-        public EntityToEntityCollisionResult CheckCollision(ICollidableEntity entity1, ICollidableEntity entity2)
+        public BaseCollisionResult CheckCollision(MoveableEntity entity1, ICollidable otherObject)
         {
             var vertices1 = _vertexExtractor.ExtractWorldVertices(entity1);
-            var vertices2 = _vertexExtractor.ExtractWorldVertices(entity2);
+            var vertices2 = _vertexExtractor.ExtractWorldVertices(otherObject);
 
             var axes1 = _axesExtractor.ExtractAxes(vertices1, entity1.Hitbox);
-            var axes2 = _axesExtractor.ExtractAxes(vertices2, entity2.Hitbox);
+            var axes2 = _axesExtractor.ExtractAxes(vertices2, otherObject.Hitbox);
 
             var collisionInfo = CheckSatCollision(vertices1, vertices2, axes1.Concat(axes2).ToList());
 
-            var collisionResult = new EntityToEntityCollisionResult()
+            var collisionResult = new BaseCollisionResult()
             {
                 Entity = entity1,
-                OtherEntity = entity2,
-                PenetrationDepth = collisionInfo.PenetrationDepth,
-                CollisionNormal = collisionInfo.CollisionNormal
-            };
-            return collisionResult;
-        }
-
-        public EntityToCellCollisionResult CheckCollision(ICollidableEntity entity, Cell cell)
-        {
-            var entityVertices = _vertexExtractor.ExtractWorldVertices(entity);
-            var cellVertices = _vertexExtractor.ExtractWorldVertices(cell);
-
-            var entityAxes = _axesExtractor.ExtractAxes(entityVertices, entity.Hitbox);
-            var cellAxes = _axesExtractor.ExtractAxes(cellVertices, new RectHitbox(1, 1)); // Cell is always 1x1 rect
-
-            var collisionInfo = CheckSatCollision(entityVertices, cellVertices, entityAxes.Concat(cellAxes).ToList());
-
-            var collisionResult = new EntityToCellCollisionResult()
-            {
-                Entity = entity,
-                Cell = cell,
+                OtherObject = otherObject,
                 PenetrationDepth = collisionInfo.PenetrationDepth,
                 CollisionNormal = collisionInfo.CollisionNormal
             };

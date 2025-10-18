@@ -7,15 +7,12 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities
 {
-    public interface IPlayer
-    {
-    }
-    public class Player : MoveableEntity, ICollidableEntity, IPlayer
+    public class Player : MoveableEntity
     {
         private readonly IInputManager _inputManager;
         private readonly ISpriteService _spriteService;
 
-        public Hitbox Hitbox { get; set; }
+        public override Hitbox Hitbox { get; set; }
 
         // Pixel coordinates of submarine hull (from paint.net)
         private static readonly Vector2[] _pixelVertices =
@@ -44,7 +41,7 @@ namespace Enceladus.Core.Entities
 
         private void Init()
         {
-            Mass = _configService.Config.Player.Mass;
+            Mass = ConfigService.Config.Player.Mass;
             Sprite = _spriteService.Load(Sprites.PlayerSubRight);
             Hitbox = PolygonHitboxBuilder.BuildFromPixelCoordinates(Sprite.Width, Sprite.Height, _pixelVertices);
         }
@@ -57,7 +54,7 @@ namespace Enceladus.Core.Entities
 
         private void HandleMovementInput(float deltaTime)
         {
-            var config = _configService.Config.Player;
+            var config = ConfigService.Config.Player;
             var movementInput = _inputManager.GetMovementInput();
             if (movementInput != Vector2.Zero)
             {
@@ -75,7 +72,7 @@ namespace Enceladus.Core.Entities
 
         private void RotateTowardsVelocityVector(float deltaTime)
         {
-            var config = _configService.Config.Player;
+            var config = ConfigService.Config.Player;
             if (Velocity.Length() < config.MinVelocityForRotation) return;
 
             // Control surfaces: authority scales with speed (fins/rudders work better when moving)
@@ -93,7 +90,7 @@ namespace Enceladus.Core.Entities
         private float MotionAlignmentError => AngleHelper.ShortestAngleDifference(Rotation, VelocityAngle);
         private float GetMainEngineEffectiveThrust()
         {
-            var config = _configService.Config.Player;
+            var config = ConfigService.Config.Player;
             if (Velocity.Length() < config.MinVelocityForMainEngine)
                 return 0f; //main engine offline at extremely low speeds
 

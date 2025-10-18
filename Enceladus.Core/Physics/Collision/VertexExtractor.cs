@@ -8,28 +8,29 @@ namespace Enceladus.Core.Physics.Collision
 {
     public interface IVertexExtractor
     {
-        List<Vector2> ExtractWorldVertices(ICollidableEntity entity);
-        List<Vector2> ExtractWorldVertices(Cell cell);
+        List<Vector2> ExtractWorldVertices(ICollidable collidable);
     }
 
     public class VertexExtractor : IVertexExtractor
     {
-        public List<Vector2> ExtractWorldVertices(ICollidableEntity entity)
+        public List<Vector2> ExtractWorldVertices(ICollidable collidable)
         {
+            if (collidable is Cell cell) return GetCellVertices(cell);
+
             // Get local vertices based on hitbox type
-            List<Vector2> localVertices = entity.Hitbox switch
+            List<Vector2> localVertices = collidable.Hitbox switch
             {
                 RectHitbox rect => GetRectVertices(rect),
                 PolygonHitbox poly => poly.Vertices,
                 CircleHitbox => throw new NotSupportedException("Circle hitboxes don't have vertices - use circle collision detector"),
-                _ => throw new NotSupportedException($"Hitbox type not supported: {entity.Hitbox?.GetType()}")
+                _ => throw new NotSupportedException($"Hitbox type not supported: {collidable.Hitbox?.GetType()}")
             };
 
             // Transform to world space
-            return TransformToWorldSpace(localVertices, entity.Position, entity.Rotation);
+            return TransformToWorldSpace(localVertices, collidable.Position, collidable.Rotation);
         }
 
-        public List<Vector2> ExtractWorldVertices(Cell cell)
+        private List<Vector2> GetCellVertices(Cell cell)
         {
             // Cell is a 1x1 square, no rotation
             float x = cell.X;

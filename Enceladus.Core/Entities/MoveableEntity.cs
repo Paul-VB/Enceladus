@@ -1,59 +1,48 @@
 using Enceladus.Core.Config;
+using Enceladus.Core.Physics.Motion;
 using Enceladus.Utils;
 using System.Numerics;
 
 namespace Enceladus.Core.Entities
 {
-    public interface IMoveableEntity
+    public abstract class MoveableEntity : Entity, IMovable
     {
-        Vector2 Velocity { get; set; }
-        float Mass { get; set; }
-        float Drag { get; set; }
-        float AngularVelocity { get; set; }
-        float AngularDrag { get; set; }
-        void Accelerate(Vector2 force, float deltaTime);
-        void ApplyTorque(float torque, float deltaTime);
-    }
+        private readonly MovableComponent _movableComponent;
+        protected readonly IConfigService ConfigService;
 
-    public abstract class MoveableEntity : Entity, IMoveableEntity
-    {
-        protected readonly IConfigService _configService;
-        public virtual Vector2 Velocity { get; set; } = Vector2.Zero;
-        public virtual float Mass { get; set; }
-        public virtual float Drag { get; set; }
-        public virtual float AngularVelocity { get; set; }
-        public virtual float AngularDrag{ get; set; }
-        protected MoveableEntity(IConfigService configService)
+        public MoveableEntity(IConfigService configService)
         {
-            _configService = configService;
-
-            Init();
+            ConfigService = configService;
+            _movableComponent = new(ConfigService);
         }
 
-        private void Init()
+        public Vector2 Velocity
         {
-            Mass = _configService.Config.Physics.DefaultMass;
-            Drag = _configService.Config.Physics.DefaultDrag;
-            AngularDrag = _configService.Config.Physics.DefaultAngularDrag;
+            get => _movableComponent.Velocity;
+            set => _movableComponent.Velocity = value;
         }
-
-        public virtual void Accelerate(Vector2 force, float deltaTime)
+        public float Mass
         {
-            if(Mass <= 0f)
-                throw new InvalidOperationException($"Mass must be positive. Current value: {Mass}");
-
-            Vector2 acceleration = force / Mass;
-            Velocity += acceleration * deltaTime;
+            get => _movableComponent.Mass;
+            set => _movableComponent.Mass = value;
         }
-
-        public virtual void ApplyTorque(float torque, float deltaTime)
+        public float Drag
         {
-            if (Mass <= 0f)
-                throw new InvalidOperationException($"Mass must be positive. Current value: {Mass}");
-
-            float angularAcceleration = torque / Mass;
-            AngularVelocity += angularAcceleration * deltaTime;
+            get => _movableComponent.Drag;
+            set => _movableComponent.Drag = value;
         }
+        public float AngularVelocity
+        {
+            get => _movableComponent.AngularVelocity;
+            set => _movableComponent.AngularVelocity = value;
+        }
+        public float AngularDrag
+        {
+            get => _movableComponent.AngularDrag;
+            set => _movableComponent.AngularDrag = value;
+        }
+        public void Accelerate(Vector2 force, float deltaTime) => _movableComponent.Accelerate(force, deltaTime);
+        public void ApplyTorque(float torque, float deltaTime) => _movableComponent.ApplyTorque(torque, deltaTime);
 
         public override void Update(float deltaTime)
         {
@@ -68,7 +57,7 @@ namespace Enceladus.Core.Entities
             var dragForce = -Velocity * Drag;
             Velocity += dragForce * deltaTime;
 
-            if (Velocity.Length() < _configService.Config.Physics.MinVelocityThreshold)
+            if (Velocity.Length() < ConfigService.Config.Physics.MinVelocityThreshold)
                 Velocity = Vector2.Zero;
 
         }
@@ -83,7 +72,7 @@ namespace Enceladus.Core.Entities
             AngularVelocity += angularDragTorque * deltaTime;
 
             // Zero out very small angular velocities
-            if (Math.Abs(AngularVelocity) < _configService.Config.Physics.MinAngularVelocityThreshold)
+            if (Math.Abs(AngularVelocity) < ConfigService.Config.Physics.MinAngularVelocityThreshold)
                 AngularVelocity = 0f;
         }
     }

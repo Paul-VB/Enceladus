@@ -34,7 +34,7 @@ namespace Enceladus.Core.Physics
             }
 
             // Handle collisions (detection + resolution)
-            _collisionService.HandleCollisions(_entityRegistry.Entities.Values, _worldService.CurrentMap);
+            _collisionService.HandleCollisions(_worldService.CurrentMap);
 
             // Update camera to follow tracked entity
             _cameraManager.Update();
