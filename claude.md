@@ -1,6 +1,30 @@
 # Claude Code Context - Enceladus
 
-## Current Architecture (Last Updated: 2025-01-18)
+## Game Overview
+
+### Core Concept
+- **Genre**: 2D Submersible Action/Mining/Survival
+- **Setting**: Deep subsurface ocean of Saturn's moon Enceladus (lawless resource exploitation)
+- **Physics**: Low gravity, near-neutral buoyancy = unique "floaty flying" movement
+
+### Key Gameplay Systems (Future Implementation)
+- **Dual Mode Controls**:
+  - Coarse Mode (traversal): High-speed movement, auto-levels for thrust
+  - Fine Mode (precision): Slow slewing, fixed attitude for drilling/combat
+- **Equipment Systems**:
+  - Mark System (defines base power/efficiency)
+  - Quality System (defines augment slots)
+  - Augment Extraction (salvage augments from items)
+- **Environment**:
+  - Tunnel refreeze (time pressure)
+  - Iceologic instability (drilling limits per sector)
+  - Biomes with unique hostile life and loot
+- **Economy**:
+  - Hostile rival mining subs
+  - Base trading (sell haul, repairs, refuel)
+  - Orbital trader (rare high-tier items, time-limited)
+
+## Current Architecture
 
 ### Entity System
 - **All entities are ICollidable** (nullable Hitbox for non-collidables)
@@ -47,6 +71,9 @@
 
 ## Architecture Principles
 
+### Todo tracking/roadmap
+- Make sure that the todo.md file in the root of the repo is kept up to date so we cna track bugs and goals
+
 ### When to Use Components
 **USE** components when:
 - Interface has complex method logic (e.g., `IMovable.Accelerate()` with physics math)
@@ -65,11 +92,6 @@
 2. **Avoid allocations in tight loops**
    - No `.ToList()` in per-frame code
    - Reuse collections where possible
-
-### Coordinate System Rules
-- **Entities**: Always centered (Position = center point, hitboxes centered at origin)
-- **Cells**: Always top-left grid-aligned (Position = (X, Y) integer coordinates)
-- **Never mix**: VertexExtractor handles the translation between systems
 
 ## Known Gotchas
 
@@ -103,3 +125,4 @@
 - Line-by-line review before committing
 - Keep working code separate from experimental changes
 - Keep comments in code to a miniumum. Comments can become out-of-sync from the code if the code changes. I prefer commends be reserved for explaining weird or unclear complex logic. The code should be clean enough that it is mostly self-documenting
+- 
