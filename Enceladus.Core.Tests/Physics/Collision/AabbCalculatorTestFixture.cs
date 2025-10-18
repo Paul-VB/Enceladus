@@ -19,7 +19,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
         {
             // Arrange
             var circle = new CircleHitbox(5f);
-            var entity = new TestCollidableEntity(circle, new Vector2(10, 20), 0f);
+            var entity = EntityHelpers.CreateTestEntity(new Vector2(10, 20), circle, 0f);
 
             // Act
             var result = _aabbCalculator.CalculateAabb(entity);
@@ -36,7 +36,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
         {
             // Arrange
             var rect = new RectHitbox(new Vector2(8, 6));
-            var entity = new TestCollidableEntity(rect, new Vector2(10, 20), 0f);
+            var entity = EntityHelpers.CreateTestEntity(new Vector2(10, 20), rect, 0f);
 
             // Act
             var result = _aabbCalculator.CalculateAabb(entity);
@@ -53,7 +53,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
         {
             // Arrange
             var rect = new RectHitbox(new Vector2(8, 6));
-            var entity = new TestCollidableEntity(rect, new Vector2(10, 20), 90f);
+            var entity = EntityHelpers.CreateTestEntity(new Vector2(10, 20), rect, 90f);
 
             // Act
             var result = _aabbCalculator.CalculateAabb(entity);
@@ -70,7 +70,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
         {
             // Arrange
             var rect = new RectHitbox(new Vector2(10, 10));
-            var entity = new TestCollidableEntity(rect, new Vector2(0, 0), 45f);
+            var entity = EntityHelpers.CreateTestEntity(new Vector2(0, 0), rect, 45f);
 
             // Act
             var result = _aabbCalculator.CalculateAabb(entity);
@@ -94,7 +94,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
                 new Vector2(2, 3)
             };
             var polygon = new PolygonHitbox(vertices);
-            var entity = new TestCollidableEntity(polygon, new Vector2(10, 20), 0f);
+            var entity = EntityHelpers.CreateTestEntity(new Vector2(10, 20), polygon, 0f);
 
             // Act
             var result = _aabbCalculator.CalculateAabb(entity);
@@ -118,7 +118,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
                 new Vector2(-1, 1)
             };
             var polygon = new PolygonHitbox(vertices);
-            var entity = new TestCollidableEntity(polygon, new Vector2(0, 0), 45f);
+            var entity = EntityHelpers.CreateTestEntity(new Vector2(0, 0), polygon, 45f);
 
             // Act
             var result = _aabbCalculator.CalculateAabb(entity);

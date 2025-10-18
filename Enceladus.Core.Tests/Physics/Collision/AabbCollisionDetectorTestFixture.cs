@@ -20,7 +20,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
             _aabbCollisionDetector = new AabbCollisionDetector(_aabbCalculator.Object);
         }
 
-        private void GivenEntityHasCalculatedAabb(ICollidableEntity entity, Rectangle aabb)
+        private void GivenEntityHasCalculatedAabb(Entity entity, Rectangle aabb)
         {
             _aabbCalculator
                 .Setup(calc => calc.CalculateAabb(entity))
@@ -128,13 +128,9 @@ namespace Enceladus.Core.Tests.Physics.Collision
         }
 
         // Helper methods
-        private ICollidableEntity CreateTestEntity()
+        private TestEntity CreateTestEntity()
         {
-            return new TestCollidableEntity(
-                new CircleHitbox(5f),
-                Vector2.Zero,
-                0f
-            );
+            return EntityHelpers.CreateTestEntity(Vector2.Zero, new CircleHitbox(5f));
         }
     }
 }

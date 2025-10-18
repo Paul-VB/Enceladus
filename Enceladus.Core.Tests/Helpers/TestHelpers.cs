@@ -63,33 +63,18 @@ namespace Enceladus.Core.Tests.Helpers
     }
 
     /// <summary>
-    /// Test helper entity for collision testing
-    /// </summary>
-    public class TestCollidableEntity : ICollidableEntity
-    {
-        public TestCollidableEntity(Hitbox hitbox, Vector2 position, float rotation)
-        {
-            Hitbox = hitbox;
-            Position = position;
-            Rotation = rotation;
-            Guid = Guid.NewGuid();
-        }
-
-        public Hitbox Hitbox { get; set; }
-        public Vector2 Position { get; set; }
-        public float Rotation { get; set; }
-        public Guid Guid { get; set; }
-        public Texture2D Sprite { get; set; }
-
-        public void Draw(Camera2D camera) { }
-        public void Update(float deltaTime) { }
-    }
-
-    /// <summary>
-    /// Test helper entity for general entity testing
+    /// Test helper entity for general entity testing.
+    /// Use EntityHelpers.CreateTestEntity() to create instances.
     /// </summary>
     public class TestEntity : Entity
     {
+        public TestEntity()
+        {
+            Guid = Guid.NewGuid();
+            Hitbox = new RectHitbox(1, 1); // Default hitbox
+        }
+
+        public override Hitbox Hitbox { get; set; }
         public override void Update(float deltaTime) { }
     }
 
@@ -101,9 +86,14 @@ namespace Enceladus.Core.Tests.Helpers
         /// <summary>
         /// Creates a test entity at the specified position
         /// </summary>
-        public static TestEntity CreateTestEntity(Vector2 position)
+        public static TestEntity CreateTestEntity(Vector2 position, Hitbox? hitbox = null, float rotation = 0f)
         {
-            return new TestEntity { Position = position };
+            hitbox ??= new RectHitbox(1,1);
+            return new TestEntity { 
+                Position = position,
+                Hitbox = hitbox,
+                Rotation = rotation
+            };
         }
     }
 }
