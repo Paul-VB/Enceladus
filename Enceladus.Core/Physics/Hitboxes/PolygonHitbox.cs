@@ -9,7 +9,7 @@ namespace Enceladus.Core.Physics.Hitboxes
             Vertices = vertices;
         }
 
-        public List<Vector2> Vertices {  get; set; }
+        public List<Vector2> Vertices { get; set; }
     }
 
 }

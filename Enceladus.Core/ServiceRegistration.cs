@@ -1,7 +1,9 @@
 using Enceladus.Core.Config;
+using Enceladus.Core.Entities;
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics;
 using Enceladus.Core.Physics.Collision;
+using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.World;
 using Microsoft.Extensions.DependencyInjection;
@@ -27,6 +29,11 @@ namespace Enceladus.Core
             services.AddSingleton<IMapGenerator, MapGenerator>();
             services.AddSingleton<ICellFactory, CellFactory>();
 
+            // Entity services
+            services.AddSingleton<IEntityFactory, EntityFactory>();
+            services.AddSingleton<IPolygonHitboxBuilder, PolygonHitboxBuilder>();
+            services.AddSingleton<IConcavePolygonSlicer, EarClippingTriangulationSlicer>();
+
             // Rendering services
             services.AddSingleton<IRenderingService, RenderingService>();
             services.AddSingleton<IMapRenderer, MapRenderer>();
@@ -41,6 +48,7 @@ namespace Enceladus.Core
             services.AddSingleton<IAabbCalculator, AabbCalculator>();
             services.AddSingleton<ISatCollisionDetector, SatCollisionDetector>();
             services.AddSingleton<IVertexExtractor, VertexExtractor>();
+            services.AddSingleton<IVertexTransformer, VertexTransformer>();
             services.AddSingleton<IAxesExtractor, AxesExtractor>();
 
             return services.BuildServiceProvider();

@@ -61,7 +61,7 @@ namespace Enceladus.Core.Physics.Collision
 
             // Narrow check
             Func<MovableEntity, ICollidable, CollisionResult> narrowCollisionAlgorithm =
-                entity.Hitbox is RectHitbox || entity.Hitbox is PolygonHitbox ? _satCollisionDetector.CheckCollision : placeHolderCircleAlgo;
+                entity.Hitbox is RectHitbox || entity.Hitbox is PolygonHitbox || entity.Hitbox is ConcavePolygonHitbox ? _satCollisionDetector.CheckCollision : placeHolderCircleAlgo;
 
             foreach (var cell in cellCollisionCandiates)
             {
@@ -111,8 +111,8 @@ namespace Enceladus.Core.Physics.Collision
             //todo: also implement circle to anything for e to e collisions
 
             // Narrow phase: For now, only check polygon-to-polygon collisions
-            if ((moveable.Hitbox is RectHitbox || moveable.Hitbox is PolygonHitbox) &&
-                (other.Hitbox is RectHitbox || other.Hitbox is PolygonHitbox))
+            if ((moveable.Hitbox is RectHitbox || moveable.Hitbox is PolygonHitbox || moveable.Hitbox is ConcavePolygonHitbox) &&
+                (other.Hitbox is RectHitbox || other.Hitbox is PolygonHitbox || other.Hitbox is ConcavePolygonHitbox))
             {
                 var result = _satCollisionDetector.CheckCollision(moveable, other);
                 if (result.PenetrationDepth > 0)

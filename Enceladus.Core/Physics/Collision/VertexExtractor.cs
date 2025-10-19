@@ -1,5 +1,5 @@
-using Enceladus.Core.Entities;
 using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Core.Utils;
 using Enceladus.Core.World;
 using Enceladus.Utils;
 using System.Numerics;
@@ -8,26 +8,31 @@ namespace Enceladus.Core.Physics.Collision
 {
     public interface IVertexExtractor
     {
-        List<Vector2> ExtractWorldVertices(ICollidable collidable);
+        List<List<Vector2>> ExtractWorldVerticeses(ICollidable collidable);
     }
 
     public class VertexExtractor : IVertexExtractor
     {
-        public List<Vector2> ExtractWorldVertices(ICollidable collidable)
+
+        //Verticeses is not a typo. if vertex is singular, and vertices is plural, then vertices*es* is plural squared
+        public List<List<Vector2>> ExtractWorldVerticeses(ICollidable collidable)
         {
-            if (collidable is Cell cell) return GetCellVertices(cell);
+            if (collidable is Cell cell) return GetCellVertices(cell).AsList();
 
             // Get local vertices based on hitbox type
-            List<Vector2> localVertices = collidable.Hitbox switch
+            List<List<Vector2>> localVerticeses = collidable.Hitbox switch
             {
-                RectHitbox rect => GetRectVertices(rect),
-                PolygonHitbox poly => poly.Vertices,
+                RectHitbox rect => GetRectVertices(rect).AsList(),
+                PolygonHitbox poly => poly.Vertices.AsList(),
+                ConcavePolygonHitbox concavePoly => concavePoly.ConvexSlices.Select(x => x.Vertices).ToList(),
                 CircleHitbox => throw new NotSupportedException("Circle hitboxes don't have vertices - use circle collision detector"),
                 _ => throw new NotSupportedException($"Hitbox type not supported: {collidable.Hitbox?.GetType()}")
             };
 
             // Transform to world space
-            return TransformToWorldSpace(localVertices, collidable.Position, collidable.Rotation);
+            var WorldVerticeses = localVerticeses.Select(x => TransformToWorldSpace(x, collidable.Position, collidable.Rotation)).ToList();
+            return WorldVerticeses;
+
         }
 
         private List<Vector2> GetCellVertices(Cell cell)
@@ -70,7 +75,6 @@ namespace Enceladus.Core.Physics.Collision
             foreach (var vertex in localVertices)
             {
                 // Rotate vertex
-                //todo: is this the only place we rotate vertecies? should we pull this out?
                 var rotated = new Vector2(
                     vertex.X * cos - vertex.Y * sin,
                     vertex.X * sin + vertex.Y * cos

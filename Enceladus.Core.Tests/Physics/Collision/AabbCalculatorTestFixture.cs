@@ -5,15 +5,20 @@ using System.Numerics;
 
 namespace Enceladus.Core.Tests.Physics.Collision
 {
-    public class AabbCalculatorTestFixture
-    {
-        private readonly IAabbCalculator _aabbCalculator;
 
-        public AabbCalculatorTestFixture()
+    public class AabbCalculatorTestBase
+    {
+        protected readonly IAabbCalculator _aabbCalculator;
+
+        public AabbCalculatorTestBase()
         {
             _aabbCalculator = new AabbCalculator();
         }
+    }
 
+
+    public class AabbCalculatorCircleHitboxTestFixture : AabbCalculatorTestBase
+    {
         [Fact]
         public void CalculateAabb_CircleHitbox_ReturnsSquareBoundingBox()
         {
@@ -30,7 +35,10 @@ namespace Enceladus.Core.Tests.Physics.Collision
             Assert.Equal(10f, result.Width);
             Assert.Equal(10f, result.Height);
         }
+    }
 
+    public class AabbCalculatorRectHitboxTestFixture : AabbCalculatorTestBase
+    {
         [Fact]
         public void CalculateAabb_RectHitbox_NoRotation_ReturnsSameSize()
         {
@@ -82,17 +90,20 @@ namespace Enceladus.Core.Tests.Physics.Collision
             Assert.Equal(expectedSize, result.Width, precision: 2);
             Assert.Equal(expectedSize, result.Height, precision: 2);
         }
+    }
 
+    public class AabbCalculatorPolygonHitboxTestFixture : AabbCalculatorTestBase
+    {
         [Fact]
         public void CalculateAabb_PolygonHitbox_NoRotation_ReturnsMinMaxBounds()
         {
             // Arrange - Triangle with vertices at (0,0), (4,0), (2,3)
             var vertices = new List<Vector2>
-            {
-                new Vector2(0, 0),
-                new Vector2(4, 0),
-                new Vector2(2, 3)
-            };
+                {
+                    new Vector2(0, 0),
+                    new Vector2(4, 0),
+                    new Vector2(2, 3)
+                };
             var polygon = new PolygonHitbox(vertices);
             var entity = EntityHelpers.CreateTestEntity(new Vector2(10, 20), polygon, 0f);
 
@@ -111,12 +122,12 @@ namespace Enceladus.Core.Tests.Physics.Collision
         {
             // Arrange - Square 2x2 centered at origin
             var vertices = new List<Vector2>
-            {
-                new Vector2(-1, -1),
-                new Vector2(1, -1),
-                new Vector2(1, 1),
-                new Vector2(-1, 1)
-            };
+                {
+                    new Vector2(-1, -1),
+                    new Vector2(1, -1),
+                    new Vector2(1, 1),
+                    new Vector2(-1, 1)
+                };
             var polygon = new PolygonHitbox(vertices);
             var entity = EntityHelpers.CreateTestEntity(new Vector2(0, 0), polygon, 45f);
 
@@ -129,6 +140,127 @@ namespace Enceladus.Core.Tests.Physics.Collision
             Assert.Equal(-expectedSize / 2f, result.Y, precision: 2);
             Assert.Equal(expectedSize, result.Width, precision: 2);
             Assert.Equal(expectedSize, result.Height, precision: 2);
+        }
+    }
+
+    public class AabbCalculatorConcavePolygonTestFixture : AabbCalculatorTestBase
+    {
+        [Fact]
+        public void CalculateAabb_ConcavePolygonHitbox_NoRotation_ReturnsOuterBounds()
+        {
+            // Arrange - L-shaped concave polygon (outer vertices form the L)
+            var outerVertices = new List<Vector2>
+            {
+                new Vector2(0, 0),
+                new Vector2(4, 0),
+                new Vector2(4, 2),
+                new Vector2(2, 2),
+                new Vector2(2, 4),
+                new Vector2(0, 4)
+            };
+
+            // Create dummy slices (not used for AABB calculation)
+            var slices = new List<PolygonHitbox>
+            {
+                new PolygonHitbox(new List<Vector2> { new Vector2(0, 0), new Vector2(4, 0), new Vector2(2, 2) }),
+                new PolygonHitbox(new List<Vector2> { new Vector2(0, 0), new Vector2(2, 2), new Vector2(0, 4) })
+            };
+
+            var concaveHitbox = new ConcavePolygonHitbox
+            {
+                OuterVertices = outerVertices,
+                ConvexSlices = slices
+            };
+
+            var entity = EntityHelpers.CreateTestEntity(new Vector2(10, 20), concaveHitbox, 0f);
+
+            // Act
+            var result = _aabbCalculator.CalculateAabb(entity);
+
+            // Assert - AABB should be 4x4 starting at position (10, 20)
+            Assert.Equal(10f, result.X, precision: 2);
+            Assert.Equal(20f, result.Y, precision: 2);
+            Assert.Equal(4f, result.Width, precision: 2);
+            Assert.Equal(4f, result.Height, precision: 2);
+        }
+
+        [Fact]
+        public void CalculateAabb_ConcavePolygonHitbox_WithRotation_AccountsForRotatedOuterVertices()
+        {
+            // Arrange - Simple L-shaped concave polygon centered at origin
+            var outerVertices = new List<Vector2>
+            {
+                new Vector2(-2, -2),
+                new Vector2(2, -2),
+                new Vector2(2, 0),
+                new Vector2(0, 0),
+                new Vector2(0, 2),
+                new Vector2(-2, 2)
+            };
+
+            var slices = new List<PolygonHitbox>
+            {
+                new PolygonHitbox(new List<Vector2> { new Vector2(-2, -2), new Vector2(2, -2), new Vector2(0, 0) })
+            };
+
+            var concaveHitbox = new ConcavePolygonHitbox
+            {
+                OuterVertices = outerVertices,
+                ConvexSlices = slices
+            };
+
+            var entity = EntityHelpers.CreateTestEntity(new Vector2(0, 0), concaveHitbox, 90f);
+
+            // Act
+            var result = _aabbCalculator.CalculateAabb(entity);
+
+            // Assert - After 90° rotation, the L should still fit in a 4x4 box
+            Assert.Equal(-2f, result.X, precision: 2);
+            Assert.Equal(-2f, result.Y, precision: 2);
+            Assert.Equal(4f, result.Width, precision: 2);
+            Assert.Equal(4f, result.Height, precision: 2);
+        }
+
+        [Fact]
+        public void CalculateAabb_ConcavePolygonHitbox_45DegreeRotation_IncreasesAABB()
+        {
+            // Arrange - L-shaped concave polygon centered at origin
+            var outerVertices = new List<Vector2>
+            {
+                new Vector2(-2, -2),
+                new Vector2(2, -2),
+                new Vector2(2, 0),
+                new Vector2(0, 0),
+                new Vector2(0, 2),
+                new Vector2(-2, 2)
+            };
+
+            var slices = new List<PolygonHitbox>
+            {
+                new PolygonHitbox(new List<Vector2> { new Vector2(-2, -2), new Vector2(2, -2), new Vector2(0, 0) })
+            };
+
+            var concaveHitbox = new ConcavePolygonHitbox
+            {
+                OuterVertices = outerVertices,
+                ConvexSlices = slices
+            };
+
+            var entity = EntityHelpers.CreateTestEntity(new Vector2(0, 0), concaveHitbox, 45f);
+
+            // Act
+            var result = _aabbCalculator.CalculateAabb(entity);
+
+            // Assert - 45° rotation increases the AABB size
+            // The L-shape's diagonal extent when rotated 45° should be larger than 4x4
+            float sqrt2 = MathF.Sqrt(2);
+            float expectedApproxSize = 4f * sqrt2;
+
+            // AABB should be roughly centered and larger than original 4x4
+            Assert.True(result.Width > 4f, "Width should increase after 45° rotation");
+            Assert.True(result.Height > 4f, "Height should increase after 45° rotation");
+            Assert.True(result.Width < expectedApproxSize + 1f, "Width should be reasonable");
+            Assert.True(result.Height < expectedApproxSize + 1f, "Height should be reasonable");
         }
     }
 }

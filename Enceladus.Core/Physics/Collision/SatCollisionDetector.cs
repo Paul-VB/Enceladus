@@ -20,25 +20,77 @@ namespace Enceladus.Core.Physics.Collision
             _axesExtractor = axesExtractor;
         }
 
-        public CollisionResult CheckCollision(MovableEntity entity1, ICollidable otherObject)
+        //public CollisionResult CheckCollision(MovableEntity entity1, ICollidable otherObject)
+        //{
+        //    var vertices1 = _vertexExtractor.ExtractWorldVertices(entity1);
+        //    var vertices2 = _vertexExtractor.ExtractWorldVertices(otherObject);
+
+        //    var axes1 = _axesExtractor.ExtractAxes(vertices1, entity1.Hitbox);
+        //    var axes2 = _axesExtractor.ExtractAxes(vertices2, otherObject.Hitbox);
+
+        //    var collisionInfo = CheckSatCollision(vertices1, vertices2, axes1.Concat(axes2).ToList());
+
+        //    var collisionResult = new CollisionResult()
+        //    {
+        //        Entity = entity1,
+        //        OtherObject = otherObject,
+        //        PenetrationDepth = collisionInfo.PenetrationDepth,
+        //        CollisionNormal = collisionInfo.CollisionNormal
+        //    };
+        //    return collisionResult;
+        //}
+
+        public CollisionResult CheckCollision(MovableEntity entity, ICollidable otherObject)
         {
-            var vertices1 = _vertexExtractor.ExtractWorldVertices(entity1);
-            var vertices2 = _vertexExtractor.ExtractWorldVertices(otherObject);
+            var entityWorldVerticeses = _vertexExtractor.ExtractWorldVerticeses(entity);
+            var otherObjectWorldVerticeses = _vertexExtractor.ExtractWorldVerticeses(otherObject);
 
-            var axes1 = _axesExtractor.ExtractAxes(vertices1, entity1.Hitbox);
-            var axes2 = _axesExtractor.ExtractAxes(vertices2, otherObject.Hitbox);
+            var collisionInfos = new List<CollisionInfo>();
 
-            var collisionInfo = CheckSatCollision(vertices1, vertices2, axes1.Concat(axes2).ToList());
+            foreach(var entityVertecies in entityWorldVerticeses)
+            {
+                foreach(var otherObjectVertecies in otherObjectWorldVerticeses)
+                {
+                    var entityAxes = _axesExtractor.ExtractAxes(entityVertecies, entity.Hitbox);
+                    var otherObjectAxes = _axesExtractor.ExtractAxes(otherObjectVertecies, otherObject.Hitbox);
+
+                    var collisionInfo = CheckSatCollision(entityVertecies, otherObjectVertecies, entityAxes.Concat(otherObjectAxes).ToList());
+                    collisionInfos.Add(collisionInfo);
+                }
+            }
+
+            var deepestCollisioninfo = GetDeepestCollision(collisionInfos);
 
             var collisionResult = new CollisionResult()
             {
-                Entity = entity1,
+                Entity = entity,
                 OtherObject = otherObject,
-                PenetrationDepth = collisionInfo.PenetrationDepth,
-                CollisionNormal = collisionInfo.CollisionNormal
+                PenetrationDepth = deepestCollisioninfo.PenetrationDepth,
+                CollisionNormal = deepestCollisioninfo.CollisionNormal
             };
+
             return collisionResult;
+
         }
+
+        private CollisionInfo GetDeepestCollision(List<CollisionInfo> collisionInfos)
+        {
+            var deepestCollisionInfo = new CollisionInfo()
+            {
+                PenetrationDepth = 0f,
+                CollisionNormal = Vector2.Zero
+            };
+
+            foreach (var collisionInfo in collisionInfos)
+            {
+                if (collisionInfo.PenetrationDepth > deepestCollisionInfo.PenetrationDepth)
+                    deepestCollisionInfo = collisionInfo;
+            }
+
+            return deepestCollisionInfo;
+        }
+
+
 
         //todo: we need some way of supporting concave polygons too. this would take care of one of the critical things on the main todo from claudeCode. 
         //whats an effiicent way to do this? split up the polygon into the smallest number of convex polygons? maybe we could add a function somewhere to take in a polygon, and if its already convex return it. if its concave, do math and eventually return a list of convex polygons.

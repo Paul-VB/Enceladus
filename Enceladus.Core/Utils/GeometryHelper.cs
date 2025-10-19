@@ -1,9 +1,39 @@
+using Enceladus.Utils;
 using Raylib_cs;
+using System.Numerics;
 
 namespace Enceladus.Core.Utils
 {
     public static class GeometryHelper
     {
+        /// <summary>
+        /// Transforms a list of local vertices to world space by applying rotation and translation.
+        /// </summary>
+        //todo: maybe move this elsewhere and use it in the monsters and the vertexExtractor
+        public static List<Vector2> TransformToWorldSpace(List<Vector2> localVertices, Vector2 position, float rotationDegrees)
+        {
+            float radians = AngleHelper.DegToRad(rotationDegrees);
+            float cos = MathF.Cos(radians);
+            float sin = MathF.Sin(radians);
+
+            var worldVertices = new List<Vector2>();
+
+            foreach (var vertex in localVertices)
+            {
+                // Rotate vertex
+                var rotated = new Vector2(
+                    vertex.X * cos - vertex.Y * sin,
+                    vertex.X * sin + vertex.Y * cos
+                );
+
+                // Translate to world position
+                worldVertices.Add(rotated + position);
+            }
+
+            return worldVertices;
+        }
+
+
         /// <summary>
         /// Returns the bounding rectangle for a cell at the given world coordinates.
         /// Cells are 1x1 squares in world space.

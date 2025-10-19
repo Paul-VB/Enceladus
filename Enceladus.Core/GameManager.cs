@@ -21,30 +21,29 @@ namespace Enceladus.Core
     {
         private readonly IConfigService _configService;
         private readonly IWindowManager _windowManager;
-        private readonly IEntityRegistry _entityRegistry;
-        private readonly ISpriteService _spriteService;
-        private readonly IInputManager _inputManager;
+        private readonly IEntityFactory _entityFactory;
         private readonly ICameraManager _cameraManager;
         private readonly IWorldService _worldService;
         private readonly IPhysicsService _physicsService;
         private readonly IRenderingService _renderingService;
+        private readonly ISpriteService _spriteService;
 
         private Player _player;
 
         public bool IsRunning { get; private set; }
 
-        public GameManager(IConfigService configService, IWindowManager windowManager, IEntityRegistry entityRegistry, ISpriteService spriteService, IInputManager inputManager,
-            ICameraManager cameraManager, IWorldService worldService, IPhysicsService physicsService, IRenderingService renderingService)
+        public GameManager(IConfigService configService, IWindowManager windowManager, IEntityFactory entityFactory,
+            ICameraManager cameraManager, IWorldService worldService, IPhysicsService physicsService, IRenderingService renderingService,
+            ISpriteService spriteService)
         {
             _configService = configService;
             _windowManager = windowManager;
-            _entityRegistry = entityRegistry;
-            _spriteService = spriteService;
-            _inputManager = inputManager;
+            _entityFactory = entityFactory;
             _cameraManager = cameraManager;
             _worldService = worldService;
             _physicsService = physicsService;
             _renderingService = renderingService;
+            _spriteService = spriteService;
         }
 
         public void Initialize()
@@ -60,34 +59,21 @@ namespace Enceladus.Core
 
         private void SetupEntities()
         {
-            _player = new Player(_inputManager, _spriteService, _configService) { Position = new Vector2(0, 0) };
-            _entityRegistry.Register(_player);
-
+            _player = _entityFactory.CreatePlayer(new Vector2(0, 0));
             SpawnTestMonsters();
-
         }
 
         private void SpawnTestMonsters()
         {
-            var triangle = new EvilBlueTriangle(_inputManager, _configService)
-            {
-                Position = new Vector2(5, 5)
-            };
-            _entityRegistry.Register(triangle);
+            _entityFactory.CreateEvilBlueTriangle(new Vector2(5, 5));
 
-            var pentagon = new MenacingRedPentagon(_configService)
-            {
-                Position = new Vector2(-8, 3),
-                Velocity = new Vector2(-1, 2),
-                AngularVelocity = -30f
-            };
-            _entityRegistry.Register(pentagon);
+            var pentagon = _entityFactory.CreateMenacingRedPentagon(new Vector2(-8, 3));
+            pentagon.Velocity = new Vector2(-1, 2);
+            pentagon.AngularVelocity = -30f;
 
-            var circle = new HorribleYellowCircle(_inputManager, _configService)
-            {
-                Position = new Vector2(0, -10)
-            };
-            _entityRegistry.Register(circle);
+            _entityFactory.CreateHorribleYellowCircle(new Vector2(0, -10));
+
+            _entityFactory.CreateAwfulGreenStar(new Vector2(10, 0));
         }
 
         private void Run()

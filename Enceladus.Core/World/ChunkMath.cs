@@ -1,3 +1,4 @@
+using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Utils;
 using Raylib_cs;
 
@@ -70,6 +71,7 @@ namespace Enceladus.Core.World
                 foreach (var cell in chunk.Cells)
                 {
                     // Check if cell's 1x1 bounds overlap with the query bounds
+                    //todo: is there a way we can use the cell's hitbox here instead of getCellBounds?
                     var cellBounds = GeometryHelper.GetCellBounds(cell.X, cell.Y);
                     if (GeometryHelper.DoRectanglesOverlap(cellBounds, bounds))
                     {

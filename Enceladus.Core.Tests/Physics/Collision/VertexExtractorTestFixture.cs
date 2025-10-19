@@ -27,7 +27,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
             };
 
             // Act
-            var vertices = _vertexExtractor.ExtractWorldVertices(cell);
+            var vertices = _vertexExtractor.ExtractWorldVerticeses(cell)[0];
 
             // Assert - Cell should occupy (5, 10) to (6, 11), NOT centered
             Assert.Equal(4, vertices.Count);
@@ -49,7 +49,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
             };
 
             // Act
-            var vertices = _vertexExtractor.ExtractWorldVertices(cell);
+            var vertices = _vertexExtractor.ExtractWorldVerticeses(cell)[0];
 
             // Assert - Should be (0,0) to (1,1), NOT (-0.5,-0.5) to (0.5,0.5)
             Assert.DoesNotContain(vertices, v => v.X < 0 || v.Y < 0);
@@ -68,7 +68,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
             );
 
             // Act
-            var vertices = _vertexExtractor.ExtractWorldVertices(entity);
+            var vertices = _vertexExtractor.ExtractWorldVerticeses(entity)[0];
 
             // Assert - 2x2 rect centered at (10, 20) should span (9, 19) to (11, 21)
             Assert.Equal(4, vertices.Count);
@@ -89,7 +89,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
             );
 
             // Act
-            var vertices = _vertexExtractor.ExtractWorldVertices(entity);
+            var vertices = _vertexExtractor.ExtractWorldVerticeses(entity)[0];
 
             // Assert - Should still be centered at origin after rotation
             Assert.Equal(4, vertices.Count);
@@ -126,7 +126,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
             );
 
             // Act
-            var worldVertices = _vertexExtractor.ExtractWorldVertices(entity);
+            var worldVertices = _vertexExtractor.ExtractWorldVerticeses(entity)[0];
 
             // Assert - Local vertices translated by position
             Assert.Equal(3, worldVertices.Count);

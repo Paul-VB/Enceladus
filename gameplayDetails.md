@@ -14,6 +14,16 @@
 
 The submersible is a heavy-duty mining rig whose systems are centered on two core modes:
 
+### Art Direction
+The player submarine draws design inspiration from WWII-era submarines, specifically the **USS Cod (SS-224)**, a Gato-class submarine. Design elements to incorporate:
+- Classic submarine silhouette with conning tower
+- Riveted hull plating and utilitarian industrial aesthetic
+- Vintage control surfaces and diving planes
+- Retro-futuristic hybrid: WWII submarine meets sci-fi mining equipment
+- Weathered, working-class feel - this is a tool, not a sleek spaceship
+
+*Note: The USS Cod is a museum ship in Cleveland, Ohio with sentimental significance to the developers.*
+
 ### 1. COARSE MODE (Traversal)
 - **Purpose**: High-speed movement, dodging, and fleeing in open water
 - **Movement**: WASD translates the sub. Sub auto-levels for maximum thrust

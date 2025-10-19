@@ -15,7 +15,8 @@ namespace Enceladus.Core.Physics.Collision
             if (hitbox is RectHitbox)
                 return GetRectAxes(vertices);
 
-            if (hitbox is PolygonHitbox)
+            //todo: verify that this is what we want to happen with extract axis
+            if (hitbox is PolygonHitbox || hitbox is ConcavePolygonHitbox)
                 return GetPolygonAxes(vertices);
 
             throw new NotSupportedException($"Hitbox type not supported for SAT: {hitbox?.GetType()}");
