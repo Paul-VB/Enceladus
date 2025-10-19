@@ -9,7 +9,6 @@ namespace Enceladus.Core.Utils
         /// <summary>
         /// Transforms a list of local vertices to world space by applying rotation and translation.
         /// </summary>
-        //todo: maybe move this elsewhere and use it in the monsters and the vertexExtractor
         public static List<Vector2> TransformToWorldSpace(List<Vector2> localVertices, Vector2 position, float rotationDegrees)
         {
             float radians = AngleHelper.DegToRad(rotationDegrees);

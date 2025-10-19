@@ -90,11 +90,6 @@ namespace Enceladus.Core.Physics.Collision
             return deepestCollisionInfo;
         }
 
-
-
-        //todo: we need some way of supporting concave polygons too. this would take care of one of the critical things on the main todo from claudeCode. 
-        //whats an effiicent way to do this? split up the polygon into the smallest number of convex polygons? maybe we could add a function somewhere to take in a polygon, and if its already convex return it. if its concave, do math and eventually return a list of convex polygons.
-        //but also wait... this seems like expensive math to do each frame. i think if we have a hitbox that is concave we can compute the convex component hotboxes once and save it to the entity. maybe the polygon hitbox should be a list<ConcavePolygon> and we make a new class ConcavePolygon : List<Vector2> 
         private CollisionInfo CheckSatCollision(List<Vector2> vertices1, List<Vector2> vertices2, List<Vector2> axes)
         {
             var minPenetration = float.MaxValue;

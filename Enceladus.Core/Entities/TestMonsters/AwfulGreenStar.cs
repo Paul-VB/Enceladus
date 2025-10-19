@@ -42,19 +42,8 @@ namespace Enceladus.Core.Entities.TestMonsters
         {
             var concaveHitbox = (ConcavePolygonHitbox)Hitbox;
 
-            // Transform vertices to world space
-            float radians = AngleHelper.DegToRad(Rotation);
-            float cos = MathF.Cos(radians);
-            float sin = MathF.Sin(radians);
-
-            var worldVertices = new Vector2[concaveHitbox.OuterVertices.Count];
-            for (int i = 0; i < concaveHitbox.OuterVertices.Count; i++)
-            {
-                var vertex = concaveHitbox.OuterVertices[i];
-                float rotatedX = vertex.X * cos - vertex.Y * sin;
-                float rotatedY = vertex.X * sin + vertex.Y * cos;
-                worldVertices[i] = new Vector2(rotatedX + Position.X, rotatedY + Position.Y);
-            }
+            // Transform outer vertices to world space for outline
+            var worldVertices = GeometryHelper.TransformToWorldSpace(concaveHitbox.OuterVertices, Position, Rotation);
 
             // Draw each convex slice as filled triangles
             foreach (var slice in concaveHitbox.ConvexSlices)
@@ -78,9 +67,9 @@ namespace Enceladus.Core.Entities.TestMonsters
             }
 
             // Draw outline
-            for (int i = 0; i < worldVertices.Length; i++)
+            for (int i = 0; i < worldVertices.Count; i++)
             {
-                int nextIndex = (i + 1) % worldVertices.Length;
+                int nextIndex = (i + 1) % worldVertices.Count;
                 Raylib.DrawLineV(worldVertices[i], worldVertices[nextIndex], Color.DarkGreen);
             }
         }

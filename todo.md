@@ -3,10 +3,11 @@
 ## High Priority
 
 ### Collision System
-- [ ] **Implement polygon decomposition algorithm** (concave → convex)
-  - Location: `PolygonHitboxBuilder.cs`
-  - Reason: Player submarine hitbox is concave, SAT only works with convex polygons
-  - Related: Update `BuildFromPixelCoordinates` to use decomposition
+- [x] **Implement polygon decomposition algorithm** (concave → convex)
+  - Location: `EarClippingTriangulationSlicer.cs`, `ConcavePolygonHitbox.cs`
+  - Implemented ear clipping triangulation (placeholder algorithm)
+  - Todo: Replace with more performant algorithm later
+  - SAT updated with CheckCollision2 to support concave polygons
 
 - [ ] **Implement circle collision detection**
   - Location: `CollisionChecker.cs:50, 111`
@@ -31,10 +32,11 @@
   - Currently only used by MovableEntity - is the extraction worth it?
   - Decision: Keep for future component-based architecture or inline the logic?
 
-- [ ] **Entity auto-registration or factory pattern**
-  - Location: `EntityRegistry.cs:5`
-  - Consider making entities register themselves on creation
-  - Or use EntityFactory to enforce registration
+- [x] **Entity auto-registration or factory pattern**
+  - Location: `EntityFactory.cs`
+  - Implemented IEntityFactory and EntityFactory
+  - All entities created through factory with automatic registration
+  - Factory handles hitbox building and positioning
 
 - [ ] **Refactor Cell to use Vector2 Position instead of X, Y**
   - Location: `Cell.cs:13`
@@ -126,14 +128,21 @@
 
 ### Code Documentation
 - [ ] **Explain SAT normal direction logic**
-  - Location: `SatCollisionDetector.cs:75, 76`
+  - Location: `SatCollisionDetector.cs:127, 128`
   - Why normal must point from OtherObject to Entity
   - Why we use center of vertices for direction check
 
-- [ ] **Consider extracting vertex rotation logic**
-  - Location: `VertexExtractor.cs:73`
-  - Is this the only place we rotate vertices?
-  - Extract to shared utility if used elsewhere
+- [x] **Consider extracting vertex rotation logic**
+  - Location: `GeometryHelper.cs:12`
+  - Extracted to GeometryHelper.TransformToWorldSpace()
+  - Todo: Decide if it should be testable interface/service or stay as static utility
+  - Used by AwfulGreenStar and other monsters
+
+- [ ] **Combine AABB logic for convex and concave polygons**
+  - Location: `AabbCalculator.cs:101`
+  - Logic looks identical between CalculateAabbFromPolygon and CalculateAabbFromConcavePolygon
+  - Consider if ConcavePolygonHitbox should inherit from PolygonHitbox
+  - Wait until SAT implementation is stable before refactoring
 
 - [ ] **XmlHelper API design discussion**
   - Location: `XmlHelper.cs:71`

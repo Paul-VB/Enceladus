@@ -30,9 +30,8 @@ namespace Enceladus.Core.Physics.Collision
             };
 
             // Transform to world space
-            var WorldVerticeses = localVerticeses.Select(x => TransformToWorldSpace(x, collidable.Position, collidable.Rotation)).ToList();
+            var WorldVerticeses = localVerticeses.Select(x => GeometryHelper.TransformToWorldSpace(x, collidable.Position, collidable.Rotation)).ToList();
             return WorldVerticeses;
-
         }
 
         private List<Vector2> GetCellVertices(Cell cell)
@@ -62,29 +61,6 @@ namespace Enceladus.Core.Physics.Collision
                 new Vector2(halfWidth, halfHeight),    // bottom-right
                 new Vector2(-halfWidth, halfHeight)    // bottom-left
             };
-        }
-
-        private List<Vector2> TransformToWorldSpace(List<Vector2> localVertices, Vector2 position, float rotation)
-        {
-            float radians = AngleHelper.DegToRad(rotation);
-            float cos = MathF.Cos(radians);
-            float sin = MathF.Sin(radians);
-
-            var worldVertices = new List<Vector2>();
-
-            foreach (var vertex in localVertices)
-            {
-                // Rotate vertex
-                var rotated = new Vector2(
-                    vertex.X * cos - vertex.Y * sin,
-                    vertex.X * sin + vertex.Y * cos
-                );
-
-                // Translate to world position
-                worldVertices.Add(rotated + position);
-            }
-
-            return worldVertices;
         }
     }
 }

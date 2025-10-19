@@ -1,6 +1,7 @@
 using Enceladus.Core.Config;
 using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Core.Utils;
 using Enceladus.Utils;
 using Raylib_cs;
 using System.Numerics;
@@ -40,27 +41,16 @@ namespace Enceladus.Core.Entities.TestMonsters
             // Draw pentagon using the hitbox vertices
             var polygonHitbox = (PolygonHitbox)Hitbox;
 
-            // Rotate and translate vertices to world space
-            float radians = AngleHelper.DegToRad(Rotation);
-            float cos = MathF.Cos(radians);
-            float sin = MathF.Sin(radians);
-
-            var worldVertices = new Vector2[polygonHitbox.Vertices.Count];
-            for (int i = 0; i < polygonHitbox.Vertices.Count; i++)
-            {
-                var vertex = polygonHitbox.Vertices[i];
-                float rotatedX = vertex.X * cos - vertex.Y * sin;
-                float rotatedY = vertex.X * sin + vertex.Y * cos;
-                worldVertices[i] = new Vector2(rotatedX + Position.X, rotatedY + Position.Y);
-            }
+            // Transform vertices to world space
+            var worldVertices = GeometryHelper.TransformToWorldSpace(polygonHitbox.Vertices, Position, Rotation);
 
             // Draw filled pentagon
             Raylib.DrawPoly(Position, polygonHitbox.Vertices.Count, 1.5f, Rotation, Color.Red);
 
             // Draw outline by connecting vertices
-            for (int i = 0; i < worldVertices.Length; i++)
+            for (int i = 0; i < worldVertices.Count; i++)
             {
-                int nextIndex = (i + 1) % worldVertices.Length;
+                int nextIndex = (i + 1) % worldVertices.Count;
                 Raylib.DrawLineV(worldVertices[i], worldVertices[nextIndex], Color.Black);
             }
         }

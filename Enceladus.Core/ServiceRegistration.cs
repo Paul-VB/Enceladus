@@ -48,7 +48,6 @@ namespace Enceladus.Core
             services.AddSingleton<IAabbCalculator, AabbCalculator>();
             services.AddSingleton<ISatCollisionDetector, SatCollisionDetector>();
             services.AddSingleton<IVertexExtractor, VertexExtractor>();
-            services.AddSingleton<IVertexTransformer, VertexTransformer>();
             services.AddSingleton<IAxesExtractor, AxesExtractor>();
 
             return services.BuildServiceProvider();
