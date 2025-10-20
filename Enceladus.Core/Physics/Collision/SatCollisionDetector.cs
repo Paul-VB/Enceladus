@@ -1,4 +1,6 @@
 using Enceladus.Core.Entities;
+using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Core.Utils;
 using System.Numerics;
 
 namespace Enceladus.Core.Physics.Collision
@@ -11,67 +13,132 @@ namespace Enceladus.Core.Physics.Collision
 
     public class SatCollisionDetector : ISatCollisionDetector
     {
-        private readonly IVertexExtractor _vertexExtractor;
         private readonly IAxesExtractor _axesExtractor;
 
-        public SatCollisionDetector(IVertexExtractor vertexExtractor, IAxesExtractor axesExtractor)
+        public SatCollisionDetector(IAxesExtractor axesExtractor)
         {
-            _vertexExtractor = vertexExtractor;
             _axesExtractor = axesExtractor;
         }
 
-        //public CollisionResult CheckCollision(MovableEntity entity1, ICollidable otherObject)
-        //{
-        //    var vertices1 = _vertexExtractor.ExtractWorldVertices(entity1);
-        //    var vertices2 = _vertexExtractor.ExtractWorldVertices(otherObject);
-
-        //    var axes1 = _axesExtractor.ExtractAxes(vertices1, entity1.Hitbox);
-        //    var axes2 = _axesExtractor.ExtractAxes(vertices2, otherObject.Hitbox);
-
-        //    var collisionInfo = CheckSatCollision(vertices1, vertices2, axes1.Concat(axes2).ToList());
-
-        //    var collisionResult = new CollisionResult()
-        //    {
-        //        Entity = entity1,
-        //        OtherObject = otherObject,
-        //        PenetrationDepth = collisionInfo.PenetrationDepth,
-        //        CollisionNormal = collisionInfo.CollisionNormal
-        //    };
-        //    return collisionResult;
-        //}
-
         public CollisionResult CheckCollision(MovableEntity entity, ICollidable otherObject)
         {
-            var entityWorldVerticeses = _vertexExtractor.ExtractWorldVerticeses(entity);
-            var otherObjectWorldVerticeses = _vertexExtractor.ExtractWorldVerticeses(otherObject);
-
-            var collisionInfos = new List<CollisionInfo>();
-
-            foreach(var entityVertecies in entityWorldVerticeses)
+            var collisionInfo = (entity.Hitbox, otherObject.Hitbox) switch
             {
-                foreach(var otherObjectVertecies in otherObjectWorldVerticeses)
-                {
-                    var entityAxes = _axesExtractor.ExtractAxes(entityVertecies, entity.Hitbox);
-                    var otherObjectAxes = _axesExtractor.ExtractAxes(otherObjectVertecies, otherObject.Hitbox);
+                (ConcavePolygonHitbox e, ConcavePolygonHitbox o) => CheckConcaveToConcave(e, entity, o, otherObject),
+                (ConcavePolygonHitbox e, ConvexPolygonHitbox o) => CheckConcaveToConvex(e, entity, o, otherObject),
+                (ConcavePolygonHitbox e, CircleHitbox o) => CheckConcaveToCircle(e, entity, o, otherObject),
 
-                    var collisionInfo = CheckSatCollision(entityVertecies, otherObjectVertecies, entityAxes.Concat(otherObjectAxes).ToList());
-                    collisionInfos.Add(collisionInfo);
-                }
-            }
+                (ConvexPolygonHitbox e, ConcavePolygonHitbox o) => CheckConvexToConcave(e, entity, o, otherObject),
+                (ConvexPolygonHitbox e, ConvexPolygonHitbox o) => CheckConvexToConvex(e, entity, o, otherObject),
+                (ConvexPolygonHitbox e, CircleHitbox o) => CheckConvexToCircle(e, entity, o, otherObject),
 
-            var deepestCollisioninfo = GetDeepestCollision(collisionInfos);
+                (CircleHitbox e, ConcavePolygonHitbox o) => CheckCircleToConcave(e, entity, o, otherObject),
+                (CircleHitbox e, ConvexPolygonHitbox o) => CheckCircleToConvex(e, entity, o, otherObject),
+                (CircleHitbox e, CircleHitbox o) => throw new Exception("SAT collision logic should not be used for circle to circle collision detection. use the simple radius math only for this"),
+
+                _ => throw new NotSupportedException($"Collision between {entity.Hitbox?.GetType()} and {otherObject.Hitbox?.GetType()} is not supported")
+            };
 
             var collisionResult = new CollisionResult()
             {
                 Entity = entity,
                 OtherObject = otherObject,
-                PenetrationDepth = deepestCollisioninfo.PenetrationDepth,
-                CollisionNormal = deepestCollisioninfo.CollisionNormal
+                PenetrationDepth = collisionInfo.PenetrationDepth,
+                CollisionNormal = collisionInfo.CollisionNormal
             };
 
             return collisionResult;
-
         }
+
+        #region concave to other
+        private CollisionInfo CheckConcaveToConcave(ConcavePolygonHitbox h1, ICollidable c1, ConcavePolygonHitbox h2, ICollidable c2)
+        {
+            var collisionInfos = new List<CollisionInfo>();
+
+            // Double loop through all slice pairs
+            foreach (var slice1 in h1.ConvexSlices)
+            {
+                var slice1Vertices = GeometryHelper.TransformToWorldSpace(slice1.Vertices, c1.Position, c1.Rotation);
+                var slice1Axes = _axesExtractor.ExtractAxes(slice1Vertices, slice1);
+
+                foreach (var slice2 in h2.ConvexSlices)
+                {
+                    var slice2Vertices = GeometryHelper.TransformToWorldSpace(slice2.Vertices, c2.Position, c2.Rotation);
+                    var slice2Axes = _axesExtractor.ExtractAxes(slice2Vertices, slice2);
+
+                    var collisionInfo = CheckSatCollision(slice1Vertices, slice2Vertices, slice1Axes.Concat(slice2Axes).ToList());
+                    collisionInfos.Add(collisionInfo);
+                }
+            }
+
+            // Return the deepest collision from all slice pair checks
+            return GetDeepestCollision(collisionInfos);
+        }
+
+        private CollisionInfo CheckConcaveToConvex(ConcavePolygonHitbox h1, ICollidable c1, ConvexPolygonHitbox h2, ICollidable c2)
+        {
+            // Transform convex hitbox vertices once (outside loop)
+            var h2Vertices = GeometryHelper.TransformToWorldSpace(h2.Vertices, c2.Position, c2.Rotation);
+            var h2Axes = _axesExtractor.ExtractAxes(h2Vertices, h2);
+
+            var collisionInfos = new List<CollisionInfo>();
+
+            // Loop through each slice of the concave polygon
+            foreach (var slice in h1.ConvexSlices)
+            {
+                var sliceVertices = GeometryHelper.TransformToWorldSpace(slice.Vertices, c1.Position, c1.Rotation);
+                var sliceAxes = _axesExtractor.ExtractAxes(sliceVertices, slice);
+
+                var collisionInfo = CheckSatCollision(sliceVertices, h2Vertices, sliceAxes.Concat(h2Axes).ToList());
+                collisionInfos.Add(collisionInfo);
+            }
+
+            // Return the deepest collision from all slice checks
+            return GetDeepestCollision(collisionInfos);
+        }
+
+        private CollisionInfo CheckConcaveToCircle(ConcavePolygonHitbox h1, ICollidable c1, CircleHitbox h2, ICollidable c2)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        #region convex to other
+        private CollisionInfo CheckConvexToConcave(ConvexPolygonHitbox h1, ICollidable c1, ConcavePolygonHitbox h2, ICollidable c2)
+        {
+            return ReverseCollisionNormal(CheckConcaveToConvex(h2, c2, h1, c1));
+        }
+
+        private CollisionInfo CheckConvexToConvex(ConvexPolygonHitbox h1, ICollidable c1, ConvexPolygonHitbox h2, ICollidable c2)
+        {
+            var h1Vertices = GeometryHelper.TransformToWorldSpace(h1.Vertices, c1.Position, c1.Rotation);
+            var h2Vertices = GeometryHelper.TransformToWorldSpace(h2.Vertices, c2.Position, c2.Rotation);
+
+            var h1Axes = _axesExtractor.ExtractAxes(h1Vertices, h1);
+            var h2Axes = _axesExtractor.ExtractAxes(h2Vertices, h2);
+
+            var collisionInfo = CheckSatCollision(h1Vertices, h2Vertices, h1Axes.Concat(h2Axes).ToList());
+            return collisionInfo;
+        }
+
+        private CollisionInfo CheckConvexToCircle(ConvexPolygonHitbox h1, ICollidable c1, CircleHitbox h2, ICollidable c2)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        #region circle to other
+        private CollisionInfo CheckCircleToConcave(CircleHitbox h1, ICollidable c1, ConcavePolygonHitbox h2, ICollidable c2)
+        {
+            return ReverseCollisionNormal(CheckConcaveToCircle(h2, c2, h1, c1));
+        }
+
+        private CollisionInfo CheckCircleToConvex(CircleHitbox h1, ICollidable c1, ConvexPolygonHitbox h2, ICollidable c2)
+        {
+            return ReverseCollisionNormal(CheckConvexToCircle(h2, c2, h1, c1));
+        }
+        #endregion
+
 
         private CollisionInfo GetDeepestCollision(List<CollisionInfo> collisionInfos)
         {
@@ -88,6 +155,12 @@ namespace Enceladus.Core.Physics.Collision
             }
 
             return deepestCollisionInfo;
+        }
+
+        private CollisionInfo ReverseCollisionNormal(CollisionInfo collisionInfo)
+        {
+            collisionInfo.CollisionNormal *= -1;
+            return collisionInfo;
         }
 
         private CollisionInfo CheckSatCollision(List<Vector2> vertices1, List<Vector2> vertices2, List<Vector2> axes)

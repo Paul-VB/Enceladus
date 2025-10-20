@@ -1,15 +1,22 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
 namespace Enceladus.Core.Physics.Hitboxes
 {
-    public class PolygonHitbox : IHitbox
+    public abstract class PolygonHitbox : IHitbox
     {
-        public PolygonHitbox(List<Vector2> vertices)
+        protected PolygonHitbox()
+        {
+            
+        }
+
+        [SetsRequiredMembers]
+        protected PolygonHitbox(List<Vector2> vertices)
         {
             Vertices = vertices;
         }
 
-        public List<Vector2> Vertices { get; set; }
+        public virtual required List<Vector2> Vertices { get; set; } = [];
     }
 
 }

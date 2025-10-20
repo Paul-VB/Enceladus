@@ -104,7 +104,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
                     new Vector2(4, 0),
                     new Vector2(2, 3)
                 };
-            var polygon = new PolygonHitbox(vertices);
+            var polygon = new ConvexPolygonHitbox(vertices);
             var entity = EntityHelpers.CreateTestEntity(new Vector2(10, 20), polygon, 0f);
 
             // Act
@@ -128,7 +128,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
                     new Vector2(1, 1),
                     new Vector2(-1, 1)
                 };
-            var polygon = new PolygonHitbox(vertices);
+            var polygon = new ConvexPolygonHitbox(vertices);
             var entity = EntityHelpers.CreateTestEntity(new Vector2(0, 0), polygon, 45f);
 
             // Act
@@ -160,15 +160,15 @@ namespace Enceladus.Core.Tests.Physics.Collision
             };
 
             // Create dummy slices (not used for AABB calculation)
-            var slices = new List<PolygonHitbox>
+            var slices = new List<ConvexPolygonHitbox>
             {
-                new PolygonHitbox(new List<Vector2> { new Vector2(0, 0), new Vector2(4, 0), new Vector2(2, 2) }),
-                new PolygonHitbox(new List<Vector2> { new Vector2(0, 0), new Vector2(2, 2), new Vector2(0, 4) })
+                new ConvexPolygonHitbox(new List<Vector2> { new Vector2(0, 0), new Vector2(4, 0), new Vector2(2, 2) }),
+                new ConvexPolygonHitbox(new List<Vector2> { new Vector2(0, 0), new Vector2(2, 2), new Vector2(0, 4) })
             };
 
             var concaveHitbox = new ConcavePolygonHitbox
             {
-                OuterVertices = outerVertices,
+                Vertices = outerVertices,
                 ConvexSlices = slices
             };
 
@@ -198,14 +198,14 @@ namespace Enceladus.Core.Tests.Physics.Collision
                 new Vector2(-2, 2)
             };
 
-            var slices = new List<PolygonHitbox>
+            var slices = new List<ConvexPolygonHitbox>
             {
-                new PolygonHitbox(new List<Vector2> { new Vector2(-2, -2), new Vector2(2, -2), new Vector2(0, 0) })
+                new ConvexPolygonHitbox(new List<Vector2> { new Vector2(-2, -2), new Vector2(2, -2), new Vector2(0, 0) })
             };
 
             var concaveHitbox = new ConcavePolygonHitbox
             {
-                OuterVertices = outerVertices,
+                Vertices = outerVertices,
                 ConvexSlices = slices
             };
 
@@ -235,14 +235,14 @@ namespace Enceladus.Core.Tests.Physics.Collision
                 new Vector2(-2, 2)
             };
 
-            var slices = new List<PolygonHitbox>
+            var slices = new List<ConvexPolygonHitbox>
             {
-                new PolygonHitbox(new List<Vector2> { new Vector2(-2, -2), new Vector2(2, -2), new Vector2(0, 0) })
+                new ConvexPolygonHitbox(new List<Vector2> { new Vector2(-2, -2), new Vector2(2, -2), new Vector2(0, 0) })
             };
 
             var concaveHitbox = new ConcavePolygonHitbox
             {
-                OuterVertices = outerVertices,
+                Vertices = outerVertices,
                 ConvexSlices = slices
             };
 

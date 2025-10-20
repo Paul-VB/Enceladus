@@ -1,7 +1,7 @@
 ﻿using Enceladus.Core.Config;
 using Enceladus.Core.Entities.TestMonsters;
 using Enceladus.Core.Input;
-using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Core.Physics.Hitboxes.Helpers;
 using Enceladus.Core.Rendering;
 using System.Numerics;
 
@@ -91,7 +91,7 @@ namespace Enceladus.Core.Entities
             }
 
             // Build concave hitbox from star vertices
-            entity.Hitbox = _polygonHitboxBuilder.BuildFromOuterVertices(vertices);
+            entity.Hitbox = _polygonHitboxBuilder.BuildFromVertices(vertices);
             entity.Position = position;
             _entityRegistry.Register(entity);
             return entity;

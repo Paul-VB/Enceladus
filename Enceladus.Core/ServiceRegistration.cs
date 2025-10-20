@@ -3,7 +3,7 @@ using Enceladus.Core.Entities;
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics;
 using Enceladus.Core.Physics.Collision;
-using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Core.Physics.Hitboxes.Helpers;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.World;
 using Microsoft.Extensions.DependencyInjection;
@@ -47,7 +47,6 @@ namespace Enceladus.Core
             services.AddSingleton<IAabbCollisionDetector, AabbCollisionDetector>();
             services.AddSingleton<IAabbCalculator, AabbCalculator>();
             services.AddSingleton<ISatCollisionDetector, SatCollisionDetector>();
-            services.AddSingleton<IVertexExtractor, VertexExtractor>();
             services.AddSingleton<IAxesExtractor, AxesExtractor>();
 
             return services.BuildServiceProvider();

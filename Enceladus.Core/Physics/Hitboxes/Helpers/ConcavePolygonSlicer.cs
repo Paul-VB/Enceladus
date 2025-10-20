@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Enceladus.Core.Physics.Hitboxes
+namespace Enceladus.Core.Physics.Hitboxes.Helpers
 {
     /// <summary>
     /// Decomposes concave polygons into a list of convex sub-polygons.
@@ -95,8 +95,8 @@ namespace Enceladus.Core.Physics.Hitboxes
             float sign2 = Sign(point, b, c);
             float sign3 = Sign(point, c, a);
 
-            bool hasNeg = (sign1 < 0) || (sign2 < 0) || (sign3 < 0);
-            bool hasPos = (sign1 > 0) || (sign2 > 0) || (sign3 > 0);
+            bool hasNeg = sign1 < 0 || sign2 < 0 || sign3 < 0;
+            bool hasPos = sign1 > 0 || sign2 > 0 || sign3 > 0;
 
             return !(hasNeg && hasPos);
         }

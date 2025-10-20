@@ -1,5 +1,6 @@
 ﻿using Enceladus.Core.Utils;
 using Raylib_cs;
+using System.Numerics;
 
 namespace Enceladus.Core.Tests.Utils
 {
@@ -137,5 +138,227 @@ namespace Enceladus.Core.Tests.Utils
             // Assert
             Assert.True(result);
         }
+
+        #region IsConvex Tests
+
+        [Fact]
+        public void IsConvex_Square_ReturnsTrue()
+        {
+            // Arrange - Unit square centered at origin
+            var vertices = new List<Vector2>
+            {
+                new Vector2(-0.5f, -0.5f),
+                new Vector2(0.5f, -0.5f),
+                new Vector2(0.5f, 0.5f),
+                new Vector2(-0.5f, 0.5f)
+            };
+
+            // Act
+            var result = GeometryHelper.IsConvex(vertices);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void IsConvex_Triangle_ReturnsTrue()
+        {
+            // Arrange
+            var vertices = new List<Vector2>
+            {
+                new Vector2(0, 0),
+                new Vector2(1, 0),
+                new Vector2(0.5f, 1)
+            };
+
+            // Act
+            var result = GeometryHelper.IsConvex(vertices);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void IsConvex_RegularPentagon_ReturnsTrue()
+        {
+            // Arrange - Regular pentagon
+            var vertices = new List<Vector2>
+            {
+                new Vector2(0f, -1f),
+                new Vector2(0.951f, -0.309f),
+                new Vector2(0.588f, 0.809f),
+                new Vector2(-0.588f, 0.809f),
+                new Vector2(-0.951f, -0.309f)
+            };
+
+            // Act
+            var result = GeometryHelper.IsConvex(vertices);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void IsConvex_LShape_ReturnsFalse()
+        {
+            // Arrange - L-shaped concave polygon
+            var vertices = new List<Vector2>
+            {
+                new Vector2(0, 0),
+                new Vector2(2, 0),
+                new Vector2(2, 1),
+                new Vector2(1, 1),
+                new Vector2(1, 2),
+                new Vector2(0, 2)
+            };
+
+            // Act
+            var result = GeometryHelper.IsConvex(vertices);
+
+            // Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void IsConvex_StarShape_ReturnsFalse()
+        {
+            // Arrange - Star shape (concave)
+            var vertices = new List<Vector2>
+            {
+                new Vector2(0, -1),
+                new Vector2(0.2f, -0.2f),
+                new Vector2(1, 0),
+                new Vector2(0.2f, 0.2f),
+                new Vector2(0, 1),
+                new Vector2(-0.2f, 0.2f),
+                new Vector2(-1, 0),
+                new Vector2(-0.2f, -0.2f)
+            };
+
+            // Act
+            var result = GeometryHelper.IsConvex(vertices);
+
+            // Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void IsConvex_ArrowShape_ReturnsFalse()
+        {
+            // Arrange - Arrow pointing right (concave at the back)
+            var vertices = new List<Vector2>
+            {
+                new Vector2(2, 0),      // tip
+                new Vector2(0, 1),      // top back
+                new Vector2(0.5f, 0),   // indent
+                new Vector2(0, -1)      // bottom back
+            };
+
+            // Act
+            var result = GeometryHelper.IsConvex(vertices);
+
+            // Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void IsConvex_TwoVertices_ReturnsFalse()
+        {
+            // Arrange - Degenerate polygon (line)
+            var vertices = new List<Vector2>
+            {
+                new Vector2(0, 0),
+                new Vector2(1, 1)
+            };
+
+            // Act
+            var result = GeometryHelper.IsConvex(vertices);
+
+            // Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void IsConvex_EmptyList_ReturnsFalse()
+        {
+            // Arrange
+            var vertices = new List<Vector2>();
+
+            // Act
+            var result = GeometryHelper.IsConvex(vertices);
+
+            // Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void IsConvex_NullList_ReturnsFalse()
+        {
+            // Act
+            var result = GeometryHelper.IsConvex(null);
+
+            // Assert
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void IsConvex_CollinearPoints_ReturnsTrue()
+        {
+            // Arrange - Rectangle with extra collinear points on edges
+            var vertices = new List<Vector2>
+            {
+                new Vector2(0, 0),
+                new Vector2(0.5f, 0),  // Collinear with next point
+                new Vector2(1, 0),
+                new Vector2(1, 1),
+                new Vector2(0, 1)
+            };
+
+            // Act
+            var result = GeometryHelper.IsConvex(vertices);
+
+            // Assert
+            Assert.True(result); // Should skip collinear points and still be convex
+        }
+
+        [Fact]
+        public void IsConvex_CounterClockwiseWinding_ReturnsTrue()
+        {
+            // Arrange - Counter-clockwise square
+            var vertices = new List<Vector2>
+            {
+                new Vector2(0, 0),
+                new Vector2(0, 1),
+                new Vector2(1, 1),
+                new Vector2(1, 0)
+            };
+
+            // Act
+            var result = GeometryHelper.IsConvex(vertices);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void IsConvex_ClockwiseWinding_ReturnsTrue()
+        {
+            // Arrange - Clockwise square
+            var vertices = new List<Vector2>
+            {
+                new Vector2(0, 0),
+                new Vector2(1, 0),
+                new Vector2(1, 1),
+                new Vector2(0, 1)
+            };
+
+            // Act
+            var result = GeometryHelper.IsConvex(vertices);
+
+            // Assert
+            Assert.True(result);
+        }
+
+        #endregion
     }
 }

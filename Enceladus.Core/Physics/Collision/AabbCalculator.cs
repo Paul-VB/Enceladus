@@ -22,8 +22,6 @@ namespace Enceladus.Core.Physics.Collision
             if (entity.Hitbox is CircleHitbox circle)
                 return CalculateAabbFromCircle(circle, entity.Position);
 
-            if (entity.Hitbox is ConcavePolygonHitbox concave)
-                return CalculateAabbFromConcavePolygon(concave, entity.Position, entity.Rotation);
 
             if (entity.Hitbox is PolygonHitbox polygon)
                 return CalculateAabbFromPolygon(polygon, entity.Position, entity.Rotation);
@@ -96,35 +94,6 @@ namespace Enceladus.Core.Physics.Collision
             var rectangle = GeometryHelper.RectangleFromBounds(minX, maxX, minY, maxY);
 
             return rectangle;
-        }
-
-        //todo: combine this logic with the logic for ConvexPolygons. the logic looks identical. maybe we could have ConcavePolygonHitbox inherit from PolygonHitbox? lets wait until we have the SAT code setup for narrow checking first before making that refactor. but we really should merge these two sometime
-        private Rectangle CalculateAabbFromConcavePolygon(ConcavePolygonHitbox concaveHitbox, Vector2 position, float rotation)
-        {
-            float radians = AngleHelper.DegToRad(rotation);
-            float cos = MathF.Cos(radians);
-            float sin = MathF.Sin(radians);
-
-            float minX = float.MaxValue;
-            float maxX = float.MinValue;
-            float minY = float.MaxValue;
-            float maxY = float.MinValue;
-
-            foreach (var vertex in concaveHitbox.OuterVertices)
-            {
-                float rotatedX = vertex.X * cos - vertex.Y * sin;
-                float rotatedY = vertex.X * sin + vertex.Y * cos;
-
-                float worldX = rotatedX + position.X;
-                float worldY = rotatedY + position.Y;
-
-                minX = MathF.Min(minX, worldX);
-                maxX = MathF.Max(maxX, worldX);
-                minY = MathF.Min(minY, worldY);
-                maxY = MathF.Max(maxY, worldY);
-            }
-
-            return GeometryHelper.RectangleFromBounds(minX, maxX, minY, maxY);
         }
     }
 }

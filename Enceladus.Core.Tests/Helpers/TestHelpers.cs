@@ -71,7 +71,7 @@ namespace Enceladus.Core.Tests.Helpers
         public TestEntity()
         {
             Guid = Guid.NewGuid();
-            Hitbox = new RectHitbox(1, 1); // Default hitbox
+            Hitbox = new RectHitbox(new(1,1)); // Default hitbox
         }
 
         public override IHitbox Hitbox { get; set; }
@@ -88,7 +88,7 @@ namespace Enceladus.Core.Tests.Helpers
         /// </summary>
         public static TestEntity CreateTestEntity(Vector2 position, IHitbox? hitbox = null, float rotation = 0f)
         {
-            hitbox ??= new RectHitbox(1,1);
+            hitbox ??= new RectHitbox(new(1, 1));
             return new TestEntity { 
                 Position = position,
                 Hitbox = hitbox,

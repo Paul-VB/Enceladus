@@ -1,12 +1,13 @@
+using Enceladus.Core.Utils;
 using System.Numerics;
 
-namespace Enceladus.Core.Physics.Hitboxes
+namespace Enceladus.Core.Physics.Hitboxes.Helpers
 {
 
     public interface IPolygonHitboxBuilder
     {
         PolygonHitbox BuildFromPixelCoordinates(int spriteWidthPixels, int spriteHeightPixels, Vector2[] pixelVertices);
-        ConcavePolygonHitbox BuildFromOuterVertices(List<Vector2> vertices);
+        PolygonHitbox BuildFromVertices(List<Vector2> vertices);
     }
     public class PolygonHitboxBuilder : IPolygonHitboxBuilder
     {
@@ -21,7 +22,7 @@ namespace Enceladus.Core.Physics.Hitboxes
 
         public PolygonHitbox BuildFromPixelCoordinates(int spriteWidthPixels, int spriteHeightPixels, Vector2[] pixelVertices)
         {
-            var worldVertices = new List<Vector2>();
+            var scaledVectors = new List<Vector2>();
 
             foreach (var pixelVertex in pixelVertices)
             {
@@ -33,24 +34,26 @@ namespace Enceladus.Core.Physics.Hitboxes
                 float worldX = centeredX / PixelsPerWorldUnit;
                 float worldY = centeredY / PixelsPerWorldUnit;
 
-                worldVertices.Add(new Vector2(worldX, worldY));
+                scaledVectors.Add(new Vector2(worldX, worldY));
             }
-
-            return new PolygonHitbox(worldVertices);
+            return BuildFromVertices(scaledVectors);
         }
 
-        //todo: suggestion - add a BuildFromVertcies that assumes the vertecies are already in world scale... but maybe we dont. a polygon hitbox is literaly just a list of world scale vectors. if you have the world scale vectors, you basically have a polygon hitbox already
+        public PolygonHitbox BuildFromVertices(List<Vector2> vertices)
+        {
+            if (GeometryHelper.IsConvex(vertices))
+                return new ConvexPolygonHitbox(vertices);
+            else return BuildConcave(vertices);
+        }
 
-        //todo: maybe the code for building a list of concavePolygons goes in here (as mentioned in the SAT collision detector todo) and we keep the polygonHitbox class a skinny class with no logic
-        public ConcavePolygonHitbox BuildFromOuterVertices(List<Vector2> vertices)
+        private ConcavePolygonHitbox BuildConcave(List<Vector2> vertices)
         {
             var slicesVertices = _concavePolygonSlicer.Slice(vertices);
 
-            var slices = slicesVertices.Select(x => new PolygonHitbox(x)).ToList();
+            var slices = slicesVertices.Select(x => new ConvexPolygonHitbox(x)).ToList();
 
-            var concavePolygonHitbox = new ConcavePolygonHitbox()
+            var concavePolygonHitbox = new ConcavePolygonHitbox(vertices)
             {
-                OuterVertices = vertices,
                 ConvexSlices = slices
             };
 

@@ -1,11 +1,19 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
 namespace Enceladus.Core.Physics.Hitboxes
 {
-    public class ConcavePolygonHitbox : IHitbox
+    public class ConcavePolygonHitbox : PolygonHitbox
     {
-        public required List<Vector2> OuterVertices { get; set; }
-        public required List<PolygonHitbox> ConvexSlices { get; set; }        
+        public ConcavePolygonHitbox()
+        {
+            
+        }
+        [SetsRequiredMembers]
+        public ConcavePolygonHitbox(List<Vector2> vertices) : base(vertices)
+        {
+        }
+        public required List<ConvexPolygonHitbox> ConvexSlices { get; set; } = [];     
 
     }
 }
