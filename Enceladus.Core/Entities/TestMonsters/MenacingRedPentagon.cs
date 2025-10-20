@@ -27,7 +27,7 @@ namespace Enceladus.Core.Entities.TestMonsters
                 vertices.Add(new Vector2(x, y));
             }
 
-            Hitbox = new PolygonHitbox(vertices);
+            Hitbox = new ConvexPolygonHitbox(vertices);
             Mass = 500f;
         }
 

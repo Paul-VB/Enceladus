@@ -43,7 +43,7 @@ namespace Enceladus.Core.Entities.TestMonsters
             var concaveHitbox = (ConcavePolygonHitbox)Hitbox;
 
             // Transform outer vertices to world space for outline
-            var worldVertices = GeometryHelper.TransformToWorldSpace(concaveHitbox.OuterVertices, Position, Rotation);
+            var worldVertices = GeometryHelper.TransformToWorldSpace(concaveHitbox.Vertices, Position, Rotation);
 
             // Draw each convex slice as filled triangles
             foreach (var slice in concaveHitbox.ConvexSlices)
