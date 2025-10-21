@@ -63,22 +63,6 @@ namespace Enceladus.Core.Tests.Helpers
     }
 
     /// <summary>
-    /// Test helper entity for general entity testing.
-    /// Use EntityHelpers.CreateTestEntity() to create instances.
-    /// </summary>
-    public class StaticTestEntity : Entity
-    {
-        public StaticTestEntity()
-        {
-            Guid = Guid.NewGuid();
-            Hitbox = new RectHitbox(new(1,1)); // Default hitbox
-        }
-
-        public override IHitbox Hitbox { get; set; }
-        public override void Update(float deltaTime) { }
-    }
-
-    /// <summary>
     /// Factory methods for creating test entities
     /// </summary>
     public static class EntityHelpers
@@ -88,12 +72,29 @@ namespace Enceladus.Core.Tests.Helpers
         /// </summary>
         public static StaticTestEntity CreateStaticTestEntity(Vector2 position, IHitbox? hitbox = null, float rotation = 0f)
         {
-            hitbox ??= new RectHitbox(new(1, 1));
-            return new StaticTestEntity { 
+            var entity = new StaticTestEntity { 
                 Position = position,
-                Hitbox = hitbox,
                 Rotation = rotation
             };
+            if(hitbox != null) entity.Hitbox = hitbox;
+            return entity;
+        }
+
+        public static MovableTestEntity CreateMovableTestEntity (Vector2 position, IHitbox? hitbox = null, float rotation = 0f, float mass = 100f,
+            Vector2? velocity = null, float drag = .9f, float angularVelocity = 0f)
+        {
+            velocity ??= Vector2.Zero;
+            var entity = new MovableTestEntity
+            {
+                Position = position,
+                Rotation = rotation,
+                Mass = mass,
+                Velocity = velocity.Value,
+                Drag = drag
+
+            };
+            if (hitbox != null) entity.Hitbox = hitbox;
+            return entity;
         }
     }
 }
