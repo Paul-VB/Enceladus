@@ -1,12 +1,15 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using System.Numerics;
 
 namespace Enceladus.Core.Physics.Hitboxes
 {
-    public class CellHitbox : ConvexPolygonHitbox
+    public class CellHitbox : IHitbox
     {
-        [SetsRequiredMembers]
-        public CellHitbox() : base([new(0, 0), new(1, 0), new(1, 1), new(0, 1)])
+        public List<Vector2> PretransformedVertices { get; }
+
+        public CellHitbox(List<Vector2> vertices)
         {
+            PretransformedVertices = vertices;
         }
     }
 }

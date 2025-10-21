@@ -24,6 +24,10 @@ namespace Enceladus.Core.Physics.Collision
         {
             var collisionInfo = (entity.Hitbox, otherObject.Hitbox) switch
             {
+                (ConcavePolygonHitbox e, CellHitbox c) => CheckConcaveToCell(e, entity, c, otherObject),
+                (ConvexPolygonHitbox e, CellHitbox c) => CheckConvexToCell(e, entity, c, otherObject),
+                (CircleHitbox e, CellHitbox c) => CheckCircleToCell(e, entity, c, otherObject),
+
                 (ConcavePolygonHitbox e, ConcavePolygonHitbox o) => CheckConcaveToConcave(e, entity, o, otherObject),
                 (ConcavePolygonHitbox e, ConvexPolygonHitbox o) => CheckConcaveToConvex(e, entity, o, otherObject),
                 (ConcavePolygonHitbox e, CircleHitbox o) => CheckConcaveToCircle(e, entity, o, otherObject),
@@ -49,6 +53,49 @@ namespace Enceladus.Core.Physics.Collision
 
             return collisionResult;
         }
+
+                #region Cell Collision (Optimized)
+
+        // Static axes for all cells (axis-aligned rectangle - these never change!)
+        private static readonly List<Vector2> CELL_AXES = new() { new(1, 0), new(0, 1) };
+
+        private CollisionInfo CheckConvexToCell(ConvexPolygonHitbox h1, MovableEntity c1, CellHitbox h2, ICollidable c2)
+        {
+            var h1Vertices = GeometryHelper.TransformToWorldSpace(h1.Vertices, c1.Position, c1.Rotation);
+            var h2Vertices = h2.PretransformedVertices;
+
+            var h1Axes = _axesExtractor.ExtractAxes(h1Vertices, h1);
+            var h2Axes = CELL_AXES;
+
+            var collisionInfo = CheckSatCollision(h1Vertices, h2Vertices, h1Axes.Concat(h2Axes).ToList());
+            return collisionInfo;
+        }
+
+        private CollisionInfo CheckConcaveToCell(ConcavePolygonHitbox h1, MovableEntity c1, CellHitbox h2, ICollidable c2)
+        {
+            var h2Vertices = h2.PretransformedVertices;
+            var h2Axes = CELL_AXES;
+
+            var collisionInfos = new List<CollisionInfo>();
+
+            foreach (var slice in h1.ConvexSlices)
+            {
+                var sliceVertices = GeometryHelper.TransformToWorldSpace(slice.Vertices, c1.Position, c1.Rotation);
+                var sliceAxes = _axesExtractor.ExtractAxes(sliceVertices, slice);
+
+                var collisionInfo = CheckSatCollision(sliceVertices, h2Vertices, sliceAxes.Concat(h2Axes).ToList());
+                collisionInfos.Add(collisionInfo);
+            }
+
+            return GetDeepestCollision(collisionInfos);
+        }
+
+        private CollisionInfo CheckCircleToCell(CircleHitbox h1, MovableEntity c1, CellHitbox h2, ICollidable c2)
+        {
+            throw new NotImplementedException("CircleToCell collision not yet implemented");
+        }
+
+        #endregion
 
         #region concave to other
         private CollisionInfo CheckConcaveToConcave(ConcavePolygonHitbox h1, ICollidable c1, ConcavePolygonHitbox h2, ICollidable c2)

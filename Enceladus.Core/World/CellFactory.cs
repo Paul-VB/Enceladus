@@ -1,4 +1,6 @@
 using Enceladus.Core.Config;
+using Enceladus.Core.Physics.Hitboxes;
+using System.Numerics;
 
 namespace Enceladus.Core.World
 {
@@ -29,13 +31,22 @@ namespace Enceladus.Core.World
 		{
 			var cellTypeConfig = _cellTypeConfigs.Value[cellType.Id];
 
+			var vertices = new List<Vector2>
+			{
+				new(x, y),           // top-left
+				new(x + 1, y),       // top-right
+				new(x + 1, y + 1),   // bottom-right
+				new(x, y + 1)        // bottom-left
+			};
+
 			return new Cell
 			{
 				X = x,
 				Y = y,
 				CellType = cellType,
-				Health = cellTypeConfig.MaxHealth
-            };
+				Health = cellTypeConfig.MaxHealth,
+				Hitbox = new CellHitbox(vertices)
+			};
 		}
 	}
 }

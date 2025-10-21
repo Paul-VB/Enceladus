@@ -21,7 +21,7 @@ namespace Enceladus.Core.World
 
         public readonly float Rotation => 0; //cells dont rotate
 
-        public IHitbox Hitbox { get; set; } = new CellHitbox();
+        public IHitbox Hitbox { get; set; }
     }
 
     public class CellType
