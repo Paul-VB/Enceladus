@@ -66,9 +66,9 @@ namespace Enceladus.Core.Tests.Helpers
     /// Test helper entity for general entity testing.
     /// Use EntityHelpers.CreateTestEntity() to create instances.
     /// </summary>
-    public class TestEntity : Entity
+    public class StaticTestEntity : Entity
     {
-        public TestEntity()
+        public StaticTestEntity()
         {
             Guid = Guid.NewGuid();
             Hitbox = new RectHitbox(new(1,1)); // Default hitbox
@@ -86,10 +86,10 @@ namespace Enceladus.Core.Tests.Helpers
         /// <summary>
         /// Creates a test entity at the specified position
         /// </summary>
-        public static TestEntity CreateTestEntity(Vector2 position, IHitbox? hitbox = null, float rotation = 0f)
+        public static StaticTestEntity CreateStaticTestEntity(Vector2 position, IHitbox? hitbox = null, float rotation = 0f)
         {
             hitbox ??= new RectHitbox(new(1, 1));
-            return new TestEntity { 
+            return new StaticTestEntity { 
                 Position = position,
                 Hitbox = hitbox,
                 Rotation = rotation

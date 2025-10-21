@@ -62,7 +62,7 @@ namespace Enceladus.Core.Tests.Rendering
         public void TrackEntity_UpdateFollowsEntityPosition()
         {
             // Arrange
-            var entity = EntityHelpers.CreateTestEntity(new Vector2(100, 200));
+            var entity = EntityHelpers.CreateStaticTestEntity(new Vector2(100, 200));
             _cameraManager.TrackEntity(entity);
 
             // Act
@@ -77,7 +77,7 @@ namespace Enceladus.Core.Tests.Rendering
         public void TrackEntity_UpdateFollowsEntityMovement()
         {
             // Arrange
-            var entity = EntityHelpers.CreateTestEntity(new Vector2(100, 200));
+            var entity = EntityHelpers.CreateStaticTestEntity(new Vector2(100, 200));
             _cameraManager.TrackEntity(entity);
             _cameraManager.Update();
 
@@ -96,7 +96,7 @@ namespace Enceladus.Core.Tests.Rendering
         public void StopTracking_StopsFollowingEntity()
         {
             // Arrange
-            var entity = EntityHelpers.CreateTestEntity(new Vector2(100, 200));
+            var entity = EntityHelpers.CreateStaticTestEntity(new Vector2(100, 200));
             _cameraManager.TrackEntity(entity);
             _cameraManager.Update();
 
@@ -114,7 +114,7 @@ namespace Enceladus.Core.Tests.Rendering
         public void SetTarget_StopsTrackingAndSetsPosition()
         {
             // Arrange
-            var entity = EntityHelpers.CreateTestEntity(new Vector2(100, 200));
+            var entity = EntityHelpers.CreateStaticTestEntity(new Vector2(100, 200));
             _cameraManager.TrackEntity(entity);
             _cameraManager.Update();
 

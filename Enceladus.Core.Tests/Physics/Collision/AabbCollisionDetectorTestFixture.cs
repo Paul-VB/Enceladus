@@ -128,9 +128,9 @@ namespace Enceladus.Core.Tests.Physics.Collision
         }
 
         // Helper methods
-        private TestEntity CreateTestEntity()
+        private StaticTestEntity CreateTestEntity()
         {
-            return EntityHelpers.CreateTestEntity(Vector2.Zero, new CircleHitbox(5f));
+            return EntityHelpers.CreateStaticTestEntity(Vector2.Zero, new CircleHitbox(5f));
         }
     }
 }
