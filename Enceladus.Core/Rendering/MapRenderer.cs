@@ -12,6 +12,7 @@ namespace Enceladus.Core.Rendering
     public class MapRenderer : IMapRenderer
     {
         private readonly ISpriteService _spriteService;
+        private readonly Dictionary<string, List<Cell>> _cellsBySprite = new();
 
         public MapRenderer(ISpriteService spriteService)
         {
@@ -48,23 +49,27 @@ namespace Enceladus.Core.Rendering
 
         private void DrawCells(List<MapChunk> visibleChunks)
         {
-            // Group cells by sprite type for batching
-            var cellsBySprite = new Dictionary<string, List<Cell>>();
+            // Clear and reuse cached dictionary - no allocations!
+            foreach (var list in _cellsBySprite.Values)
+            {
+                list.Clear();
+            }
 
+            // Group cells by sprite type for batching
             foreach (var chunk in visibleChunks)
             {
                 foreach (var cell in chunk.Cells)
                 {
-                    if (!cellsBySprite.ContainsKey(cell.CellType.SpritePath))
-                        cellsBySprite[cell.CellType.SpritePath] = new List<Cell>();
+                    if (!_cellsBySprite.ContainsKey(cell.CellType.SpritePath))
+                        _cellsBySprite[cell.CellType.SpritePath] = new List<Cell>();
 
-                    cellsBySprite[cell.CellType.SpritePath].Add(cell);
+                    _cellsBySprite[cell.CellType.SpritePath].Add(cell);
                 }
             }
 
             // Draw in batches - one sprite load per type, then draw all cells of that type
             // Skip water cells since they're already drawn as background
-            foreach (var (spritePath, cells) in cellsBySprite)
+            foreach (var (spritePath, cells) in _cellsBySprite)
             {
                 // Skip water cells
                 //todo: if we are skipping water cells.... maybe we just remove the water cell fully? and treat cell id 0 as nothing. similar to how minecraft does it?
@@ -74,9 +79,12 @@ namespace Enceladus.Core.Rendering
                 var sprite = _spriteService.Load(spritePath);
                 var source = new Rectangle(0, 0, sprite.Width, sprite.Height);
 
+                // Reuse destination rectangle for all cells (1x1 size is constant)
+                var dest = new Rectangle(0, 0, 1, 1);
                 foreach (var cell in cells)
                 {
-                    var dest = new Rectangle(cell.X, cell.Y, 1, 1);
+                    dest.X = cell.X;
+                    dest.Y = cell.Y;
                     Raylib.DrawTexturePro(sprite, source, dest, Vector2.Zero, 0f, Color.White);
                 }
             }
