@@ -1,19 +1,23 @@
-﻿using Enceladus.Core.Config;
+﻿
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics.Hitboxes;
-using Enceladus.Core.Rendering;
 using Enceladus.Utils;
 using System.Numerics;
 
 namespace Enceladus.Core.Entities
 {
-    public class Player : MovableEntity
+    public class Player : MovableEntity, IControllable
     {
-        private readonly IInputManager _inputManager;
-        private readonly ISpriteService _spriteService;
-
-
         public override IHitbox Hitbox { get; set; }
+        public float MainEngineThrust { get; set; }
+        public float ManeuveringThrust { get; set; }
+        public float ManeuveringRotationalAuthority { get; set; }
+        public float ManeuveringDampingStrength { get; set; }
+        public float ManeuveringFinsAuthority { get; set; }
+        public float BrakeStrength { get; set; }
+        public float MinVelocityForRotation { get; set; }
+        public float MinVelocityForMainEngine { get; set; }
+        public float MaxAlignmentErrorDegrees { get; set; }
 
         public static readonly Vector2[] PixelVertices =
         [
@@ -30,40 +34,18 @@ namespace Enceladus.Core.Entities
             new Vector2(52, 0)
         ];
 
-        public Player(IInputManager inputManager, ISpriteService spriteService, IConfigService configService)
-            : base(configService)
+        public void HandleInputs(float deltaTime, IInputManager inputManager)
         {
-            _inputManager = inputManager;
-            _spriteService = spriteService;
-
-            Init();
-        }
-
-        private void Init()
-        {
-            Mass = ConfigService.Config.Player.Mass;
-            Sprite = _spriteService.Load(Sprites.PlayerSubRight);
-        }
-
-        public override void Update(float deltaTime)
-        {
-            HandleMovementInput(deltaTime);
-            base.Update(deltaTime);
-        }
-
-        private void HandleMovementInput(float deltaTime)
-        {
-            var config = ConfigService.Config.Player;
-            var movementInput = _inputManager.GetMovementInput();
+            var movementInput = inputManager.GetMovementInput();
             if (movementInput != Vector2.Zero)
             {
                 var mainEngineEffectiveThrust = GetMainEngineEffectiveThrust();
-                var totalThrust = config.ManeuveringThrust + mainEngineEffectiveThrust;
+                var totalThrust = ManeuveringThrust + mainEngineEffectiveThrust;
                 Accelerate(movementInput * totalThrust, deltaTime);
             }
-            if (_inputManager.IsKeyDown(KnownInputControls.Brake))
+            if (inputManager.IsKeyDown(KnownInputControls.Brake))
             {
-                Accelerate(-Velocity * config.ManeuveringThrust * config.BrakeStrength, deltaTime);
+                Accelerate(-Velocity * ManeuveringThrust * BrakeStrength, deltaTime);
             }
 
             RotateTowardsVelocityVector(deltaTime);
@@ -71,17 +53,16 @@ namespace Enceladus.Core.Entities
 
         private void RotateTowardsVelocityVector(float deltaTime)
         {
-            var config = ConfigService.Config.Player;
-            if (Velocity.Length() < config.MinVelocityForRotation) return;
+            if (Velocity.Length() < MinVelocityForRotation) return;
 
             // Control surfaces: authority scales with speed (fins/rudders work better when moving)
-            float finAuthority = Velocity.Length() * config.ManeuveringFinsAuthority;
+            float finAuthority = Velocity.Length() * ManeuveringFinsAuthority;
 
             // Active stabilization (D term of PD controller)
             // Computer uses thrusters to counter unwanted spin
-            float activeDamping = -AngularVelocity * config.ManeuveringDampingStrength;
+            float activeDamping = -AngularVelocity * ManeuveringDampingStrength;
 
-            float totalTorque = MotionAlignmentError * (config.ManeuveringRotationalAuthority + finAuthority) + activeDamping;
+            float totalTorque = MotionAlignmentError * (ManeuveringRotationalAuthority + finAuthority) + activeDamping;
             ApplyTorque(totalTorque, deltaTime);
         }
 
@@ -89,15 +70,16 @@ namespace Enceladus.Core.Entities
         private float MotionAlignmentError => AngleHelper.ShortestAngleDifference(Rotation, VelocityAngle);
         private float GetMainEngineEffectiveThrust()
         {
-            var config = ConfigService.Config.Player;
-            if (Velocity.Length() < config.MinVelocityForMainEngine)
+            if (Velocity.Length() < MinVelocityForMainEngine)
                 return 0f; //main engine offline at extremely low speeds
 
             // Calculate alignment factor (1.0 = perfectly aligned, 0.0 = perpendicular)
             float alignmentError = Math.Abs(MotionAlignmentError);
-            float alignmentFactor = 1f - Math.Clamp(alignmentError / config.MaxAlignmentErrorDegrees, 0f, 1f);
+            float alignmentFactor = 1f - Math.Clamp(alignmentError / MaxAlignmentErrorDegrees, 0f, 1f);
 
-            return config.MainEngineThrust * alignmentFactor;
+            return MainEngineThrust * alignmentFactor;
         }
+
+
     }
 }

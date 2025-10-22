@@ -1,6 +1,3 @@
-using Enceladus.Core.Config;
-using Enceladus.Core.Input;
-using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Utils;
 using Raylib_cs;
@@ -8,17 +5,12 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
-    public class EvilBlueTriangle : MovableEntity, ICollidable
+    public class EvilBlueTriangle : MovableEntity
     {
-        private readonly IInputManager _inputManager;
         public override IHitbox Hitbox { get; set; }
 
-        private readonly float _thrust = 5000f;
-
-        public EvilBlueTriangle(IInputManager inputManager, IConfigService configService)
-            : base(configService)
+        public EvilBlueTriangle()
         {
-            _inputManager = inputManager;
 
             // 3x3 unit triangle - equilateral triangle centered at origin
             var vertices = new List<Vector2>
@@ -29,22 +21,6 @@ namespace Enceladus.Core.Entities.TestMonsters
             };
 
             Hitbox = new ConvexPolygonHitbox(vertices);
-            Mass = 50f;
-        }
-
-        public override void Update(float deltaTime)
-        {
-            HandleInput(deltaTime);
-            base.Update(deltaTime);
-        }
-
-        private void HandleInput(float deltaTime)
-        {
-            var movementInput = _inputManager.GetArrowKeyMovementInput();
-            if (movementInput != Vector2.Zero)
-            {
-                Accelerate(movementInput * _thrust, deltaTime);
-            }
         }
 
         public override void Draw(Camera2D camera)

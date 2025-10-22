@@ -3,6 +3,7 @@ using System.Numerics;
 
 namespace Enceladus.Core.Input
 {
+    //todo, maybe rename this to inputReader 
     public interface IInputManager
     {
         bool IsKeyPressed(KeyboardKey key);

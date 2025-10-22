@@ -12,6 +12,9 @@ namespace Enceladus.Core.Physics.Motion
         float Drag { get; set; }
         float AngularVelocity { get; set; }
         float AngularDrag { get; set; }
+        float MinVelocityThreshold { get; set; }
+        float MinAngularVelocityThreshold { get; set; }
+
         void Accelerate(Vector2 force, float deltaTime);
         void ApplyTorque(float torque, float deltaTime);
     }

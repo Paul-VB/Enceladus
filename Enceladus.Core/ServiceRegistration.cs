@@ -21,7 +21,9 @@ namespace Enceladus.Core
 
             services.AddSingleton<IWindowManager, WindowManager>();
             services.AddSingleton<IEntityRegistry, EntityRegistry>();
+            services.AddSingleton<IControllableRegistry, ControllableRegistry>();
             services.AddSingleton<IInputManager, InputManager>();
+            services.AddSingleton<IInputService, InputService>();
             services.AddSingleton<ISpriteService, SpriteService>();
             services.AddSingleton<ICameraManager, CameraManager>();
             services.AddSingleton<IGameManager, GameManager>();

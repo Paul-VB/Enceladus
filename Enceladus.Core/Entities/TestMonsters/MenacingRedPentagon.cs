@@ -12,8 +12,7 @@ namespace Enceladus.Core.Entities.TestMonsters
     {
         public override IHitbox Hitbox { get; set; }
 
-        public MenacingRedPentagon(IConfigService configService)
-            : base(configService)
+        public MenacingRedPentagon()
         {
             // 3x3 unit pentagon - regular pentagon centered at origin
             var vertices = new List<Vector2>();
@@ -28,7 +27,6 @@ namespace Enceladus.Core.Entities.TestMonsters
             }
 
             Hitbox = new ConvexPolygonHitbox(vertices);
-            Mass = 500f;
         }
 
         public override void Update(float deltaTime)

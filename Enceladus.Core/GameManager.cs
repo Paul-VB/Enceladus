@@ -23,27 +23,27 @@ namespace Enceladus.Core
         private readonly IWindowManager _windowManager;
         private readonly IEntityFactory _entityFactory;
         private readonly ICameraManager _cameraManager;
-        private readonly IWorldService _worldService;
         private readonly IPhysicsService _physicsService;
         private readonly IRenderingService _renderingService;
         private readonly ISpriteService _spriteService;
+        private readonly IInputService _inputService;
 
         private Player _player;
 
         public bool IsRunning { get; private set; }
 
         public GameManager(IConfigService configService, IWindowManager windowManager, IEntityFactory entityFactory,
-            ICameraManager cameraManager, IWorldService worldService, IPhysicsService physicsService, IRenderingService renderingService,
-            ISpriteService spriteService)
+            ICameraManager cameraManager, IPhysicsService physicsService, IRenderingService renderingService,
+            ISpriteService spriteService, IInputService inputService)
         {
             _configService = configService;
             _windowManager = windowManager;
             _entityFactory = entityFactory;
             _cameraManager = cameraManager;
-            _worldService = worldService;
             _physicsService = physicsService;
             _renderingService = renderingService;
             _spriteService = spriteService;
+            _inputService = inputService;
         }
 
         public void Initialize()
@@ -85,6 +85,7 @@ namespace Enceladus.Core
                 float deltaTime = Raylib.GetFrameTime();
                 _physicsService.Update(deltaTime);
                 _renderingService.Render();
+                _inputService.Update(deltaTime);
 
                 _windowManager.SetTitle($"Enceladus - FPS: {_windowManager.GetFps()}");
             }

@@ -1,37 +1,20 @@
-using Enceladus.Core.Config;
 using Enceladus.Core.Input;
-using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Utils;
-using Enceladus.Utils;
 using Raylib_cs;
 using System.Numerics;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
-    public class AwfulGreenStar : MovableEntity, ICollidable
+    public class AwfulGreenStar : MovableEntity, IControllable
     {
-        private readonly IInputManager _inputManager;
         public override IHitbox Hitbox { get; set; }
 
         private readonly float _thrust = 5000f;
 
-        public AwfulGreenStar(IInputManager inputManager, IConfigService configService)
-            : base(configService)
+        public void HandleInputs(float deltaTime, IInputManager inputManager)
         {
-            _inputManager = inputManager;
-            Mass = 50f;
-        }
-
-        public override void Update(float deltaTime)
-        {
-            HandleInput(deltaTime);
-            base.Update(deltaTime);
-        }
-
-        private void HandleInput(float deltaTime)
-        {
-            var movementInput = _inputManager.GetArrowKeyMovementInput();
+            var movementInput = inputManager.GetArrowKeyMovementInput();
             if (movementInput != Vector2.Zero)
             {
                 Accelerate(movementInput * _thrust, deltaTime);

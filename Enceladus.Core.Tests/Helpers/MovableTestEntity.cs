@@ -1,11 +1,10 @@
 ﻿using Enceladus.Core.Entities;
 using Enceladus.Core.Physics.Hitboxes;
-using Enceladus.Core.Physics.Motion;
 using System.Numerics;
 
 namespace Enceladus.Core.Tests.Helpers
 {
-    public class MovableTestEntity : Entity, IMovable
+    public class MovableTestEntity : MovableEntity
     {
         public MovableTestEntity()
         {
@@ -14,11 +13,6 @@ namespace Enceladus.Core.Tests.Helpers
         }
 
         public override IHitbox Hitbox { get; set; }
-        public float Mass { get; set; }
-        public Vector2 Velocity { get; set; }
-        public float Drag { get; set; }
-        public float AngularVelocity { get; set; }
-        public float AngularDrag { get; set; }
 
         public void Accelerate(Vector2 force, float deltaTime) { }
 

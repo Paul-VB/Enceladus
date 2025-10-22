@@ -10,35 +10,14 @@ namespace Enceladus.Core.Entities.TestMonsters
 {
     public class HorribleYellowCircle : MovableEntity, ICollidable
     {
-        private readonly IInputManager _inputManager;
         public override IHitbox Hitbox { get; set; }
 
-        private readonly float _thrust = 5000f;
-
-        public HorribleYellowCircle(IInputManager inputManager, IConfigService configService)
-            : base(configService)
+        public HorribleYellowCircle()
         {
-            _inputManager = inputManager;
-
             // 3x3 unit circle - radius of 1.5
             Hitbox = new CircleHitbox(1.5f);
-            Mass = 50f;
         }
 
-        public override void Update(float deltaTime)
-        {
-            //HandleInput(deltaTime);
-            base.Update(deltaTime);
-        }
-
-        private void HandleInput(float deltaTime)
-        {
-            var movementInput = _inputManager.GetArrowKeyMovementInput();
-            if (movementInput != Vector2.Zero)
-            {
-                Accelerate(movementInput * _thrust, deltaTime);
-            }
-        }
 
         public override void Draw(Camera2D camera)
         {

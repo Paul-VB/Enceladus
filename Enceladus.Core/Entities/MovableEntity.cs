@@ -7,42 +7,30 @@ namespace Enceladus.Core.Entities
 {
     public abstract class MovableEntity : Entity, IMovable
     {
-        private readonly MovableComponent _movableComponent;
-        protected readonly IConfigService ConfigService;
+        public Vector2 Velocity { get; set; }
+        public float Mass { get; set; }
+        public float Drag { get; set; }
+        public float AngularVelocity { get; set; }
+        public float AngularDrag { get; set; }
+        public float MinVelocityThreshold { get; set; }
+        public float MinAngularVelocityThreshold { get; set; }
+        public void Accelerate(Vector2 force, float deltaTime)
+        {
+            if (Mass <= 0f)
+                throw new InvalidOperationException($"Mass must be positive. Current value: {Mass}");
 
-        public MovableEntity(IConfigService configService)
-        {
-            ConfigService = configService;
-            _movableComponent = new(ConfigService);
+            Vector2 acceleration = force / Mass;
+            Velocity += acceleration * deltaTime;
         }
 
-        public Vector2 Velocity
+        public void ApplyTorque(float torque, float deltaTime)
         {
-            get => _movableComponent.Velocity;
-            set => _movableComponent.Velocity = value;
+            if (Mass <= 0f)
+                throw new InvalidOperationException($"Mass must be positive. Current value: {Mass}");
+
+            float angularAcceleration = torque / Mass;
+            AngularVelocity += angularAcceleration * deltaTime;
         }
-        public float Mass
-        {
-            get => _movableComponent.Mass;
-            set => _movableComponent.Mass = value;
-        }
-        public float Drag
-        {
-            get => _movableComponent.Drag;
-            set => _movableComponent.Drag = value;
-        }
-        public float AngularVelocity
-        {
-            get => _movableComponent.AngularVelocity;
-            set => _movableComponent.AngularVelocity = value;
-        }
-        public float AngularDrag
-        {
-            get => _movableComponent.AngularDrag;
-            set => _movableComponent.AngularDrag = value;
-        }
-        public void Accelerate(Vector2 force, float deltaTime) => _movableComponent.Accelerate(force, deltaTime);
-        public void ApplyTorque(float torque, float deltaTime) => _movableComponent.ApplyTorque(torque, deltaTime);
 
         public override void Update(float deltaTime)
         {
@@ -57,7 +45,7 @@ namespace Enceladus.Core.Entities
             var dragForce = -Velocity * Drag;
             Velocity += dragForce * deltaTime;
 
-            if (Velocity.Length() < ConfigService.Config.Physics.MinVelocityThreshold)
+            if (Velocity.Length() < MinVelocityThreshold)
                 Velocity = Vector2.Zero;
 
         }
@@ -72,7 +60,7 @@ namespace Enceladus.Core.Entities
             AngularVelocity += angularDragTorque * deltaTime;
 
             // Zero out very small angular velocities
-            if (Math.Abs(AngularVelocity) < ConfigService.Config.Physics.MinAngularVelocityThreshold)
+            if (Math.Abs(AngularVelocity) < MinAngularVelocityThreshold)
                 AngularVelocity = 0f;
         }
     }
