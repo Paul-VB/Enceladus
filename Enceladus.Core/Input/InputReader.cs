@@ -3,8 +3,7 @@ using System.Numerics;
 
 namespace Enceladus.Core.Input
 {
-    //todo, maybe rename this to inputReader 
-    public interface IInputManager
+    public interface IInputReader
     {
         bool IsKeyPressed(KeyboardKey key);
         bool IsKeyDown(KeyboardKey key);
@@ -13,7 +12,7 @@ namespace Enceladus.Core.Input
         Vector2 GetArrowKeyMovementInput();
     }
 
-    public class InputManager : IInputManager
+    public class InputReader : IInputReader
     {
         public bool IsKeyPressed(KeyboardKey key) => Raylib.IsKeyPressed(key);
 

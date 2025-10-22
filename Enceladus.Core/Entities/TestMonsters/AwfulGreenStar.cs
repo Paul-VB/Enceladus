@@ -12,9 +12,9 @@ namespace Enceladus.Core.Entities.TestMonsters
 
         private readonly float _thrust = 5000f;
 
-        public void HandleInputs(float deltaTime, IInputManager inputManager)
+        public void HandleInputs(float deltaTime, IInputReader inputReader)
         {
-            var movementInput = inputManager.GetArrowKeyMovementInput();
+            var movementInput = inputReader.GetArrowKeyMovementInput();
             if (movementInput != Vector2.Zero)
             {
                 Accelerate(movementInput * _thrust, deltaTime);

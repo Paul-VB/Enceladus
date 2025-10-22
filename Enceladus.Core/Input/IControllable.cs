@@ -2,6 +2,6 @@
 {
     public interface IControllable
     {
-        void HandleInputs(float deltaTime, IInputManager inputManager);
+        void HandleInputs(float deltaTime, IInputReader inputReader);
     }
 }

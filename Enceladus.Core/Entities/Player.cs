@@ -34,16 +34,16 @@ namespace Enceladus.Core.Entities
             new Vector2(52, 0)
         ];
 
-        public void HandleInputs(float deltaTime, IInputManager inputManager)
+        public void HandleInputs(float deltaTime, IInputReader inputReader)
         {
-            var movementInput = inputManager.GetMovementInput();
+            var movementInput = inputReader.GetMovementInput();
             if (movementInput != Vector2.Zero)
             {
                 var mainEngineEffectiveThrust = GetMainEngineEffectiveThrust();
                 var totalThrust = ManeuveringThrust + mainEngineEffectiveThrust;
                 Accelerate(movementInput * totalThrust, deltaTime);
             }
-            if (inputManager.IsKeyDown(KnownInputControls.Brake))
+            if (inputReader.IsKeyDown(KnownInputControls.Brake))
             {
                 Accelerate(-Velocity * ManeuveringThrust * BrakeStrength, deltaTime);
             }

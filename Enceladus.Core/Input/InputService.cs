@@ -8,8 +8,8 @@
     {
 
         private readonly IControllableRegistry _controllableRegistry;
-        private readonly IInputManager _inputReader;
-        public InputService(IControllableRegistry controllableRegistry, IInputManager inputReader)
+        private readonly IInputReader _inputReader;
+        public InputService(IControllableRegistry controllableRegistry, IInputReader inputReader)
         {
             _controllableRegistry = controllableRegistry;
             _inputReader = inputReader;
