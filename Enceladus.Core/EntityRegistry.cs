@@ -2,7 +2,6 @@
 
 namespace Enceladus.Core
 {
-    //todo: can we mess with the base Entity class to make it register itself whevener it gets created? maybe we need an entityFactory?
     public interface IEntityRegistry
     {
         IReadOnlyDictionary<Guid, Entity> Entities { get; }
