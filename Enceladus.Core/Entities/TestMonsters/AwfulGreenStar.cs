@@ -10,7 +10,7 @@ namespace Enceladus.Core.Entities.TestMonsters
     {
         public override IHitbox Hitbox { get; set; }
 
-        private readonly float _thrust = 5000f;
+        private readonly float _thrust = 50f;
 
         public void HandleInputs(float deltaTime, IInputReader inputReader)
         {

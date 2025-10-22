@@ -3,7 +3,7 @@
 	<!-- ===== PLAYER SUBMARINE ===== -->
 	<Player>
 		<Mass>100</Mass>
-		<MainEngineThrust>22500</MainEngineThrust>
+		<MainEngineThrust>2250</MainEngineThrust>
 		<ManeuveringThrust>2000</ManeuveringThrust>
 		<ManeuveringRotationalAuthority>400</ManeuveringRotationalAuthority>
 		<ManeuveringDampingStrength>500</ManeuveringDampingStrength>
