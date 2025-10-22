@@ -33,8 +33,18 @@ namespace Enceladus.Core.Physics.Collision
         //entity to cell
         private void ResolveEntityToStatic(CollisionResult collision)
         {
+            //move the movable one away from the static
             collision.Entity.Position += collision.CollisionNormal * collision.PenetrationDepth;
-            collision.Entity.Velocity = Vector2.Zero;
+
+
+            var velocityAlongNormal = Vector2.Dot(collision.Entity.Velocity, collision.CollisionNormal);
+            if (ShouldSkipCollision(velocityAlongNormal))
+                return;
+
+            var restitution = _configService.Config.Physics.RestitutionCoefficient;
+            var impulse = CalculateImpulse(restitution, velocityAlongNormal, collision.CollisionNormal);
+
+            collision.Entity.Velocity += impulse;
         }
 
 
@@ -42,31 +52,42 @@ namespace Enceladus.Core.Physics.Collision
         private void ResolveEntityToMovable(CollisionResult collision, MovableEntity otherEntity)
         {
             var entity = collision.Entity;
-            // 1. Position separation (simple equal split)
+
+            // Position separation (simple equal split)
             var halfDepth = collision.PenetrationDepth / 2f;
             entity.Position += collision.CollisionNormal * halfDepth;
             otherEntity.Position -= collision.CollisionNormal * halfDepth;
-            // 2. Velocity bounce (mass-based impulse)
 
-                // Calculate relative velocity along collision normal
+            // Velocity bounce (mass-based impulse)
             var relativeVelocity = entity.Velocity - otherEntity.Velocity;
             var velocityAlongNormal = Vector2.Dot(relativeVelocity, collision.CollisionNormal);
 
-            // Don't bounce if entities are moving apart
-            if (velocityAlongNormal > 0)
+            if (ShouldSkipCollision(velocityAlongNormal))
                 return;
 
-            // Calculate bounce impulse
             var restitution = _configService.Config.Physics.RestitutionCoefficient;
-            var impulseScalar = -(1 + restitution) * velocityAlongNormal;
-            impulseScalar /= (1 / entity.Mass + 1 / otherEntity.Mass);
-
-            Vector2 impulse = collision.CollisionNormal * impulseScalar;
+            var impulse = CalculateImpulse(restitution, velocityAlongNormal, collision.CollisionNormal);
+            
 
             // Apply impulse to both entities
-            entity.Velocity += impulse / entity.Mass;
-            otherEntity.Velocity -= impulse / otherEntity.Mass;
-            
+            var totalMass = entity.Mass + otherEntity.Mass;
+            var entityMassProportion = entity.Mass / totalMass;
+            var otherEntityMassProportion = otherEntity.Mass / totalMass;
+
+            entity.Velocity += impulse * otherEntityMassProportion;
+            otherEntity.Velocity -= impulse * entityMassProportion;
+        }
+
+        private bool ShouldSkipCollision(float velocityAlongNormal)
+        {
+            return velocityAlongNormal > 0;
+        }
+
+        private Vector2 CalculateImpulse(float restitution, float velocityAlongNormal, Vector2 collisionNormal)
+        {
+            var impulseScalar = -(1 + restitution) * velocityAlongNormal;
+            var impulse = collisionNormal * impulseScalar;
+            return impulse;
         }
     }
 }
