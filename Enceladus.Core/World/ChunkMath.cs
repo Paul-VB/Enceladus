@@ -30,10 +30,6 @@ namespace Enceladus.Core.World
             return (localX, localY);
         }
 
-        /// <summary>
-        /// Returns all chunks that overlap the given rectangular bounds in world space.
-        /// Uses lazy evaluation - chunks are yielded as they're found.
-        /// </summary>
         public static IEnumerable<MapChunk> GetChunksInBounds(Map map, Rectangle bounds)
         {
             float minX = bounds.X;
@@ -57,11 +53,6 @@ namespace Enceladus.Core.World
             }
         }
 
-        /// <summary>
-        /// Returns all cells that overlap the given rectangular bounds in world space.
-        /// Filters to only cells whose 1x1 area actually intersects the bounds.
-        /// Uses lazy evaluation - cells are yielded as chunks are iterated.
-        /// </summary>
         public static IEnumerable<Cell> GetCellsInBounds(Map map, Rectangle bounds)
         {
             var chunks = GetChunksInBounds(map, bounds);
@@ -71,7 +62,6 @@ namespace Enceladus.Core.World
                 foreach (var cell in chunk.Cells)
                 {
                     // Check if cell's 1x1 bounds overlap with the query bounds
-                    //todo: is there a way we can use the cell's hitbox here instead of getCellBounds?
                     var cellBounds = GeometryHelper.GetCellBounds(cell.X, cell.Y);
                     if (GeometryHelper.DoRectanglesOverlap(cellBounds, bounds))
                     {

@@ -14,9 +14,15 @@
   - Need circle-to-anything collision for both entity-to-cell and entity-to-entity
   - Currently using placeholder that returns zero penetration
 
-- [ ] **Test with Player submarine hitbox**
-  - Once polygon decomposition is implemented, test with actual submarine shape
-  - Verify collision feels correct with concave hull
+- [x] **Test with Player submarine hitbox**
+  - Player is using PolygonHitbox built from pixel coordinates
+  - Collision working correctly with submarine shape
+
+- [ ] **Per-material restitution (bounciness)**
+  - Add Restitution property to ICollidable or MovableEntity
+  - Combine restitution values for collisions (geometric mean recommended)
+  - Allow different materials (rubber, wood, metal) to have different bounce behavior
+  - Update CollisionResolver to use combined restitution instead of global config
 
 ### Architecture Consistency
 - [ ] **Consider injecting IEntityRegistry into CollisionChecker**
@@ -27,11 +33,6 @@
 ## Medium Priority
 
 ### Entity System
-- [ ] **Review MovableComponent necessity**
-  - Location: `MovableComponent.cs:7`
-  - Currently only used by MovableEntity - is the extraction worth it?
-  - Decision: Keep for future component-based architecture or inline the logic?
-
 - [x] **Entity auto-registration or factory pattern**
   - Location: `EntityFactory.cs`
   - Implemented IEntityFactory and EntityFactory
@@ -161,10 +162,22 @@
   - Or is PolygonHitbox constructor enough?
 
 ## Completed
+
+### Recent (Latest Session)
+- [x] Remove MovableComponent (was premature abstraction)
+- [x] Refactor entity constructors - remove DI dependencies
+- [x] Entity factory pattern with ApplyDefaults/RegisterEntity helpers
+- [x] IControllable interface + InputService + ControllableRegistry
+- [x] Rename IInputManager → IInputReader
+- [x] Entity-to-cell bouncy collisions
+- [x] CollisionResolver unit tests (mass distribution, momentum conservation)
+- [x] Refactor CollisionResolver - extract helper methods (ShouldSkipCollision, CalculateImpulse)
+
+### Previous Sessions
 - [x] Consolidate TestEntity creation to use EntityHelpers.CreateTestEntity
 - [x] Fix collision bug - Cell-specific coordinate handling in VertexExtractor
 - [x] Add unit tests for VertexExtractor (prevent coordinate regression)
-- [x] Component-based architecture with MovableComponent delegation
+- [x] Component-based architecture with MovableComponent delegation (later removed)
 - [x] Rename IMoveableEntity → IMovable
 - [x] Remove redundant interfaces (IEntity, ICollidableEntity, IPlayer)
 - [x] EntityRegistry pre-filtered lists optimization
