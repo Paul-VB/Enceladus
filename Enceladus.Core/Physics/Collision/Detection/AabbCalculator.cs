@@ -5,7 +5,7 @@ using Enceladus.Utils;
 using Raylib_cs;
 using System.Numerics;
 
-namespace Enceladus.Core.Physics.Collision
+namespace Enceladus.Core.Physics.Collision.Detection
 {
     public interface IAabbCalculator
     {

@@ -3,6 +3,7 @@ using Enceladus.Core.Entities;
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics;
 using Enceladus.Core.Physics.Collision;
+using Enceladus.Core.Physics.Collision.Detection;
 using Enceladus.Core.Physics.Hitboxes.Helpers;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.World;

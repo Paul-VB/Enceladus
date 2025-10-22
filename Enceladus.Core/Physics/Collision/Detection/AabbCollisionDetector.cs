@@ -3,7 +3,7 @@ using Enceladus.Core.Utils;
 using Enceladus.Core.World;
 
 
-namespace Enceladus.Core.Physics.Collision
+namespace Enceladus.Core.Physics.Collision.Detection
 {
     public interface IAabbCollisionDetector
     {

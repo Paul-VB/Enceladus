@@ -1,4 +1,5 @@
 using Enceladus.Core.Entities;
+using Enceladus.Core.Physics.Collision.Detection;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.World;
 using System.Collections.Concurrent;

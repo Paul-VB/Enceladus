@@ -3,7 +3,7 @@ using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Utils;
 using System.Numerics;
 
-namespace Enceladus.Core.Physics.Collision
+namespace Enceladus.Core.Physics.Collision.Detection
 {
 
     public interface ISatCollisionDetector

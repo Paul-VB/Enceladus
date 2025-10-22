@@ -1,7 +1,7 @@
 using Enceladus.Core.Physics.Hitboxes;
 using System.Numerics;
 
-namespace Enceladus.Core.Physics.Collision
+namespace Enceladus.Core.Physics.Collision.Detection
 {
     public interface IAxesExtractor
     {
