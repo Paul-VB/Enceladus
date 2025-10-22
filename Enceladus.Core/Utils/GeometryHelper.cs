@@ -6,6 +6,8 @@ namespace Enceladus.Core.Utils
 {
     public static class GeometryHelper
     {
+        private const float NEARLY_ZERO_THRESHOLD = 1e-6f;
+
         public static List<Vector2> TransformToWorldSpace(List<Vector2> localVertices, Vector2 position, float rotationDegrees)
         {
             float radians = AngleHelper.DegToRad(rotationDegrees);
@@ -53,12 +55,6 @@ namespace Enceladus.Core.Utils
                    rect1.Y + rect1.Height > rect2.Y;
         }
 
-        /// <summary>
-        /// Determines if a polygon is convex by checking the cross product sign consistency.
-        /// Uses the cross product of consecutive edge vectors - all must have the same sign for convexity.
-        /// </summary>
-        /// <param name="vertices">The vertices of the polygon in order (clockwise or counter-clockwise)</param>
-        /// <returns>True if the polygon is convex, false if concave or degenerate</returns>
         public static bool IsConvex(List<Vector2> vertices)
         {
             if (vertices == null || vertices.Count < 3)
@@ -85,7 +81,7 @@ namespace Enceladus.Core.Utils
                 float crossProduct = edge1.X * edge2.Y - edge1.Y * edge2.X;
 
                 // Skip collinear points (cross product near zero)
-                if (MathF.Abs(crossProduct) < 1e-6f) //todo: magic number maybe
+                if (MathF.Abs(crossProduct) < NEARLY_ZERO_THRESHOLD)
                     continue;
 
                 // Check if this cross product matches the established sign
