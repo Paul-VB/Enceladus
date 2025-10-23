@@ -48,10 +48,11 @@
 
 ### Player & Controls
 - [x] **Implement sprite orientation hysteresis for Player**
-  - Use 80°/280° and 100°/260° thresholds to prevent flip thrashing
-  - Swap between PlayerSubLeft and PlayerSubRight based on rotation
-  - Update Player.CurrentSprite to return correct sprite dynamically
-  - Prevents jarring back-and-forth flipping when rotating
+  - Location: `Player.cs:90-108`
+  - Uses 80°/280° and 100°/260° thresholds to prevent flip thrashing
+  - Swaps between PlayerSubLeft and PlayerSubRight based on rotation
+  - Implemented with _isFacingRight state to track current orientation
+  - Prevents jarring back-and-forth flipping when rotating near threshold angles
 
 ### Weapons & Combat
 - [ ] **Implement mining beam weapon**
