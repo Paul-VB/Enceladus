@@ -5,6 +5,7 @@ class Program
 {
     public static void Main()
     {
+        //this is where DI happens
         var serviceProvider = ServiceRegistration.ConfigureServices();
 
         var gameManager = serviceProvider.GetRequiredService<IGameManager>();
