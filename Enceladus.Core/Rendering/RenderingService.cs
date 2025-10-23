@@ -30,6 +30,9 @@ namespace Enceladus.Core.Rendering
 
         public void Render()
         {
+            // Update camera to follow tracked entity
+            _cameraManager.Update();
+
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.Black);
 

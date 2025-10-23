@@ -1,6 +1,5 @@
 using Enceladus.Core.Entities;
 using Enceladus.Core.Physics.Collision;
-using Enceladus.Core.Rendering;
 using Enceladus.Core.World;
 
 namespace Enceladus.Core.Physics
@@ -15,15 +14,13 @@ namespace Enceladus.Core.Physics
         private readonly IEntityRegistry _entityRegistry;
         private readonly IWorldService _worldService;
         private readonly ICollisionService _collisionService;
-        private readonly ICameraManager _cameraManager;
 
         public PhysicsService(IEntityRegistry entityRegistry, IWorldService worldService,
-            ICollisionService collisionService, ICameraManager cameraManager)
+            ICollisionService collisionService)
         {
             _entityRegistry = entityRegistry;
             _worldService = worldService;
             _collisionService = collisionService;
-            _cameraManager = cameraManager;
         }
 
         public void Update(float deltaTime)
@@ -36,9 +33,6 @@ namespace Enceladus.Core.Physics
 
             // Handle collisions (detection + resolution)
             _collisionService.HandleCollisions(_worldService.CurrentMap);
-
-            // Update camera to follow tracked entity
-            _cameraManager.Update();
         }
     }
 }
