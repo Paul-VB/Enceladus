@@ -67,7 +67,6 @@ namespace Enceladus.Core.Entities
         {
             var player = new Player()
             {
-                CurrentSprite = SpriteDefinitions.Entities.PlayerSubRight,
             };
             ApplyDefaults(player);
 

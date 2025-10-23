@@ -22,6 +22,8 @@ namespace Enceladus.Core.Entities
         public float MinVelocityForMainEngine { get; set; }
         public float MaxAlignmentErrorDegrees { get; set; }
 
+        private bool _isFacingRight = true;
+
         public static readonly Vector2[] PixelVertices =
         [
             new Vector2(111, 0),
@@ -52,6 +54,7 @@ namespace Enceladus.Core.Entities
             }
 
             RotateTowardsVelocityVector(deltaTime);
+            UpdateSpriteOrientation();
         }
 
         private void RotateTowardsVelocityVector(float deltaTime)
@@ -81,6 +84,27 @@ namespace Enceladus.Core.Entities
             float alignmentFactor = 1f - Math.Clamp(alignmentError / MaxAlignmentErrorDegrees, 0f, 1f);
 
             return MainEngineThrust * alignmentFactor;
+        }
+
+        //todo: pull this out somewhere in case we wanna re use it on other entities?
+        private void UpdateSpriteOrientation()
+        {
+            if (_isFacingRight)
+            {
+                if (Rotation > 100f && Rotation < 260f)//todo: magic numbers
+                {
+                    _isFacingRight = false;
+                    CurrentSprite = SpriteDefinitions.Entities.PlayerSubLeft;
+                }
+            }
+            else
+            {
+                if (Rotation < 80f || Rotation > 280f)//todo: magic numbers
+                {
+                    _isFacingRight = true;
+                    CurrentSprite = SpriteDefinitions.Entities.PlayerSubRight;
+                }
+            }
         }
 
 

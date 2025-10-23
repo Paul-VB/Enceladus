@@ -46,6 +46,13 @@
   - Would unify coordinate handling across entities and cells
   - Update all usages (MapRenderer, ChunkMath, VertexExtractor)
 
+### Player & Controls
+- [x] **Implement sprite orientation hysteresis for Player**
+  - Use 80°/280° and 100°/260° thresholds to prevent flip thrashing
+  - Swap between PlayerSubLeft and PlayerSubRight based on rotation
+  - Update Player.CurrentSprite to return correct sprite dynamically
+  - Prevents jarring back-and-forth flipping when rotating
+
 ### Weapons & Combat
 - [ ] **Implement mining beam weapon**
   - Mouse-aimable beam that can melt through ice and damage cells
