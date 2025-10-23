@@ -41,7 +41,7 @@ namespace Enceladus.Core.Rendering
             _mapRenderer.Draw(map, visibleChunks);
 
             // Render entities
-            _entityRenderer.Draw(_entityRegistry.Entities.Values, _cameraManager.Camera);
+            _entityRenderer.DrawAllEntities(_cameraManager.Camera);
 
             Raylib.EndMode2D();
 

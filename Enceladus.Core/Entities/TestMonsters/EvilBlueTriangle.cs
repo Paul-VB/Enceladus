@@ -1,11 +1,12 @@
 using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Core.Rendering;
 using Enceladus.Core.Utils;
 using Raylib_cs;
 using System.Numerics;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
-    public class EvilBlueTriangle : MovableEntity
+    public class EvilBlueTriangle : MovableEntity, IGeometryRendered
     {
         public override IHitbox Hitbox { get; set; }
 
@@ -23,7 +24,7 @@ namespace Enceladus.Core.Entities.TestMonsters
             Hitbox = new ConvexPolygonHitbox(vertices);
         }
 
-        public override void Draw(Camera2D camera)
+        public void DrawGeometry(Camera2D camera)
         {
             // Draw triangle using the hitbox vertices
             var polygonHitbox = (PolygonHitbox)Hitbox;

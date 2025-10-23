@@ -46,6 +46,14 @@
   - Would unify coordinate handling across entities and cells
   - Update all usages (MapRenderer, ChunkMath, VertexExtractor)
 
+### Weapons & Combat
+- [ ] **Implement mining beam weapon**
+  - Mouse-aimable beam that can melt through ice and damage cells
+  - Ray from player submarine to mouse cursor
+  - Deal damage to cells over time (reduce health until destroyed)
+  - Visual beam rendering
+  - Consider heat/energy cost mechanics
+
 ### Collision Layer System
 - [ ] **Implement collision layers/masks**
   - Needed for platforms (collide with player, not with cells/other platforms)

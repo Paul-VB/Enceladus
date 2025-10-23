@@ -1,12 +1,13 @@
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Core.Rendering;
 using Enceladus.Core.Utils;
 using Raylib_cs;
 using System.Numerics;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
-    public class AwfulGreenStar : MovableEntity, IControllable
+    public class AwfulGreenStar : MovableEntity, IControllable, IGeometryRendered
     {
         public override IHitbox Hitbox { get; set; }
 
@@ -21,7 +22,7 @@ namespace Enceladus.Core.Entities.TestMonsters
             }
         }
 
-        public override void Draw(Camera2D camera)
+        public void DrawGeometry(Camera2D camera)
         {
             var concaveHitbox = (ConcavePolygonHitbox)Hitbox;
 

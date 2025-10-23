@@ -1,14 +1,17 @@
 ﻿
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Core.Rendering;
 using Enceladus.Utils;
 using System.Numerics;
 
 namespace Enceladus.Core.Entities
 {
-    public class Player : MovableEntity, IControllable
+    public class Player : MovableEntity, IControllable, ISpriteRendered
     {
         public override IHitbox Hitbox { get; set; }
+        public SpriteDefinition CurrentSprite { get; set; } = SpriteDefinitions.Entities.PlayerSubRight;
+        public SpriteModifiers SpriteModifiers { get; set; } = new();
         public float MainEngineThrust { get; set; }
         public float ManeuveringThrust { get; set; }
         public float ManeuveringRotationalAuthority { get; set; }

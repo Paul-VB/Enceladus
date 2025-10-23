@@ -23,14 +23,4 @@ namespace Enceladus.Core.World
 
         public IHitbox Hitbox { get; set; }
     }
-
-    public class CellType
-    {
-        public int Id { get; set; }
-
-        //todo: if we do switch to one big papa sprite texture as suggested in sprite service, this would need to be a pair of vector2s and not a path
-        public string SpritePath { get; set; }
-        public int MaxHealth { get; set; } = 0;
-        public bool HasCollision { get; set; }
-    }
 }

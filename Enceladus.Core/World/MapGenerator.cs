@@ -28,7 +28,7 @@ namespace Enceladus.Core.World
             {
                 for (int chunkY = -halfHeight; chunkY <= halfHeight; chunkY++)
                 {
-                    var chunk = GenerateChunk(chunkX, chunkY);
+                    var chunk = new MapChunk(chunkX, chunkY);
                     map.Chunks[(chunkX, chunkY)] = chunk;
                 }
             }
@@ -50,29 +50,6 @@ namespace Enceladus.Core.World
             return map;
         }
 
-        private MapChunk GenerateChunk(int chunkX, int chunkY)
-        {
-            var chunk = new MapChunk(chunkX, chunkY);
-
-            // Generate 16x16 cells for this chunk
-            var (chunkWorldX, chunkWorldY) = ChunkMath.ChunkToWorldCoords(chunkX, chunkY);
-
-            for (int localX = 0; localX < ChunkMath.ChunkSize; localX++)
-            {
-                for (int localY = 0; localY < ChunkMath.ChunkSize; localY++)
-                {
-                    // Calculate world position
-                    int worldX = chunkWorldX + localX;
-                    int worldY = chunkWorldY + localY;
-
-                    var cell = _cellFactory.CreateCell(CellTypes.Water, worldX, worldY);
-
-                    chunk.Cells.Add(cell);
-                }
-            }
-
-            return chunk;
-        }
 
         private void AddIcePatch(Map map, int startX, int startY, int width, int height)
         {
@@ -85,15 +62,8 @@ namespace Enceladus.Core.World
 
                     if (map.Chunks.TryGetValue((chunkX, chunkY), out var chunk))
                     {
-                        // Find the cell in the chunk's list
-                        var (localX, localY) = ChunkMath.WorldToLocalCoords(x, y);
-                        int cellIndex = localY * ChunkMath.ChunkSize + localX;
-
-                        if (cellIndex >= 0 && cellIndex < chunk.Cells.Count)
-                        {
-                            var cell = _cellFactory.CreateCell(CellTypes.Ice, x, y);
-                            chunk.Cells[cellIndex] = cell;
-                        }
+                        var cell = _cellFactory.CreateCell(CellTypes.Ice, x, y);
+                        chunk.Cells.Add(cell);
                     }
                 }
             }

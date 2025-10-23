@@ -65,7 +65,10 @@ namespace Enceladus.Core.Entities
 
         public Player CreatePlayer(Vector2 position)
         {
-            var player = new Player();
+            var player = new Player()
+            {
+                CurrentSprite = SpriteDefinitions.Entities.PlayerSubRight,
+            };
             ApplyDefaults(player);
 
             // Player-specific config values (override defaults)
@@ -81,10 +84,9 @@ namespace Enceladus.Core.Entities
             player.MinVelocityForMainEngine = config.MinVelocityForMainEngine;
             player.MaxAlignmentErrorDegrees = config.MaxAlignmentErrorDegrees;
 
-            player.Sprite = _spriteService.Load(Sprites.PlayerSubRight);
             player.Hitbox = _polygonHitboxBuilder.BuildFromPixelCoordinates(
-                player.Sprite.Width,
-                player.Sprite.Height,
+                (int)SpriteDefinitions.Entities.PlayerSubRight.SourceRegion.Width,
+                (int)SpriteDefinitions.Entities.PlayerSubRight.SourceRegion.Height,
                 Player.PixelVertices);
             player.Position = position;
             RegisterEntity(player);

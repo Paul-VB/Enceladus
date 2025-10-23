@@ -1,4 +1,5 @@
 using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Core.Rendering;
 using Enceladus.Core.World;
 using System.Numerics;
 
@@ -26,7 +27,10 @@ namespace Enceladus.Core.Tests.Helpers
             {
                 X = x,
                 Y = y,
-                CellType = new CellType { HasCollision = hasCollision },
+                CellType = new CellType { 
+                    Id = -1,
+                    HasCollision = hasCollision,
+                },
                 Hitbox = new CellHitbox(vertices)
             };
         }

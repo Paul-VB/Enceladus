@@ -1,6 +1,5 @@
-using Enceladus.Core.Config;
-using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Core.Rendering;
 using Enceladus.Core.Utils;
 using Enceladus.Utils;
 using Raylib_cs;
@@ -8,7 +7,7 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
-    public class MenacingRedPentagon : MovableEntity, ICollidable
+    public class MenacingRedPentagon : MovableEntity, IGeometryRendered
     {
         public override IHitbox Hitbox { get; set; }
 
@@ -34,7 +33,7 @@ namespace Enceladus.Core.Entities.TestMonsters
             base.Update(deltaTime);
         }
 
-        public override void Draw(Camera2D camera)
+        public void DrawGeometry(Camera2D camera)
         {
             // Draw pentagon using the hitbox vertices
             var polygonHitbox = (PolygonHitbox)Hitbox;
