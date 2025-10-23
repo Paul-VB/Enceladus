@@ -27,6 +27,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
             _collisionResolver = new CollisionResolver(_configService.Object);
         }
 
+
         [Fact]
         public void ResolveEntityToMovable_EqualMasses_SplitsImpulseEqually()
         {
@@ -155,7 +156,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
         }
 
         [Fact]
-        public void ResolveEntityToStatic_StopsEntity()
+        public void ResolveEntityToStatic_BouncesEntity()
         {
             // Arrange: Entity colliding with static cell
             var entity = EntityHelpers.CreateMovableTestEntity(
@@ -178,9 +179,9 @@ namespace Enceladus.Core.Tests.Physics.Collision
             // Act
             _collisionResolver.ResolveCollision(collision);
 
-            // Assert: Entity velocity should be zero (no bounce currently)
-            // Set breakpoint here to see if velocity is zeroed
-            Assert.Equal(Vector2.Zero, entity.Velocity);
+            // Assert: Entity should bounce back (velocity reversed in X direction)
+            Assert.True(entity.Velocity.X < 0, "Entity should bounce back with negative X velocity");
+            Assert.Equal(0, entity.Velocity.Y); // Y should remain unchanged
         }
     }
 }

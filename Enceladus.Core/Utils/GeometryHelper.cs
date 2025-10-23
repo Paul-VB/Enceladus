@@ -55,6 +55,21 @@ namespace Enceladus.Core.Utils
                    rect1.Y + rect1.Height > rect2.Y;
         }
 
+        /// <summary>
+        /// Normalizes a vector using a precomputed distance/length.
+        /// Avoids redundant square root calculation when distance is already known.
+        /// Returns the same result as Vector2.Normalize(), but it just saves CPU cycles if you happen to already have the vector's magnitude
+        /// </summary>
+        public static Vector2 NormalizeByDistance(Vector2 vector, float distance)
+        {
+            if (distance > 0)
+                return vector / distance;
+
+            // Fallback for zero-length vector (prevents division by zero)
+            // Returns a default direction (downward)
+            return new Vector2(0, -1);
+        }
+
         public static bool IsConvex(List<Vector2> vertices)
         {
             if (vertices == null || vertices.Count < 3)

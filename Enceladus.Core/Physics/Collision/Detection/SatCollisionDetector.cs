@@ -14,10 +14,12 @@ namespace Enceladus.Core.Physics.Collision.Detection
     public class SatCollisionDetector : ISatCollisionDetector
     {
         private readonly IAxesExtractor _axesExtractor;
+        private readonly ICollisionInfoService _collisionInfoService;
 
-        public SatCollisionDetector(IAxesExtractor axesExtractor)
+        public SatCollisionDetector(IAxesExtractor axesExtractor, ICollisionInfoService collisionInfoService)
         {
             _axesExtractor = axesExtractor;
+            _collisionInfoService = collisionInfoService;
         }
 
         public CollisionResult CheckCollision(MovableEntity entity, ICollidable otherObject)
@@ -26,21 +28,14 @@ namespace Enceladus.Core.Physics.Collision.Detection
             {
                 (ConcavePolygonHitbox e, CellHitbox c) => CheckConcaveToCell(e, entity, c, otherObject),
                 (ConvexPolygonHitbox e, CellHitbox c) => CheckConvexToCell(e, entity, c, otherObject),
-                (CircleHitbox e, CellHitbox c) => CheckCircleToCell(e, entity, c, otherObject),
 
                 (ConcavePolygonHitbox e, ConcavePolygonHitbox o) => CheckConcaveToConcave(e, entity, o, otherObject),
                 (ConcavePolygonHitbox e, ConvexPolygonHitbox o) => CheckConcaveToConvex(e, entity, o, otherObject),
-                (ConcavePolygonHitbox e, CircleHitbox o) => CheckConcaveToCircle(e, entity, o, otherObject),
 
                 (ConvexPolygonHitbox e, ConcavePolygonHitbox o) => CheckConvexToConcave(e, entity, o, otherObject),
                 (ConvexPolygonHitbox e, ConvexPolygonHitbox o) => CheckConvexToConvex(e, entity, o, otherObject),
-                (ConvexPolygonHitbox e, CircleHitbox o) => CheckConvexToCircle(e, entity, o, otherObject),
 
-                (CircleHitbox e, ConcavePolygonHitbox o) => CheckCircleToConcave(e, entity, o, otherObject),
-                (CircleHitbox e, ConvexPolygonHitbox o) => CheckCircleToConvex(e, entity, o, otherObject),
-                (CircleHitbox e, CircleHitbox o) => throw new Exception("SAT collision logic should not be used for circle to circle collision detection. use the simple radius math only for this"),
-
-                _ => throw new NotSupportedException($"Collision between {entity.Hitbox?.GetType()} and {otherObject.Hitbox?.GetType()} is not supported")
+                _ => throw new NotSupportedException($"SAT Collision detection between {entity.Hitbox?.GetType()} and {otherObject.Hitbox?.GetType()} is not supported")
             };
 
             var collisionResult = new CollisionResult()
@@ -87,12 +82,7 @@ namespace Enceladus.Core.Physics.Collision.Detection
                 collisionInfos.Add(collisionInfo);
             }
 
-            return GetDeepestCollision(collisionInfos);
-        }
-
-        private CollisionInfo CheckCircleToCell(CircleHitbox h1, MovableEntity c1, CellHitbox h2, ICollidable c2)
-        {
-            throw new NotImplementedException("CircleToCell collision not yet implemented");
+            return _collisionInfoService.GetDeepestCollision(collisionInfos);
         }
 
         #endregion
@@ -119,7 +109,7 @@ namespace Enceladus.Core.Physics.Collision.Detection
             }
 
             // Return the deepest collision from all slice pair checks
-            return GetDeepestCollision(collisionInfos);
+            return _collisionInfoService.GetDeepestCollision(collisionInfos);
         }
 
         private CollisionInfo CheckConcaveToConvex(ConcavePolygonHitbox h1, ICollidable c1, ConvexPolygonHitbox h2, ICollidable c2)
@@ -141,19 +131,14 @@ namespace Enceladus.Core.Physics.Collision.Detection
             }
 
             // Return the deepest collision from all slice checks
-            return GetDeepestCollision(collisionInfos);
-        }
-
-        private CollisionInfo CheckConcaveToCircle(ConcavePolygonHitbox h1, ICollidable c1, CircleHitbox h2, ICollidable c2)
-        {
-            throw new NotImplementedException();
+            return _collisionInfoService.GetDeepestCollision(collisionInfos);
         }
         #endregion
 
         #region convex to other
         private CollisionInfo CheckConvexToConcave(ConvexPolygonHitbox h1, ICollidable c1, ConcavePolygonHitbox h2, ICollidable c2)
         {
-            return ReverseCollisionNormal(CheckConcaveToConvex(h2, c2, h1, c1));
+            return _collisionInfoService.ReverseCollisionNormal(CheckConcaveToConvex(h2, c2, h1, c1));
         }
 
         private CollisionInfo CheckConvexToConvex(ConvexPolygonHitbox h1, ICollidable c1, ConvexPolygonHitbox h2, ICollidable c2)
@@ -167,48 +152,7 @@ namespace Enceladus.Core.Physics.Collision.Detection
             var collisionInfo = CheckSatCollision(h1Vertices, h2Vertices, h1Axes.Concat(h2Axes).ToList());
             return collisionInfo;
         }
-
-        private CollisionInfo CheckConvexToCircle(ConvexPolygonHitbox h1, ICollidable c1, CircleHitbox h2, ICollidable c2)
-        {
-            throw new NotImplementedException();
-        }
         #endregion
-
-        #region circle to other
-        private CollisionInfo CheckCircleToConcave(CircleHitbox h1, ICollidable c1, ConcavePolygonHitbox h2, ICollidable c2)
-        {
-            return ReverseCollisionNormal(CheckConcaveToCircle(h2, c2, h1, c1));
-        }
-
-        private CollisionInfo CheckCircleToConvex(CircleHitbox h1, ICollidable c1, ConvexPolygonHitbox h2, ICollidable c2)
-        {
-            return ReverseCollisionNormal(CheckConvexToCircle(h2, c2, h1, c1));
-        }
-        #endregion
-
-
-        private CollisionInfo GetDeepestCollision(List<CollisionInfo> collisionInfos)
-        {
-            var deepestCollisionInfo = new CollisionInfo()
-            {
-                PenetrationDepth = 0f,
-                CollisionNormal = Vector2.Zero
-            };
-
-            foreach (var collisionInfo in collisionInfos)
-            {
-                if (collisionInfo.PenetrationDepth > deepestCollisionInfo.PenetrationDepth)
-                    deepestCollisionInfo = collisionInfo;
-            }
-
-            return deepestCollisionInfo;
-        }
-
-        private CollisionInfo ReverseCollisionNormal(CollisionInfo collisionInfo)
-        {
-            collisionInfo.CollisionNormal *= -1;
-            return collisionInfo;
-        }
 
         private CollisionInfo CheckSatCollision(List<Vector2> vertices1, List<Vector2> vertices2, List<Vector2> axes)
         {
@@ -222,11 +166,7 @@ namespace Enceladus.Core.Physics.Collision.Detection
                 if (penetration == 0)
                 {
                     //found at least one axis where we can find a gap. the shapes cannot be colliding
-                    return new CollisionInfo
-                    {
-                        PenetrationDepth = 0,
-                        CollisionNormal = new Vector2()
-                    };
+                    return CollisionInfo.NonCollision;
                 }
 
                 // Track the axis with minimum penetration
@@ -297,12 +237,6 @@ namespace Enceladus.Core.Physics.Collision.Detection
             }
 
             return (min, max);
-        }
-
-        private class CollisionInfo
-        {
-            public float PenetrationDepth { get; set; }
-            public Vector2 CollisionNormal { get; set; }
         }
     }
 
