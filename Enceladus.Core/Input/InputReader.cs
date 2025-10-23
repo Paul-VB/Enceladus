@@ -1,3 +1,4 @@
+using Enceladus.Core.Rendering;
 using Raylib_cs;
 using System.Numerics;
 
@@ -10,10 +11,18 @@ namespace Enceladus.Core.Input
         bool IsKeyReleased(KeyboardKey key);
         Vector2 GetMovementInput();
         Vector2 GetArrowKeyMovementInput();
+        Vector2 GetMouseWorldPosition();
     }
 
     public class InputReader : IInputReader
     {
+        private readonly ICameraManager _cameraManager;
+
+        public InputReader(ICameraManager cameraManager)
+        {
+            _cameraManager = cameraManager;
+        }
+
         public bool IsKeyPressed(KeyboardKey key) => Raylib.IsKeyPressed(key);
 
         public bool IsKeyDown(KeyboardKey key) => Raylib.IsKeyDown(key);
@@ -56,6 +65,12 @@ namespace Enceladus.Core.Input
                 movement = Vector2.Normalize(movement);
 
             return movement;
+        }
+
+        public Vector2 GetMouseWorldPosition()
+        {
+            var mouseScreenPos = Raylib.GetMousePosition();
+            return Raylib.GetScreenToWorld2D(mouseScreenPos, _cameraManager.Camera);
         }
     }
 
