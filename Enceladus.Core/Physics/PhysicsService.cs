@@ -1,3 +1,4 @@
+using Enceladus.Core.Entities;
 using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.World;

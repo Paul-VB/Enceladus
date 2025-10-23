@@ -1,3 +1,4 @@
+using Enceladus.Core.Entities;
 using Enceladus.Core.World;
 using Raylib_cs;
 using Color = Raylib_cs.Color;

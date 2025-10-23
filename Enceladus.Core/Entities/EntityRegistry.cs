@@ -1,7 +1,6 @@
-﻿using Enceladus.Core.Entities;
-using Enceladus.Core.Rendering;
+﻿using Enceladus.Core.Rendering;
 
-namespace Enceladus.Core
+namespace Enceladus.Core.Entities
 {
     public interface IEntityRegistry
     {
