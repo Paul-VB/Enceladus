@@ -26,10 +26,11 @@
   - Update CollisionResolver to use combined restitution instead of global config
 
 ### Architecture Consistency
-- [ ] **Consider injecting IEntityRegistry into CollisionChecker**
-  - Location: `CollisionService.cs:33`, `CollisionChecker.cs`
-  - Currently CollisionService injects it, CollisionChecker receives as parameter
-  - Inconsistent pattern - decide on one approach
+- [x] **Consider injecting IEntityRegistry into CollisionChecker**
+  - Location: `CollisionService.cs`, `CollisionChecker.cs`
+  - Injected both IEntityRegistry and IWorldService into CollisionChecker
+  - Methods now parameterless - dependencies injected via constructor
+  - CollisionService simplified - no longer passes dependencies as parameters
 
 ## Medium Priority
 

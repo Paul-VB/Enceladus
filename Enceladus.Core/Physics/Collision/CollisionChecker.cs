@@ -9,30 +9,34 @@ namespace Enceladus.Core.Physics.Collision
 {
     public interface ICollisionChecker
     {
-        List<CollisionResult> CheckEntitiesToCells(IEnumerable<MovableEntity> entities, Map map);
-        List<CollisionResult> CheckEntitiesToEntities(IEntityRegistry entityRegistry);
+        List<CollisionResult> CheckEntitiesToCells();
+        List<CollisionResult> CheckEntitiesToEntities();
     }
 
     public class CollisionChecker : ICollisionChecker
     {
+        private readonly IEntityRegistry _entityRegistry;
+        private readonly IWorldService _worldService;
         private readonly IAabbCollisionDetector _aabbCollisionDetector;
         private readonly ISatCollisionDetector _satCollisionDetector;
         private readonly ICircleCollisionDetector _circleCollisionDetector;
 
-        public CollisionChecker(IAabbCollisionDetector aabbCollisionDetector, ISatCollisionDetector satCollisionDetector, ICircleCollisionDetector circleCollisionDetector)
+        public CollisionChecker(IEntityRegistry entityRegistry, IWorldService worldService, IAabbCollisionDetector aabbCollisionDetector, ISatCollisionDetector satCollisionDetector, ICircleCollisionDetector circleCollisionDetector)
         {
+            _entityRegistry = entityRegistry;
+            _worldService = worldService;
             _aabbCollisionDetector = aabbCollisionDetector;
             _satCollisionDetector = satCollisionDetector;
             _circleCollisionDetector = circleCollisionDetector;
         }
 
-        public List<CollisionResult> CheckEntitiesToCells(IEnumerable<MovableEntity> entities, Map map)
+        public List<CollisionResult> CheckEntitiesToCells()
         {
             var collisions = new ConcurrentBag<CollisionResult>();
             //todo: stretch goal, can we leverage GPU for this?
-            Parallel.ForEach(entities, entity =>
+            Parallel.ForEach(_entityRegistry.MovableEntities, entity =>
             {
-                var entityCollisions = CheckEntityToCells(entity, map);
+                var entityCollisions = CheckEntityToCells(entity, _worldService.CurrentMap);
                 foreach (var collision in entityCollisions)
                 {
                     collisions.Add(collision);
@@ -69,11 +73,10 @@ namespace Enceladus.Core.Physics.Collision
             return collisions;
         }
 
-        public List<CollisionResult> CheckEntitiesToEntities(IEntityRegistry entityRegistry)
+        public List<CollisionResult> CheckEntitiesToEntities()
         {
             var collisions = new List<CollisionResult>();
-            var moveables = entityRegistry.MovableEntities;
-            var statics = entityRegistry.StaticEntities;
+            var moveables = _entityRegistry.MovableEntities;
 
             // Moveable vs Moveable
             for (int i = 0; i < moveables.Count; i++)
@@ -87,7 +90,7 @@ namespace Enceladus.Core.Physics.Collision
             // Moveable vs Static
             foreach (var moveable in moveables)
             {
-                foreach (var staticEntity in statics)
+                foreach (var staticEntity in _entityRegistry.StaticEntities)
                 {
                     CheckPair(moveable, staticEntity, collisions);
                 }

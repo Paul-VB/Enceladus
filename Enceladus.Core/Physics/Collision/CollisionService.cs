@@ -12,27 +12,24 @@ namespace Enceladus.Core.Physics.Collision
     {
         private readonly ICollisionChecker _collisionChecker;
         private readonly ICollisionResolver _collisionResolver;
-        private readonly IEntityRegistry _entityRegistry;
 
-        public CollisionService(ICollisionChecker collisionChecker, ICollisionResolver collisionResolver, IEntityRegistry entityRegistry)
+        public CollisionService(ICollisionChecker collisionChecker, ICollisionResolver collisionResolver)
         {
             _collisionChecker = collisionChecker;
             _collisionResolver = collisionResolver;
-            _entityRegistry = entityRegistry;
         }
 
         public void HandleCollisions(Map map)
         {
             // Entity-to-cell collisions
-            var entityToCellCollisions = _collisionChecker.CheckEntitiesToCells(_entityRegistry.MovableEntities, map);
+            var entityToCellCollisions = _collisionChecker.CheckEntitiesToCells();
             foreach (var collision in entityToCellCollisions)
             {
                 _collisionResolver.ResolveCollision(collision);
             }
 
-            //todo: maybe we should just inject entityRegistry here? its a pretty simple class anyway, its just a dict and some lists.
             // Entity-to-entity collisions
-            var entityToEntityCollisions = _collisionChecker.CheckEntitiesToEntities(_entityRegistry);
+            var entityToEntityCollisions = _collisionChecker.CheckEntitiesToEntities();
             foreach (var collision in entityToEntityCollisions)
             {
                 _collisionResolver.ResolveCollision(collision);
