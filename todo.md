@@ -122,10 +122,13 @@
   - Orbital trader timing, sector events, etc.
 
 ### Rendering
-- [ ] **Sprite atlas system**
-  - Location: `SpriteService.cs:11`, `Cell.cs:31`
-  - One big texture is more efficient than individual files
-  - Would require updating CellType sprite references
+- [x] **Sprite atlas system**
+  - Location: `SpriteDefinitions.cs`, `SpriteService.cs`, `EntityRenderer.cs`, `MapRenderer.cs`
+  - Implemented atlas-based rendering for both entities and cells
+  - Organized into `SpriteDefinitions.Entities` and `SpriteDefinitions.Cells` nested classes
+  - **Performance win: 115fps (with GC stuttering) → 1500+ fps** 🚀
+  - Uses `ISpriteRendered` interface for sprite-based entities
+  - Supports `SpriteModifiers` for tint, alpha, flip, and blend modes
 
 - [ ] **Debug overlay (F3-style)**
   - Location: `WindowManager.cs:17`
@@ -173,7 +176,17 @@
 
 ## Completed
 
-### Recent (Latest Session)
+### Recent (Latest Session - Atlas Refactor)
+- [x] Sprite atlas system implementation (115fps → 1500+ fps!)
+- [x] ISpriteRendered and IGeometryRendered interfaces for flexible rendering
+- [x] SpriteModifiers system (tint, alpha, flip, blend modes)
+- [x] Organized sprite definitions into nested classes (Entities/Cells)
+- [x] MapChunk changed to sparse List<Cell> storage (no null cells)
+- [x] Removed CellTypes.Water (null = empty space, like Minecraft)
+- [x] EntityRegistry pre-filtered lists for SpriteRendered/GeometryRendered entities
+- [x] Injected IEntityRegistry and IWorldService into CollisionChecker
+
+### Previous Session
 - [x] Remove MovableComponent (was premature abstraction)
 - [x] Refactor entity constructors - remove DI dependencies
 - [x] Entity factory pattern with ApplyDefaults/RegisterEntity helpers

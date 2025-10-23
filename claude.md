@@ -15,8 +15,9 @@ See `gameplayDetails.md` for complete gameplay design.
 
 ### Entity System
 - **All entities are ICollidable** (nullable Hitbox for non-collidables)
-- **Component pattern**: Use components ONLY for interfaces with complex method logic
-  - `MovableComponent` exists for `IMovable` (has Accelerate, ApplyTorque methods)
+- **Component pattern**: Use components ONLY for interfaces with complex method logic (when needed)
+  - Currently no components in use - MovableComponent was removed as premature abstraction
+  - MovableEntity directly implements IMovable with its own logic
   - NO CollisionComponent needed - ICollidable is just properties
 - **Hierarchy**: `Entity : ICollidable` → `MovableEntity : IMovable`
 
@@ -35,9 +36,9 @@ See `gameplayDetails.md` for complete gameplay design.
 ## Important Files
 
 ### Core Architecture
-- `MovableEntity.cs` - Delegates to MovableComponent
+- `MovableEntity.cs` - Implements IMovable with physics logic
 - `EntityRegistry.cs` - Pre-filtered entity lists for performance
-- `IMovable.cs` - Interface with complex methods (requires component)
+- `IMovable.cs` - Interface for movable entities (currently implemented directly)
 - `ICollidable.cs` - Interface with simple properties (no component needed)
 
 ### Collision System
@@ -96,10 +97,11 @@ See `gameplayDetails.md` for complete gameplay design.
 - With 100 entities at 60fps, this saves ~6,000 type checks/second
 
 ### Component Pattern Usage
-- **ONLY** create components for interfaces with complex method logic
-- `IMovable` needs `MovableComponent` because `Accelerate()` has physics math
-- `ICollidable` does NOT need component - it's just properties (this point might become outdated if IColldiable ever changes. PLEASE remove this example if icollidable ever gets its own component with complex logic)
-- Don't over-engineer - simple properties don't need abstraction
+- **ONLY** create components when truly needed to share complex logic across multiple entity types
+- `MovableEntity` implements `IMovable` directly - no component needed since logic isn't shared
+- `ICollidable` does NOT need component - it's just properties (this point might become outdated if ICollidable ever changes. PLEASE remove this example if icollidable ever gets its own component with complex logic)
+- Don't over-engineer - avoid premature abstraction
+- Components are for sharing logic, not just organizing code
 
 ### Collision Detection
 - Only `MovableEntity` can be in collisions (as the primary entity)
