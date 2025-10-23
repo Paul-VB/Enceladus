@@ -16,20 +16,34 @@ namespace Enceladus.Core.Utils
 
             var worldVertices = new List<Vector2>();
 
-            foreach (var vertex in localVertices)
+            foreach (var localVertex in localVertices)
             {
-                // Rotate vertex
-                var rotated = new Vector2(
-                    vertex.X * cos - vertex.Y * sin,
-                    vertex.X * sin + vertex.Y * cos
-                );
-
-                // Translate to world position
-                worldVertices.Add(rotated + position);
+                worldVertices.Add(TransformToWorldSpace(localVertex, position, cos, sin));
             }
 
             return worldVertices;
         }
+
+        public static Vector2 TransformToWorldSpace(Vector2 localVertex, Vector2 position, float rotationDegrees)
+        {
+            float radians = AngleHelper.DegToRad(rotationDegrees);
+            float cos = MathF.Cos(radians);
+            float sin = MathF.Sin(radians);
+            
+            return TransformToWorldSpace(localVertex, position, cos, sin);
+        }
+
+        private static Vector2 TransformToWorldSpace(Vector2 localVertex, Vector2 position, float cosineRadians, float sineRadians)
+        {
+            var rotated = new Vector2(
+                localVertex.X * cosineRadians - localVertex.Y * sineRadians,
+                localVertex.X * sineRadians + localVertex.Y * cosineRadians
+            );
+
+            // Translate to world position
+            return rotated + position;
+        }
+
 
 
         /// <summary>
@@ -76,7 +90,7 @@ namespace Enceladus.Core.Utils
                 return false; // Degenerate polygon
 
             if (vertices.Count == 3)
-                return true; 
+                return true;
 
             int n = vertices.Count;
             bool? isPositive = null; // Track the expected sign of cross products
