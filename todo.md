@@ -9,10 +9,11 @@
   - Todo: Replace with more performant algorithm later
   - SAT updated with CheckCollision2 to support concave polygons
 
-- [ ] **Implement circle collision detection**
-  - Location: `CollisionChecker.cs:50, 111`
-  - Need circle-to-anything collision for both entity-to-cell and entity-to-entity
-  - Currently using placeholder that returns zero penetration
+- [x] **Implement circle collision detection**
+  - Location: `CircleCollisionDetector.cs`, `CollisionChecker.cs`
+  - Implemented circle-to-circle, circle-to-polygon, circle-to-cell collisions
+  - Uses distance check for circles, closest point algorithm for polygons
+  - Includes reversed cases (polygon-to-circle) with proper normal reversal
 
 - [x] **Test with Player submarine hitbox**
   - Player is using PolygonHitbox built from pixel coordinates
