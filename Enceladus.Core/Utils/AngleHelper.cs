@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace Enceladus.Utils
 {
     /// <summary>
@@ -34,6 +36,12 @@ namespace Enceladus.Utils
         {
             float result = target - current;
             return ConvertToSignedAngle(result);
+        }
+
+        public static Vector2 DegToNormalVector(float degrees)
+        {
+            var radians = DegToRad(degrees);
+            return new Vector2(MathF.Cos(radians), MathF.Sin(radians));
         }
 
         public static float DegToRad(float degrees) => degrees * (MathF.PI / 180f);
