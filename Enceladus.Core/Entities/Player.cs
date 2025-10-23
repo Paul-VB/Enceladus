@@ -3,12 +3,13 @@ using Enceladus.Core.Input;
 using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Rendering;
+using Enceladus.Core.Entities.Weapons;
 using Enceladus.Utils;
 using System.Numerics;
 
 namespace Enceladus.Core.Entities
 {
-    public class Player : MovableEntity, ICollidable, IControllable, ISpriteRendered
+    public class Player : MovableEntity, ICollidable, IControllable, ISpriteRendered, IArmed
     {
         public override IHitbox Hitbox { get; set; }
         public SpriteDefinition CurrentSprite { get; set; } = SpriteDefinitions.Entities.PlayerSubRight;
@@ -22,6 +23,10 @@ namespace Enceladus.Core.Entities
         public float MinVelocityForRotation { get; set; }
         public float MinVelocityForMainEngine { get; set; }
         public float MaxAlignmentErrorDegrees { get; set; }
+        public List<WeaponMount> WeaponMounts { get; set; } = new()
+        {
+            new WeaponMount { Offset = new Vector2(-1f, 0f) } 
+        };
 
         private bool _isFacingRight = true;
 
@@ -107,7 +112,5 @@ namespace Enceladus.Core.Entities
                 }
             }
         }
-
-
     }
 }

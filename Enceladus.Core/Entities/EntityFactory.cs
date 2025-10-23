@@ -1,5 +1,6 @@
 ﻿using Enceladus.Core.Config;
 using Enceladus.Core.Entities.TestMonsters;
+using Enceladus.Core.Entities.Weapons;
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics.Hitboxes.Helpers;
 using Enceladus.Core.Rendering;
@@ -14,6 +15,7 @@ namespace Enceladus.Core.Entities
         HorribleYellowCircle CreateHorribleYellowCircle(Vector2 position);
         MenacingRedPentagon CreateMenacingRedPentagon(Vector2 position);
         AwfulGreenStar CreateAwfulGreenStar(Vector2 position);
+        TestGun CreateTestGun(IArmed owner);
     }
 
     public class EntityFactory : IEntityFactory
@@ -88,7 +90,13 @@ namespace Enceladus.Core.Entities
                 (int)SpriteDefinitions.Entities.PlayerSubRight.SourceRegion.Height,
                 Player.PixelVertices);
             player.Position = position;
+
             RegisterEntity(player);
+
+            // Equip test gun to first mount
+            var testGun = CreateTestGun(player);
+            player.WeaponMounts[0].EquippedWeapon = testGun;
+
             return player;
         }
 
@@ -141,6 +149,13 @@ namespace Enceladus.Core.Entities
             entity.Position = position;
             RegisterEntity(entity);
             return entity;
+        }
+
+        public TestGun CreateTestGun(IArmed owner)
+        {
+            var weapon = new TestGun { Owner = owner };
+            RegisterEntity(weapon);
+            return weapon;
         }
     }
 }

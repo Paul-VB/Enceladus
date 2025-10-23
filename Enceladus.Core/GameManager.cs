@@ -1,10 +1,9 @@
 using Enceladus.Core.Config;
 using Enceladus.Core.Entities;
+using Enceladus.Core.Entities.Weapons;
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics;
 using Enceladus.Core.Rendering;
-using Enceladus.Core.World;
-using Enceladus.Core.Entities.TestMonsters;
 using Raylib_cs;
 using System.Numerics;
 
@@ -27,6 +26,7 @@ namespace Enceladus.Core
         private readonly IRenderingService _renderingService;
         private readonly ISpriteService _spriteService;
         private readonly IInputService _inputService;
+        private readonly IWeaponService _weaponService;
 
         private Player _player;
 
@@ -34,7 +34,7 @@ namespace Enceladus.Core
 
         public GameManager(IConfigService configService, IWindowManager windowManager, IEntityFactory entityFactory,
             ICameraManager cameraManager, IPhysicsService physicsService, IRenderingService renderingService,
-            ISpriteService spriteService, IInputService inputService)
+            ISpriteService spriteService, IInputService inputService, IWeaponService weaponService)
         {
             _configService = configService;
             _windowManager = windowManager;
@@ -44,6 +44,7 @@ namespace Enceladus.Core
             _renderingService = renderingService;
             _spriteService = spriteService;
             _inputService = inputService;
+            _weaponService = weaponService;
         }
 
         public void Initialize()
@@ -83,9 +84,10 @@ namespace Enceladus.Core
             while (IsRunning && !Raylib.WindowShouldClose())
             {
                 float deltaTime = Raylib.GetFrameTime();
-                _physicsService.Update(deltaTime);
-                _renderingService.Render();
                 _inputService.Update(deltaTime);
+                _physicsService.Update(deltaTime);
+                _weaponService.Update(deltaTime);
+                _renderingService.Render();
 
                 _windowManager.SetTitle($"Enceladus - FPS: {_windowManager.GetFps()}");
             }

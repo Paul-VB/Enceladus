@@ -1,5 +1,6 @@
 using Enceladus.Core.Config;
 using Enceladus.Core.Entities;
+using Enceladus.Core.Entities.Weapons;
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics;
 using Enceladus.Core.Physics.Collision;
@@ -36,6 +37,7 @@ namespace Enceladus.Core
             services.AddSingleton<IEntityFactory, EntityFactory>();
             services.AddSingleton<IPolygonHitboxBuilder, PolygonHitboxBuilder>();
             services.AddSingleton<IConcavePolygonSlicer, EarClippingTriangulationSlicer>();
+            services.AddSingleton<IWeaponService, WeaponService>();
 
             // Rendering services
             services.AddSingleton<IRenderingService, RenderingService>();

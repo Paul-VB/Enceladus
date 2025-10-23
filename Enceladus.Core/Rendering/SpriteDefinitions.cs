@@ -36,6 +36,13 @@ namespace Enceladus.Core.Rendering
                 AtlasFilePath = EntityAtlasFilePath,
                 SourceRegion = new Rectangle(192, 0, 128, 64)
             };
+
+            // Weapon sprites
+            public static readonly SpriteDefinition TestGun = new()
+            {
+                AtlasFilePath = EntityAtlasFilePath,
+                SourceRegion = new Rectangle(320, 0, 32, 32)
+            };
         }
 
         public static class Cells

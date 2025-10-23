@@ -1,5 +1,6 @@
 ﻿using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Rendering;
+using Enceladus.Core.Entities.Weapons;
 
 namespace Enceladus.Core.Entities
 {
@@ -10,6 +11,7 @@ namespace Enceladus.Core.Entities
         IReadOnlyList<ICollidable> StaticCollidables { get; }
         IReadOnlyList<ISpriteRendered> SpriteRenderedEntities { get; }
         IReadOnlyList<IGeometryRendered> GeometryRenderedEntities { get; }
+        IReadOnlyList<IArmed> ArmedEntities { get; }
         T Register<T>(T entity) where T : Entity;
         void Unregister(Guid guid);
     }
@@ -21,12 +23,14 @@ namespace Enceladus.Core.Entities
         private readonly List<ICollidable> _staticCollidables = new();
         private readonly List<ISpriteRendered> _spriteRenderedEntities = new();
         private readonly List<IGeometryRendered> _geometryRenderedEntities = new();
+        private readonly List<IArmed> _armedEntities = new();
 
         public IReadOnlyDictionary<Guid, Entity> Entities => _entities;
         public IReadOnlyList<MovableEntity> MovableEntities => _movableEntities;
         public IReadOnlyList<ICollidable> StaticCollidables => _staticCollidables;
         public IReadOnlyList<ISpriteRendered> SpriteRenderedEntities => _spriteRenderedEntities;
         public IReadOnlyList<IGeometryRendered> GeometryRenderedEntities => _geometryRenderedEntities;
+        public IReadOnlyList<IArmed> ArmedEntities => _armedEntities;
 
         public T Register<T>(T entity) where T : Entity
         {
@@ -41,6 +45,9 @@ namespace Enceladus.Core.Entities
                 _spriteRenderedEntities.Add(spriteRendered);
             else if (entity is IGeometryRendered geometryRendered)
                 _geometryRenderedEntities.Add(geometryRendered);
+
+            if (entity is IArmed armed)
+                _armedEntities.Add(armed);
 
             return entity;
         }
@@ -60,6 +67,8 @@ namespace Enceladus.Core.Entities
                 _spriteRenderedEntities.Remove(spriteRendered);
             if (entity is IGeometryRendered geometryRendered)
                 _geometryRenderedEntities.Remove(geometryRendered);
+            if (entity is IArmed armed)
+                _armedEntities.Remove(armed);
         }
     }
 }
