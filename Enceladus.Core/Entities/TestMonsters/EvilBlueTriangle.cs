@@ -1,3 +1,4 @@
+using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.Utils;
@@ -6,7 +7,7 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
-    public class EvilBlueTriangle : MovableEntity, IGeometryRendered
+    public class EvilBlueTriangle : MovableEntity, ICollidable, IGeometryRendered
     {
         public override IHitbox Hitbox { get; set; }
 

@@ -7,8 +7,8 @@ namespace Enceladus.Core.Physics.Collision.Detection
 {
     public interface IAabbCollisionDetector
     {
-        List<Cell> CheckPotentialCellCollisions(Entity entity, Map map);
-        bool CheckPotentialCollision(Entity entity, ICollidable otherObject);
+        List<Cell> CheckPotentialCellCollisions(ICollidable entity, Map map);
+        bool CheckPotentialCollision(ICollidable entity, ICollidable otherObject);
     }
     public class AabbCollisionDetector : IAabbCollisionDetector
     {
@@ -17,7 +17,7 @@ namespace Enceladus.Core.Physics.Collision.Detection
         {
             _aabbCalculator = aabbCalculator;
         }
-        public List<Cell> CheckPotentialCellCollisions(Entity entity, Map map)
+        public List<Cell> CheckPotentialCellCollisions(ICollidable entity, Map map)
         {
             var candidates = new List<Cell>();
             var aabbRect = _aabbCalculator.CalculateAabb(entity);
@@ -35,7 +35,7 @@ namespace Enceladus.Core.Physics.Collision.Detection
             return candidates;
         }
 
-        public bool CheckPotentialCollision(Entity entity, ICollidable otherObject)
+        public bool CheckPotentialCollision(ICollidable entity, ICollidable otherObject)
         {
             var aabb1 = _aabbCalculator.CalculateAabb(entity);
             var aabb2 = _aabbCalculator.CalculateAabb(otherObject);

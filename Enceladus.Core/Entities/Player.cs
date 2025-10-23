@@ -1,5 +1,6 @@
 ﻿
 using Enceladus.Core.Input;
+using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Rendering;
 using Enceladus.Utils;
@@ -7,7 +8,7 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities
 {
-    public class Player : MovableEntity, IControllable, ISpriteRendered
+    public class Player : MovableEntity, ICollidable, IControllable, ISpriteRendered
     {
         public override IHitbox Hitbox { get; set; }
         public SpriteDefinition CurrentSprite { get; set; } = SpriteDefinitions.Entities.PlayerSubRight;

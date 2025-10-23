@@ -90,16 +90,16 @@ namespace Enceladus.Core.Physics.Collision
             // Moveable vs Static
             foreach (var moveable in moveables)
             {
-                foreach (var staticEntity in _entityRegistry.StaticEntities)
+                foreach (var staticCollidable in _entityRegistry.StaticCollidables)
                 {
-                    CheckPair(moveable, staticEntity, collisions);
+                    CheckPair(moveable, staticCollidable, collisions);
                 }
             }
 
             return collisions;
         }
 
-        private void CheckPair(MovableEntity moveable, Entity other, List<CollisionResult> collisions)
+        private void CheckPair(MovableEntity moveable, ICollidable other, List<CollisionResult> collisions)
         {
             CollisionResult result;
 

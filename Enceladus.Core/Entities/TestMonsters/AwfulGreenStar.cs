@@ -1,4 +1,5 @@
 using Enceladus.Core.Input;
+using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.Utils;
@@ -7,7 +8,7 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
-    public class AwfulGreenStar : MovableEntity, IControllable, IGeometryRendered
+    public class AwfulGreenStar : MovableEntity, IControllable, ICollidable, IGeometryRendered
     {
         public override IHitbox Hitbox { get; set; }
 

@@ -5,7 +5,7 @@ using System.Numerics;
 namespace Enceladus.Core.Entities
 {
 
-    public abstract class Entity : ICollidable
+    public abstract class Entity
     {
         protected Entity()
         {
@@ -14,7 +14,6 @@ namespace Enceladus.Core.Entities
         public Guid Guid { get; set; } = Guid.NewGuid();
         public Vector2 Position { get; set; }
         public float Rotation { get; set; }
-        public abstract IHitbox Hitbox { get; set; }
         public abstract void Update(float deltaTime);
     }
 }

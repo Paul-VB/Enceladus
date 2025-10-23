@@ -1,11 +1,12 @@
-using Enceladus.Core.Config;
+using Enceladus.Core.Physics.Collision;
+using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Physics.Motion;
 using Enceladus.Utils;
 using System.Numerics;
 
 namespace Enceladus.Core.Entities
 {
-    public abstract class MovableEntity : Entity, IMovable
+    public abstract class MovableEntity : Entity, IMovable, ICollidable
     {
         public Vector2 Velocity { get; set; }
         public float Mass { get; set; }
@@ -14,6 +15,8 @@ namespace Enceladus.Core.Entities
         public float AngularDrag { get; set; }
         public float MinVelocityThreshold { get; set; }
         public float MinAngularVelocityThreshold { get; set; }
+        public abstract IHitbox Hitbox { get; set; }
+
         public void Accelerate(Vector2 force, float deltaTime)
         {
             if (Mass <= 0f)

@@ -1,4 +1,5 @@
 ﻿using Enceladus.Core.Entities;
+using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Collision.Detection;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Tests.Helpers;
@@ -20,7 +21,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
             _aabbCollisionDetector = new AabbCollisionDetector(_aabbCalculator.Object);
         }
 
-        private void GivenEntityHasCalculatedAabb(Entity entity, Rectangle aabb)
+        private void GivenEntityHasCalculatedAabb(ICollidable entity, Rectangle aabb)
         {
             _aabbCalculator
                 .Setup(calc => calc.CalculateAabb(entity))

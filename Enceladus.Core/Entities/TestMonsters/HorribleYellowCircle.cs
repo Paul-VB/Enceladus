@@ -1,5 +1,3 @@
-using Enceladus.Core.Config;
-using Enceladus.Core.Input;
 using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Rendering;
@@ -9,7 +7,7 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
-    public class HorribleYellowCircle : MovableEntity, IGeometryRendered
+    public class HorribleYellowCircle : MovableEntity, ICollidable, IGeometryRendered
     {
         public override IHitbox Hitbox { get; set; }
 
