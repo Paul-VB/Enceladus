@@ -93,7 +93,6 @@ namespace Enceladus.Core.Entities
 
             RegisterEntity(player);
 
-            // Equip test gun to first mount
             var testGun = CreateTestGun(player);
             player.WeaponMounts[0].EquippedWeapon = testGun;
 

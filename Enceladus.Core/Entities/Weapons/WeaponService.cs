@@ -1,3 +1,4 @@
+using Enceladus.Core.Entities.Weapons.WeaponControllers;
 using Enceladus.Core.Utils;
 using System.Numerics;
 
@@ -11,10 +12,12 @@ namespace Enceladus.Core.Entities.Weapons
     public class WeaponService : IWeaponService
     {
         private readonly IEntityRegistry _entityRegistry;
+        private readonly IMouseWeaponController _mouseController;
 
-        public WeaponService(IEntityRegistry entityRegistry)
+        public WeaponService(IEntityRegistry entityRegistry, IMouseWeaponController mouseController)
         {
             _entityRegistry = entityRegistry;
+            _mouseController = mouseController;
         }
 
         public void Update(float deltaTime)
@@ -23,15 +26,27 @@ namespace Enceladus.Core.Entities.Weapons
             {
                 foreach (var mount in armed.WeaponMounts)
                 {
-                    // Update weapon position based on parent
+                    if (mount.EquippedWeapon == null) continue;
+
                     UpdateWeaponPosition(mount, armed.Position, armed.Rotation);
-
-                    // Todo: Update weapon aiming
-                    // UpdateWeaponAiming(mount, ...);
-
-                    // Try to fire weapon (weapon handles its own cooldown/logic)
-                    mount.EquippedWeapon?.TryFire();
+                    ApplyWeaponControl(mount, deltaTime);
                 }
+            }
+        }
+
+        private void ApplyWeaponControl(WeaponMount mount, float deltaTime)
+        {
+            switch (mount.ControllerType)
+            {
+                case WeaponControllerType.Mouse:
+                    _mouseController.Update(mount, deltaTime);
+                    break;
+                case WeaponControllerType.Fixed:
+                    // TODO: implement FixedWeaponController
+                    break;
+                case WeaponControllerType.TrackTarget:
+                    // TODO: implement TrackingWeaponController
+                    break;
             }
         }
 

@@ -6,6 +6,7 @@ using Enceladus.Core.Rendering;
 using Enceladus.Core.Entities.Weapons;
 using Enceladus.Utils;
 using System.Numerics;
+using Enceladus.Core.Entities.Weapons.WeaponControllers;
 
 namespace Enceladus.Core.Entities
 {
@@ -25,7 +26,7 @@ namespace Enceladus.Core.Entities
         public float MaxAlignmentErrorDegrees { get; set; }
         public List<WeaponMount> WeaponMounts { get; set; } = new()
         {
-            new WeaponMount { Offset = new Vector2(-1f, 0f) } 
+            new WeaponMount { Offset = new Vector2(-1f, 0f), ControllerType = WeaponControllerType.Mouse } 
         };
 
         private bool _isFacingRight = true;
@@ -54,7 +55,7 @@ namespace Enceladus.Core.Entities
                 var totalThrust = ManeuveringThrust + mainEngineEffectiveThrust;
                 Accelerate(movementInput * totalThrust, deltaTime);
             }
-            if (inputReader.IsKeyDown(KnownInputControls.Brake))
+            if (inputReader.IsKeyDown(KnownKeyboardControls.Brake))
             {
                 Accelerate(-Velocity * ManeuveringThrust * BrakeStrength, deltaTime);
             }
