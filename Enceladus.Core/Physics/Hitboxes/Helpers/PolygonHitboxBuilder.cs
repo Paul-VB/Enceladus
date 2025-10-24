@@ -1,3 +1,4 @@
+using Enceladus.Core.Config;
 using Enceladus.Core.Utils;
 using System.Numerics;
 
@@ -11,8 +12,6 @@ namespace Enceladus.Core.Physics.Hitboxes.Helpers
     }
     public class PolygonHitboxBuilder : IPolygonHitboxBuilder
     {
-        private const float PixelsPerWorldUnit = 16f;
-
         private readonly IConcavePolygonSlicer _concavePolygonSlicer;
 
         public PolygonHitboxBuilder(IConcavePolygonSlicer concavePolygonSlicer)
@@ -31,8 +30,8 @@ namespace Enceladus.Core.Physics.Hitboxes.Helpers
                 float centeredY = pixelVertex.Y - spriteHeightPixels / 2f;
 
                 // Convert from pixels to world units
-                float worldX = centeredX / PixelsPerWorldUnit;
-                float worldY = centeredY / PixelsPerWorldUnit;
+                float worldX = centeredX / Constants.PixelsPerWorldUnit;
+                float worldY = centeredY / Constants.PixelsPerWorldUnit;
 
                 scaledVectors.Add(new Vector2(worldX, worldY));
             }

@@ -1,3 +1,4 @@
+using Enceladus.Core.Config;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Utils;
 using Raylib_cs;
@@ -6,27 +7,25 @@ namespace Enceladus.Core.World
 {
     public static class ChunkMath
     {
-        //todo: debatable if we want this in config. its technically a magic number but i cannot see a benefit to changing this or tweaking it ever.
-        public const int ChunkSize = 16;
 
         public static (int chunkX, int chunkY) WorldToChunkCoords(int worldX, int worldY)
         {
             // Use floor division to handle negative coords correctly
-            int chunkX = worldX >= 0 ? worldX / ChunkSize : (worldX - ChunkSize + 1) / ChunkSize;
-            int chunkY = worldY >= 0 ? worldY / ChunkSize : (worldY - ChunkSize + 1) / ChunkSize;
+            int chunkX = worldX >= 0 ? worldX / Constants.ChunkSize : (worldX - Constants.ChunkSize + 1) / Constants.ChunkSize;
+            int chunkY = worldY >= 0 ? worldY / Constants.ChunkSize : (worldY - Constants.ChunkSize + 1) / Constants.ChunkSize;
             return (chunkX, chunkY);
         }
 
         public static (int worldX, int worldY) ChunkToWorldCoords(int chunkX, int chunkY)
         {
-            return (chunkX * ChunkSize, chunkY * ChunkSize);
+            return (chunkX * Constants.ChunkSize, chunkY * Constants.ChunkSize);
         }
 
         public static (int localX, int localY) WorldToLocalCoords(int worldX, int worldY)
         {
             var (chunkX, chunkY) = WorldToChunkCoords(worldX, worldY);
-            int localX = worldX - chunkX * ChunkSize;
-            int localY = worldY - chunkY * ChunkSize;
+            int localX = worldX - chunkX * Constants.ChunkSize;
+            int localY = worldY - chunkY * Constants.ChunkSize;
             return (localX, localY);
         }
 

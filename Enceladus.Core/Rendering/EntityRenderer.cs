@@ -1,3 +1,4 @@
+using Enceladus.Core.Config;
 using Enceladus.Core.Entities;
 using Raylib_cs;
 using System.Numerics;
@@ -32,7 +33,7 @@ namespace Enceladus.Core.Rendering
                 var mods = entity.SpriteModifiers;
                 var atlas = _spriteService.GetTextureAtlas(spriteDef.AtlasFilePath);
 
-                var size = new Vector2(spriteDef.SourceRegion.Width / camera.Zoom, spriteDef.SourceRegion.Height / camera.Zoom);
+                var size = new Vector2(spriteDef.SourceRegion.Width / Constants.PixelsPerWorldUnit, spriteDef.SourceRegion.Height / Constants.PixelsPerWorldUnit);
                 var origin = size / 2f;
                 var dest = new Rectangle(entity.Position, size);
 
