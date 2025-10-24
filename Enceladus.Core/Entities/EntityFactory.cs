@@ -25,16 +25,17 @@ namespace Enceladus.Core.Entities
         private readonly ISpriteService _spriteService;
         private readonly IPolygonHitboxBuilder _polygonHitboxBuilder;
         private readonly IControllableRegistry _controllableRegistry;
+        private readonly IPlayerFactory _playerFactory;
 
         public EntityFactory(IEntityRegistry entityRegistry, IConfigService configService, ISpriteService spriteService,
-            IPolygonHitboxBuilder polygonHitboxBuilder, IControllableRegistry controllableRegistry)
+            IPolygonHitboxBuilder polygonHitboxBuilder, IControllableRegistry controllableRegistry, IPlayerFactory playerFactory)
         {
             _entityRegistry = entityRegistry;
             _configService = configService;
             _spriteService = spriteService;
             _polygonHitboxBuilder = polygonHitboxBuilder;
             _controllableRegistry = controllableRegistry;
-        }
+            _playerFactory = playerFactory;
 
         /// <summary>
         /// Please run this early on inside the createXentity functions to apply default values from config
@@ -67,42 +68,16 @@ namespace Enceladus.Core.Entities
 
         public Player CreatePlayer(Vector2 position)
         {
-            var player = new Player()
-            {
-            };
-            ApplyDefaults(player);
-
-            // Player-specific config values (override defaults)
-            var config = _configService.Config.Player;
-            player.Mass = config.Mass;
-            player.MainEngineThrust = config.MainEngineThrust;
-            player.ManeuveringThrust = config.ManeuveringThrust;
-            player.ManeuveringRotationalAuthority = config.ManeuveringRotationalAuthority;
-            player.ManeuveringDampingStrength = config.ManeuveringDampingStrength;
-            player.ManeuveringFinsAuthority = config.ManeuveringFinsAuthority;
-            player.BrakeStrength = config.BrakeStrength;
-            player.MinVelocityForRotation = config.MinVelocityForRotation;
-            player.MinVelocityForMainEngine = config.MinVelocityForMainEngine;
-            player.MaxAlignmentErrorDegrees = config.MaxAlignmentErrorDegrees;
-
-            player.Hitbox = _polygonHitboxBuilder.BuildFromPixelCoordinates(
-                (int)SpriteDefinitions.Entities.PlayerSubRight.SourceRegion.Width,
-                (int)SpriteDefinitions.Entities.PlayerSubRight.SourceRegion.Height,
-                Player.PixelVertices);
-            player.Position = position;
-
-            RegisterEntity(player);
-
+            var player = _playerFactory.CreatePlayer(position);
             var testGun = CreateTestGun(player);
             player.WeaponMounts[0].EquippedWeapon = testGun;
-
+            RegisterEntity(player);
             return player;
         }
 
         public EvilBlueTriangle CreateEvilBlueTriangle(Vector2 position)
         {
             var entity = new EvilBlueTriangle();
-            ApplyDefaults(entity);
             entity.Position = position;
             RegisterEntity(entity);
             return entity;
@@ -111,7 +86,6 @@ namespace Enceladus.Core.Entities
         public HorribleYellowCircle CreateHorribleYellowCircle(Vector2 position)
         {
             var entity = new HorribleYellowCircle();
-            ApplyDefaults(entity);
             entity.Position = position;
             RegisterEntity(entity);
             return entity;
@@ -120,7 +94,6 @@ namespace Enceladus.Core.Entities
         public MenacingRedPentagon CreateMenacingRedPentagon(Vector2 position)
         {
             var entity = new MenacingRedPentagon();
-            ApplyDefaults(entity);
             entity.Position = position;
             RegisterEntity(entity);
             return entity;
@@ -129,7 +102,6 @@ namespace Enceladus.Core.Entities
         public AwfulGreenStar CreateAwfulGreenStar(Vector2 position)
         {
             var entity = new AwfulGreenStar();
-            ApplyDefaults(entity);
 
             // Create 5-pointed star vertices (4 units tall)
             var vertices = new List<Vector2>();
