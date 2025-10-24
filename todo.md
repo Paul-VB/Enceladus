@@ -72,6 +72,12 @@
   - Should be named constants for clarity
 
 ### Weapons & Combat
+- [ ] **Fix bullets getting stuck in ice (corner collision bug)**
+  - Bullets sometimes get stuck inside ice cells, likely when hitting corners
+  - Probably multi-cell collision at corners causing conflicting resolutions
+  - Or collision normal confusion at corner intersections
+  - Need to investigate collision resolution behavior at cell corners
+
 - [ ] **Implement weapon aiming strategies (Fixed, TrackTarget)**
   - Allow weapons to have different targeting behaviors
   - Fixed: weapon always points in same direction relative to owner
