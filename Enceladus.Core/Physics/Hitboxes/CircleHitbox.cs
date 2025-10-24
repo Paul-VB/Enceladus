@@ -1,9 +1,14 @@
-﻿namespace Enceladus.Core.Physics.Hitboxes
+﻿using System.Diagnostics.CodeAnalysis;
+
+namespace Enceladus.Core.Physics.Hitboxes
 {
     public class CircleHitbox : IHitbox
     {
-        public float Radius { get; set; }
+        public required float Radius { get; set; }
 
+        public CircleHitbox() { }
+
+        [SetsRequiredMembers]
         public CircleHitbox(float radius)
         {
             Radius = radius;

@@ -22,6 +22,9 @@ namespace Enceladus.Core
             // Config service
             services.AddSingleton<IConfigService, ConfigService>();
 
+            // Time service
+            services.AddSingleton<ITimeService, TimeService>();
+
             services.AddSingleton<IWindowManager, WindowManager>();
             services.AddSingleton<IEntityRegistry, EntityRegistry>();
             services.AddSingleton<IControllableRegistry, ControllableRegistry>();

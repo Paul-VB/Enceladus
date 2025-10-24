@@ -22,6 +22,7 @@ namespace Enceladus.Core
         private readonly IWindowManager _windowManager;
         private readonly IEntityFactory _entityFactory;
         private readonly ICameraManager _cameraManager;
+        private readonly ITimeService _timeService;
         private readonly IPhysicsService _physicsService;
         private readonly IRenderingService _renderingService;
         private readonly ISpriteService _spriteService;
@@ -33,13 +34,14 @@ namespace Enceladus.Core
         public bool IsRunning { get; private set; }
 
         public GameManager(IConfigService configService, IWindowManager windowManager, IEntityFactory entityFactory,
-            ICameraManager cameraManager, IPhysicsService physicsService, IRenderingService renderingService,
+            ICameraManager cameraManager, ITimeService timeService, IPhysicsService physicsService, IRenderingService renderingService,
             ISpriteService spriteService, IInputService inputService, IWeaponService weaponService)
         {
             _configService = configService;
             _windowManager = windowManager;
             _entityFactory = entityFactory;
             _cameraManager = cameraManager;
+            _timeService = timeService;
             _physicsService = physicsService;
             _renderingService = renderingService;
             _spriteService = spriteService;
@@ -84,6 +86,7 @@ namespace Enceladus.Core
             while (IsRunning && !Raylib.WindowShouldClose())
             {
                 float deltaTime = Raylib.GetFrameTime();
+                _timeService.Update(deltaTime);
                 _inputService.Update(deltaTime);
                 _physicsService.Update(deltaTime);
                 _weaponService.Update(deltaTime);
