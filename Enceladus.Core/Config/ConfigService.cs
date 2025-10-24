@@ -1,4 +1,5 @@
 using Enceladus.Core.Utils;
+using System.Diagnostics.CodeAnalysis;
 using System.Xml.Linq;
 
 namespace Enceladus.Core.Config

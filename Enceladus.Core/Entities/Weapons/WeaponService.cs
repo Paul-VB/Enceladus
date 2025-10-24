@@ -47,7 +47,7 @@ namespace Enceladus.Core.Entities.Weapons
             {
                 if (gameTime - projectile.SpawnTime >= projectile.TimeToLive)
                 {
-                    _entityRegistry.Unregister(((Entity)projectile).Guid);
+                    _entityRegistry.Unregister(projectile.Guid);
                 }
             }
         }

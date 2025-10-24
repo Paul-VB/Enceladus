@@ -16,7 +16,7 @@ namespace Enceladus.Core.Entities
         MenacingRedPentagon CreateMenacingRedPentagon(Vector2 position);
         AwfulGreenStar CreateAwfulGreenStar(Vector2 position);
         TestGun CreateTestGun(IArmed owner);
-        IProjectile CreateProjectile(Weapon weapon);
+        Projectile CreateProjectile(Weapon weapon);
     }
 
     public class EntityFactory : IEntityFactory
@@ -119,10 +119,10 @@ namespace Enceladus.Core.Entities
             return weapon;
         }
 
-        public IProjectile CreateProjectile(Weapon weapon)
+        public Projectile CreateProjectile(Weapon weapon)
         {
             var projectile = _projectileFactory.CreateProjectile(weapon);
-            RegisterEntity((Entity)projectile);
+            RegisterEntity(projectile);
             return projectile;
         }
     }

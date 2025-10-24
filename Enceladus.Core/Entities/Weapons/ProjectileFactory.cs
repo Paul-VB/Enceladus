@@ -6,7 +6,7 @@ namespace Enceladus.Core.Entities.Weapons
 {
     public interface IProjectileFactory
     {
-        IProjectile CreateProjectile(Weapon weapon);
+        Projectile CreateProjectile(Weapon weapon);
     }
 
     public class ProjectileFactory : IProjectileFactory
@@ -18,7 +18,7 @@ namespace Enceladus.Core.Entities.Weapons
             _timeService = timeService;
         }
 
-        public IProjectile CreateProjectile(Weapon weapon)
+        public Projectile CreateProjectile(Weapon weapon)
         {
             switch (weapon.ProjectileType)
             {
@@ -38,7 +38,7 @@ namespace Enceladus.Core.Entities.Weapons
             }
         }
 
-        private void InitializeProjectile<T>(T projectile, Weapon weapon) where T : MovableEntity, IProjectile
+        private void InitializeProjectile(Projectile projectile, Weapon weapon)
         {
             var direction = AngleHelper.DegToNormalVector(weapon.Rotation);
             var velocity = direction * weapon.MuzzleVelocity;
