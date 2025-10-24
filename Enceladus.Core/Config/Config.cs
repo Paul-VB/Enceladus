@@ -25,11 +25,6 @@ namespace Enceladus.Core.Config
         public class PhysicsConfig
     {
         public float RestitutionCoefficient { get; set; }
-        public float DefaultDrag { get; set; }
-        public float DefaultAngularDrag { get; set; }
-        public float MinVelocityThreshold { get; set; }
-        public float MinAngularVelocityThreshold { get; set; }
-        public float DefaultMass { get; set; }
     }
 
     public class CellTypeConfig

@@ -22,16 +22,6 @@
 	<Physics>
 		<!-- Coefficient of restitution: 0.8 = bouncy, 0.0 = no bounce -->
 		<RestitutionCoefficient>0.8</RestitutionCoefficient>
-		<!-- Default resistance due to drag from the water (0.95 = 95% velocity retained per frame) -->
-		<DefaultDrag>0.95</DefaultDrag>
-		<!-- Default rotational water resistance -->
-		<DefaultAngularDrag>0.95</DefaultAngularDrag>
-		<!-- Minimum velocity threshold for movement (below this = stops) -->
-		<MinVelocityThreshold>0.05</MinVelocityThreshold>
-		<!-- Minimum angular velocity threshold for rotation (below this = stops) -->
-		<MinAngularVelocityThreshold>0.05</MinAngularVelocityThreshold>
-		<!-- Default mass for entities -->
-		<DefaultMass>1</DefaultMass>
 	</Physics>
 
 	<!-- ===== DISPLAY / RENDERING ===== -->

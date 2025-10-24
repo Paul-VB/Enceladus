@@ -9,12 +9,12 @@ namespace Enceladus.Core.Entities
     public abstract class MovableEntity : Entity, IMovable, ICollidable
     {
         public Vector2 Velocity { get; set; }
-        public float Mass { get; set; }
-        public float Drag { get; set; }
+        public float Mass { get; set; } = 1f;
+        public float Drag { get; set; } = 0.95f;
         public float AngularVelocity { get; set; }
-        public float AngularDrag { get; set; }
-        public float MinVelocityThreshold { get; set; }
-        public float MinAngularVelocityThreshold { get; set; }
+        public float AngularDrag { get; set; } = 0.95f;
+        public float MinVelocityThreshold { get; set; } = 0.05f;
+        public float MinAngularVelocityThreshold { get; set; } = 0.05f;
         public abstract IHitbox Hitbox { get; set; }
 
         public void Accelerate(Vector2 force, float deltaTime)
