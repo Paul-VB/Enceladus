@@ -15,7 +15,7 @@ namespace Enceladus.Core.Entities
         HorribleYellowCircle CreateHorribleYellowCircle(Vector2 position);
         MenacingRedPentagon CreateMenacingRedPentagon(Vector2 position);
         AwfulGreenStar CreateAwfulGreenStar(Vector2 position);
-        TestGun CreateTestGun(IArmed owner);
+        T CreateWeapon<T>(IArmed owner) where T : Weapon, new();
         Projectile CreateProjectile(Weapon weapon);
     }
 
@@ -60,8 +60,10 @@ namespace Enceladus.Core.Entities
         {
             var player = _playerFactory.CreatePlayer(position);
             RegisterEntity(player);
-            var testGun = CreateTestGun(player);
+            var testGun = CreateWeapon<TestGun>(player);
+            var fastTestGun = CreateWeapon<FastTestGun>(player);
             player.WeaponMounts[0].EquippedWeapon = testGun;
+            player.WeaponMounts[1].EquippedWeapon = fastTestGun;
             return player;
         }
 
@@ -112,9 +114,10 @@ namespace Enceladus.Core.Entities
             return entity;
         }
 
-        public TestGun CreateTestGun(IArmed owner)
+        public T CreateWeapon<T>(IArmed owner) where T : Weapon, new()
         {
-            var weapon = new TestGun { Owner = owner };
+            var weapon = new T();
+            weapon.Owner = owner;
             RegisterEntity(weapon);
             return weapon;
         }

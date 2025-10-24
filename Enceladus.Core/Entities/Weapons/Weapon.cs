@@ -5,7 +5,7 @@ namespace Enceladus.Core.Entities.Weapons
 {
     public abstract class Weapon : Entity, ISpriteRendered
     {
-        public required IArmed Owner { get; set; }  
+        public IArmed Owner { get; set; } = null!;   
         public float FireRate { get; set; } = 1f;  //todo: make this a Rounds Per Minute figure? or a rounds per second number?
         public ProjectileType ProjectileType { get; set; } = ProjectileType.None;
         public abstract float MuzzleVelocity { get; } 

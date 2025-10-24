@@ -27,7 +27,8 @@ namespace Enceladus.Core.Entities
         public float MaxAlignmentErrorDegrees { get; set; }
         public List<WeaponMount> WeaponMounts { get; set; } = new()
         {
-            new WeaponMount { Offset = new Vector2(-1f, 0f), ControllerType = WeaponControllerType.Mouse } 
+            new WeaponMount { Offset = new Vector2(-1f, 0f), ControllerType = WeaponControllerType.Mouse },
+            new WeaponMount { Offset = new Vector2(0.875f, 0f), ControllerType = WeaponControllerType.Mouse }
         };
 
         private bool _isFacingRight = true;
