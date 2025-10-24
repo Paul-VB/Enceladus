@@ -2,6 +2,13 @@
 
 ## High Priority
 
+### Rendering
+- [ ] **Implement render layers/z-index for proper sprite ordering**
+  - Currently relies on entity registration order (fragile and implicit)
+  - Weapons render in front of player only because they're registered after player
+  - Need explicit render layer system: RenderLayer property, ZIndex, or separate entity lists
+  - This is a critical architectural issue that will cause bugs as entities are added
+
 ### Collision System
 - [x] **Implement polygon decomposition algorithm** (concave → convex)
   - Location: `EarClippingTriangulationSlicer.cs`, `ConcavePolygonHitbox.cs`
@@ -54,13 +61,51 @@
   - Implemented with _isFacingRight state to track current orientation
   - Prevents jarring back-and-forth flipping when rotating near threshold angles
 
+- [ ] **Extract sprite orientation logic for reuse**
+  - Location: `Player.cs:98`
+  - The rotation-to-sprite-flip logic might be useful for other entities
+  - Consider extracting to helper method or component
+
+- [ ] **Replace magic numbers in sprite orientation**
+  - Location: `Player.cs:103, 111`
+  - Currently using hardcoded angles: 80°, 100°, 260°, 280°
+  - Should be named constants for clarity
+
 ### Weapons & Combat
+- [ ] **Implement weapon aiming strategies (Fixed, TrackTarget)**
+  - Allow weapons to have different targeting behaviors
+  - Fixed: weapon always points in same direction relative to owner
+  - TrackTarget: weapon rotates to track nearest enemy/target
+
 - [ ] **Implement mining beam weapon**
   - Mouse-aimable beam that can melt through ice and damage cells
   - Ray from player submarine to mouse cursor
   - Deal damage to cells over time (reduce health until destroyed)
   - Visual beam rendering
   - Consider heat/energy cost mechanics
+
+- [ ] **Make bullet drag configurable in config file**
+  - Location: `Bullet.cs:16`
+  - Currently hardcoded to 0.1f
+  - Should be configurable per projectile type
+
+- [ ] **Add weapon.bulletSpawnOffset property**
+  - Location: `ProjectileFactory.cs:52`
+  - Currently projectiles spawn at weapon.Position
+  - Need offset to spawn bullets from gun barrel instead of gun center
+
+- [ ] **Decide if FireRate should be RPM or rounds/second**
+  - Location: `Weapon.cs:9`
+  - Currently using rounds/second
+  - Consider if RPM would be more intuitive
+
+- [ ] **Create proper weapon sprite (currently using default)**
+  - TestGun and FastTestGun using placeholder sprites
+  - Need actual gun sprite assets
+
+- [ ] **Create proper bullet sprite (currently 8x8 test chunk)**
+  - Current bullet sprite is test chunk texture
+  - Need actual projectile sprite assets
 
 ### Collision Layer System
 - [ ] **Implement collision layers/masks**
@@ -172,10 +217,11 @@
   - Or keep current immutable approach?
 
 ### Optimization Ideas
-- [ ] **ChunkSize configuration**
-  - Location: `ChunkMath.cs:8`
-  - Currently hardcoded - is it worth making configurable?
-  - Probably not - no benefit to changing it
+- [x] **ChunkSize and PixelsPerWorldUnit constants**
+  - Location: `Constants.cs`
+  - Moved to centralized Constants.cs file
+  - ChunkSize = 16, PixelsPerWorldUnit = 16f
+  - These are fundamental game constants, no benefit to making them configurable
 
 - [ ] **PolygonHitboxBuilder API**
   - Location: `PolygonHitboxBuilder.cs:30`
@@ -184,7 +230,21 @@
 
 ## Completed
 
-### Recent (Latest Session - Atlas Refactor)
+### Recent (Latest Session - Weapon System)
+- [x] Weapon system implementation (Weapon, TestGun, FastTestGun)
+- [x] Projectile system with abstract Projectile base class (eliminates casting)
+- [x] Generic CreateWeapon<T>() factory method for easy weapon creation
+- [x] IFF (Identify Friend or Foe) system for collision filtering
+- [x] WeaponControlService for mouse-based weapon aiming
+- [x] TimeService for game time tracking
+- [x] Dual weapon mounts on Player submarine
+- [x] Constants.cs for centralized game constants (PixelsPerWorldUnit, ChunkSize)
+- [x] Fixed sprite scaling to use PixelsPerWorldUnit instead of camera zoom
+- [x] Deleted IProjectile interface (Projectile base class is superior)
+- [x] Extracted IFF check in CollisionChecker to ShouldSkipCollisionDueToIff()
+- [x] Fixed weapon render order (register player before weapons)
+
+### Previous Session (Atlas Refactor)
 - [x] Sprite atlas system implementation (115fps → 1500+ fps!)
 - [x] ISpriteRendered and IGeometryRendered interfaces for flexible rendering
 - [x] SpriteModifiers system (tint, alpha, flip, blend modes)
