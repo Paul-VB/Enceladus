@@ -5,12 +5,8 @@ namespace Enceladus.Core.Entities.Weapons
     public class TestGun : Weapon
     {
         public override float MuzzleVelocity => 50f;
-
-        public TestGun()
-        {
-            FireRate = 2f; // 2 shots per second
-            ProjectileType = ProjectileType.Bullet;
-            CurrentSprite = SpriteDefinitions.Entities.TestGun;
-        }
+        public override float FireRate { get; set; } = 2f;
+        public override ProjectileType ProjectileType { get; set; } = ProjectileType.Bullet;
+        public override SpriteDefinition CurrentSprite { get; set; } = SpriteDefinitions.Entities.TestGun;
     }
 }

@@ -49,7 +49,7 @@ namespace Enceladus.Core.Rendering
             public static readonly SpriteDefinition Bullet = new()
             {
                 AtlasFilePath = EntityAtlasFilePath,
-                SourceRegion = new Rectangle(0, 0, 8, 8) // 8x8 chunk from default texture
+                SourceRegion = new Rectangle(12, 12, 8, 8) // 8x8 chunk from default texture
             };
         }
 

@@ -6,12 +6,11 @@ namespace Enceladus.Core.Entities.Weapons
     public class FastTestGun : Weapon
     {
         public override float MuzzleVelocity => 50f;
-
+        public override float FireRate { get; set; } = 10f;
+        public override ProjectileType ProjectileType { get; set; } = ProjectileType.Bullet;
+        public override SpriteDefinition CurrentSprite { get; set; } = SpriteDefinitions.Entities.TestGun;
         public FastTestGun()
         {
-            FireRate = 10f; // 10 shots per second (5x faster than TestGun)
-            ProjectileType = ProjectileType.Bullet;
-            CurrentSprite = SpriteDefinitions.Entities.TestGun;
             SpriteModifiers.Tint = Color.Red; // Red tint
         }
     }
