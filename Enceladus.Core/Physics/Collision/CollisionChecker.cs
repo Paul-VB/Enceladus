@@ -102,11 +102,9 @@ namespace Enceladus.Core.Physics.Collision
 
         private void CheckPair(MovableEntity moveable, ICollidable other, List<CollisionResult> collisions)
         {
-            if (moveable is IIdentifyFriendFoe iff1 && other is IIdentifyFriendFoe iff2)
-            {
-                if (iff1.IffCodes.Intersect(iff2.IffCodes).Any())
-                    return;
-            }
+            // Skip collision if entities share IFF codes (friendly fire)
+            if (ShouldSkipCollisionDueToIff(moveable, other))
+                return;
 
             CollisionResult result;
 
@@ -132,6 +130,15 @@ namespace Enceladus.Core.Physics.Collision
 
             if (result.PenetrationDepth > 0)
                 collisions.Add(result);
+        }
+
+        private bool ShouldSkipCollisionDueToIff(ICollidable entity1, ICollidable entity2)
+        {
+            if (entity1 is IIdentifyFriendFoe iff1 && entity2 is IIdentifyFriendFoe iff2)
+            {
+                return iff1.IffCodes.Intersect(iff2.IffCodes).Any();
+            }
+            return false;
         }
     }
 }
