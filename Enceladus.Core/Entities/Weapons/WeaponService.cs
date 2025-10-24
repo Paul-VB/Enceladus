@@ -12,12 +12,14 @@ namespace Enceladus.Core.Entities.Weapons
     public class WeaponService : IWeaponService
     {
         private readonly IEntityRegistry _entityRegistry;
-        private readonly IMouseWeaponController _mouseController;
+        private readonly IWeaponControlService _weaponControlService;
+        private readonly ITimeService _timeService;
 
-        public WeaponService(IEntityRegistry entityRegistry, IMouseWeaponController mouseController)
+        public WeaponService(IEntityRegistry entityRegistry, IWeaponControlService weaponControlService, ITimeService timeService)
         {
             _entityRegistry = entityRegistry;
-            _mouseController = mouseController;
+            _weaponControlService = weaponControlService;
+            _timeService = timeService;
         }
 
         public void Update(float deltaTime)
@@ -29,7 +31,7 @@ namespace Enceladus.Core.Entities.Weapons
                     if (mount.EquippedWeapon == null) continue;
 
                     UpdateWeaponPosition(mount, armed.Position, armed.Rotation);
-                    ApplyWeaponControl(mount, deltaTime);
+                    _weaponControlService.ApplyWeaponControl(mount, deltaTime);
                 }
             }
         }
