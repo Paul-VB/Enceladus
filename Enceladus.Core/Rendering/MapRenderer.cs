@@ -1,3 +1,4 @@
+using Enceladus.Core.Config;
 using Enceladus.Core.World;
 using Raylib_cs;
 using System.Numerics;
@@ -37,10 +38,10 @@ namespace Enceladus.Core.Rendering
                 var (chunkWorldX, chunkWorldY) = ChunkMath.ChunkToWorldCoords(chunk.X, chunk.Y);
 
                 // Source: repeat the texture ChunkSize times (one chunk = ChunkSize x ChunkSize cells)
-                var source = new Rectangle(0, 0, waterSprite.Width * ChunkMath.ChunkSize, waterSprite.Height * ChunkMath.ChunkSize);
+                var source = new Rectangle(0, 0, waterSprite.Width * Constants.ChunkSize, waterSprite.Height * Constants.ChunkSize);
 
                 // Destination: ChunkSize x ChunkSize world units
-                var dest = new Rectangle(chunkWorldX, chunkWorldY, ChunkMath.ChunkSize, ChunkMath.ChunkSize);
+                var dest = new Rectangle(chunkWorldX, chunkWorldY, Constants.ChunkSize, Constants.ChunkSize);
 
                 Raylib.DrawTexturePro(waterSprite, source, dest, Vector2.Zero, 0f, Color.White);
             }
