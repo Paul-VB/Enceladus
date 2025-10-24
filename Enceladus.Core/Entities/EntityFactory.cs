@@ -59,9 +59,9 @@ namespace Enceladus.Core.Entities
         public Player CreatePlayer(Vector2 position)
         {
             var player = _playerFactory.CreatePlayer(position);
+            RegisterEntity(player);
             var testGun = CreateTestGun(player);
             player.WeaponMounts[0].EquippedWeapon = testGun;
-            RegisterEntity(player);
             return player;
         }
 
