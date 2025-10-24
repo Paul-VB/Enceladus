@@ -9,10 +9,10 @@ namespace Enceladus.Core.Entities
     public abstract class MovableEntity : Entity, IMovable, ICollidable
     {
         public Vector2 Velocity { get; set; }
-        public float Mass { get; set; } = 1f;
-        public float Drag { get; set; } = 0.95f;
+        public virtual float Mass { get; set; } = 1f;
+        public float Drag { get; set; } = 0.95f;  
         public float AngularVelocity { get; set; }
-        public float AngularDrag { get; set; } = 0.95f;
+        public float AngularDrag { get; set; } = 0.95f; 
         public float MinVelocityThreshold { get; set; } = 0.05f;
         public float MinAngularVelocityThreshold { get; set; } = 0.05f;
         public abstract IHitbox Hitbox { get; set; }
@@ -44,7 +44,7 @@ namespace Enceladus.Core.Entities
         protected virtual void UpdateMovement(float deltaTime)
         {
             Position += Velocity * deltaTime;
-
+            //todo: revisit the drag math
             var dragForce = -Velocity * Drag;
             Velocity += dragForce * deltaTime;
 

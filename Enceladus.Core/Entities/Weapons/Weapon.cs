@@ -5,8 +5,10 @@ namespace Enceladus.Core.Entities.Weapons
 {
     public abstract class Weapon : Entity, ISpriteRendered
     {
-        public required IArmed Owner { get; set; }  // Who owns this weapon (for IFF, kill credit)
-        public float FireRate { get; set; } = 1f;  // Shots per second
+        public required IArmed Owner { get; set; }  
+        public float FireRate { get; set; } = 1f;  //todo: make this a Rounds Per Minute figure? or a rounds per second number?
+        public ProjectileType ProjectileType { get; set; } = ProjectileType.None;
+        public abstract float MuzzleVelocity { get; } 
         private float _timeSinceLastShot = 0f;
 
         public SpriteDefinition CurrentSprite { get; set; } = SpriteDefinitions.Entities.DefaultEntity; //todo, make a weapon sprite
@@ -14,18 +16,17 @@ namespace Enceladus.Core.Entities.Weapons
 
         public override void Update(float deltaTime)
         {
-            // Position and rotation updated by WeaponMount
             _timeSinceLastShot += deltaTime;
         }
 
-        public void TryFire()
+        public bool CanFire()
         {
-            if (_timeSinceLastShot < 1f / FireRate) return;  // Still on cooldown
-
-            Fire();
-            _timeSinceLastShot = 0f;
+            return _timeSinceLastShot >= 1f / FireRate;
         }
 
-        protected abstract void Fire();  // Each weapon type implements firing logic
+        public void ResetCooldown()
+        {
+            _timeSinceLastShot = 0f;
+        }
     }
 }

@@ -38,11 +38,6 @@
 	<!-- ===== CELL TYPES ===== -->
 	<Cell>
 		<CellTypeConfig>
-			<!--water-->
-			<Id>0</Id>
-			<MaxHealth>0</MaxHealth>
-		</CellTypeConfig>
-		<CellTypeConfig>
 			<!--ice-->
 			<Id>1</Id>
 			<MaxHealth>100</MaxHealth>

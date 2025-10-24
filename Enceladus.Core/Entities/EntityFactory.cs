@@ -16,6 +16,7 @@ namespace Enceladus.Core.Entities
         MenacingRedPentagon CreateMenacingRedPentagon(Vector2 position);
         AwfulGreenStar CreateAwfulGreenStar(Vector2 position);
         TestGun CreateTestGun(IArmed owner);
+        IProjectile CreateProjectile(Weapon weapon);
     }
 
     public class EntityFactory : IEntityFactory
@@ -26,9 +27,10 @@ namespace Enceladus.Core.Entities
         private readonly IPolygonHitboxBuilder _polygonHitboxBuilder;
         private readonly IControllableRegistry _controllableRegistry;
         private readonly IPlayerFactory _playerFactory;
+        private readonly IProjectileFactory _projectileFactory;
 
         public EntityFactory(IEntityRegistry entityRegistry, IConfigService configService, ISpriteService spriteService,
-            IPolygonHitboxBuilder polygonHitboxBuilder, IControllableRegistry controllableRegistry, IPlayerFactory playerFactory)
+            IPolygonHitboxBuilder polygonHitboxBuilder, IControllableRegistry controllableRegistry, IPlayerFactory playerFactory, IProjectileFactory projectileFactory)
         {
             _entityRegistry = entityRegistry;
             _configService = configService;
@@ -36,19 +38,7 @@ namespace Enceladus.Core.Entities
             _polygonHitboxBuilder = polygonHitboxBuilder;
             _controllableRegistry = controllableRegistry;
             _playerFactory = playerFactory;
-
-        /// <summary>
-        /// Please run this early on inside the createXentity functions to apply default values from config
-        /// this is another please dont forget bro function
-        /// </summary>
-        private void ApplyDefaults(Entity entity)
-        {
-            if (entity is MovableEntity movableEntity)
-            {
-                movableEntity.Mass = _configService.Config.Physics.DefaultMass;
-                movableEntity.Drag = _configService.Config.Physics.DefaultDrag;
-                movableEntity.AngularDrag = _configService.Config.Physics.DefaultAngularDrag;
-            }
+            _projectileFactory = projectileFactory;
         }
 
         /// <summary>
@@ -127,6 +117,13 @@ namespace Enceladus.Core.Entities
             var weapon = new TestGun { Owner = owner };
             RegisterEntity(weapon);
             return weapon;
+        }
+
+        public IProjectile CreateProjectile(Weapon weapon)
+        {
+            var projectile = _projectileFactory.CreateProjectile(weapon);
+            RegisterEntity((Entity)projectile);
+            return projectile;
         }
     }
 }

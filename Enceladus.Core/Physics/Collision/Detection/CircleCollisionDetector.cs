@@ -126,7 +126,7 @@ namespace Enceladus.Core.Physics.Collision.Detection
 
             var actualDistance = (float)Math.Sqrt(actualDistanceSquared);
             var penetrationDepth = minDistance - actualDistance;
-            var collisionVector = c2.Position - c1.Position;
+            var collisionVector = c1.Position - c2.Position; 
 
             //dividing by the already computed actual distance is cheaper than using Vector2.Normalize()
             var normalizedCollisionVector = collisionVector / actualDistance; 

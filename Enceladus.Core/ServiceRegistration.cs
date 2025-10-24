@@ -38,12 +38,15 @@ namespace Enceladus.Core
             services.AddSingleton<ICellFactory, CellFactory>();
 
             // Entity services
+            services.AddSingleton<IPlayerFactory, PlayerFactory>();
             services.AddSingleton<IEntityFactory, EntityFactory>();
             services.AddSingleton<IPolygonHitboxBuilder, PolygonHitboxBuilder>();
             services.AddSingleton<IConcavePolygonSlicer, EarClippingTriangulationSlicer>();
 
             // Weapon services
+            services.AddSingleton<IProjectileFactory, ProjectileFactory>();
             services.AddSingleton<IMouseWeaponController, MouseWeaponController>();
+            services.AddSingleton<IWeaponControlService, WeaponControlService>();
             services.AddSingleton<IWeaponService, WeaponService>();
 
             // Rendering services

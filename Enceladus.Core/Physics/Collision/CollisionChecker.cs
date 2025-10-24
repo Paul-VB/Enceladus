@@ -1,4 +1,5 @@
 using Enceladus.Core.Entities;
+using Enceladus.Core.Entities.Weapons;
 using Enceladus.Core.Physics.Collision.Detection;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.World;
@@ -101,6 +102,12 @@ namespace Enceladus.Core.Physics.Collision
 
         private void CheckPair(MovableEntity moveable, ICollidable other, List<CollisionResult> collisions)
         {
+            if (moveable is IIdentifyFriendFoe iff1 && other is IIdentifyFriendFoe iff2)
+            {
+                if (iff1.IffCodes.Intersect(iff2.IffCodes).Any())
+                    return;
+            }
+
             CollisionResult result;
 
             //circle to circle needs no broad phase
@@ -117,7 +124,7 @@ namespace Enceladus.Core.Physics.Collision
                 return;
 
             // Narrow phase: Dispatch to appropriate detector
-            // If either hitbox is a circle, use circle detector                
+            // If either hitbox is a circle, use circle detector
             if (moveable.Hitbox is CircleHitbox || other.Hitbox is CircleHitbox)
                 result = _circleCollisionDetector.CheckCollision(moveable, other);
             else

@@ -12,6 +12,7 @@ namespace Enceladus.Core.Entities
 {
     public class Player : MovableEntity, ICollidable, IControllable, ISpriteRendered, IArmed
     {
+        public List<int> IffCodes { get; set; } = new() { 1 }; // Player team
         public override IHitbox Hitbox { get; set; }
         public SpriteDefinition CurrentSprite { get; set; } = SpriteDefinitions.Entities.PlayerSubRight;
         public SpriteModifiers SpriteModifiers { get; set; } = new();

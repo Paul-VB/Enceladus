@@ -1,4 +1,3 @@
-using Enceladus.Core.Entities.Weapons.WeaponControllers;
 using Enceladus.Core.Utils;
 using System.Numerics;
 
@@ -34,21 +33,22 @@ namespace Enceladus.Core.Entities.Weapons
                     _weaponControlService.ApplyWeaponControl(mount, deltaTime);
                 }
             }
+
+            // Cleanup expired projectiles
+            CleanupExpiredProjectiles();
         }
 
-        private void ApplyWeaponControl(WeaponMount mount, float deltaTime)
+        private void CleanupExpiredProjectiles()
         {
-            switch (mount.ControllerType)
+            var gameTime = _timeService.GameTime;
+            var projectiles = _entityRegistry.Projectiles.ToList(); // Copy to avoid modification during iteration
+
+            foreach (var projectile in projectiles)
             {
-                case WeaponControllerType.Mouse:
-                    _mouseController.Update(mount, deltaTime);
-                    break;
-                case WeaponControllerType.Fixed:
-                    // TODO: implement FixedWeaponController
-                    break;
-                case WeaponControllerType.TrackTarget:
-                    // TODO: implement TrackingWeaponController
-                    break;
+                if (gameTime - projectile.SpawnTime >= projectile.TimeToLive)
+                {
+                    _entityRegistry.Unregister(((Entity)projectile).Guid);
+                }
             }
         }
 

@@ -43,6 +43,14 @@ namespace Enceladus.Core.Rendering
                 AtlasFilePath = EntityAtlasFilePath,
                 SourceRegion = new Rectangle(320, 0, 32, 32)
             };
+
+            // Projectile sprites
+            // TODO: Create proper bullet sprite! This is using a chunk of the default checkerboard for testing
+            public static readonly SpriteDefinition Bullet = new()
+            {
+                AtlasFilePath = EntityAtlasFilePath,
+                SourceRegion = new Rectangle(0, 0, 8, 8) // 8x8 chunk from default texture
+            };
         }
 
         public static class Cells

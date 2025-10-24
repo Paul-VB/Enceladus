@@ -12,6 +12,7 @@ namespace Enceladus.Core.Entities
         IReadOnlyList<ISpriteRendered> SpriteRenderedEntities { get; }
         IReadOnlyList<IGeometryRendered> GeometryRenderedEntities { get; }
         IReadOnlyList<IArmed> ArmedEntities { get; }
+        IReadOnlyList<IProjectile> Projectiles { get; }
         T Register<T>(T entity) where T : Entity;
         void Unregister(Guid guid);
     }
@@ -24,6 +25,7 @@ namespace Enceladus.Core.Entities
         private readonly List<ISpriteRendered> _spriteRenderedEntities = new();
         private readonly List<IGeometryRendered> _geometryRenderedEntities = new();
         private readonly List<IArmed> _armedEntities = new();
+        private readonly List<IProjectile> _projectiles = new();
 
         public IReadOnlyDictionary<Guid, Entity> Entities => _entities;
         public IReadOnlyList<MovableEntity> MovableEntities => _movableEntities;
@@ -31,6 +33,7 @@ namespace Enceladus.Core.Entities
         public IReadOnlyList<ISpriteRendered> SpriteRenderedEntities => _spriteRenderedEntities;
         public IReadOnlyList<IGeometryRendered> GeometryRenderedEntities => _geometryRenderedEntities;
         public IReadOnlyList<IArmed> ArmedEntities => _armedEntities;
+        public IReadOnlyList<IProjectile> Projectiles => _projectiles;
 
         public T Register<T>(T entity) where T : Entity
         {
@@ -48,6 +51,9 @@ namespace Enceladus.Core.Entities
 
             if (entity is IArmed armed)
                 _armedEntities.Add(armed);
+
+            if (entity is IProjectile projectile)
+                _projectiles.Add(projectile);
 
             return entity;
         }
@@ -69,6 +75,8 @@ namespace Enceladus.Core.Entities
                 _geometryRenderedEntities.Remove(geometryRendered);
             if (entity is IArmed armed)
                 _armedEntities.Remove(armed);
+            if (entity is IProjectile projectile)
+                _projectiles.Remove(projectile);
         }
     }
 }
