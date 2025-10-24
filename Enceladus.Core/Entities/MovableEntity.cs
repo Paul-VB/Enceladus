@@ -10,9 +10,9 @@ namespace Enceladus.Core.Entities
     {
         public Vector2 Velocity { get; set; }
         public virtual float Mass { get; set; } = 1f;
-        public float Drag { get; set; } = 0.95f;  
+        public float Drag { get; set; } = 1f;  
         public float AngularVelocity { get; set; }
-        public float AngularDrag { get; set; } = 0.95f; 
+        public float AngularDrag { get; set; } = 1f; 
         public float MinVelocityThreshold { get; set; } = 0.05f;
         public float MinAngularVelocityThreshold { get; set; } = 0.05f;
         public abstract IHitbox Hitbox { get; set; }
@@ -44,9 +44,10 @@ namespace Enceladus.Core.Entities
         protected virtual void UpdateMovement(float deltaTime)
         {
             Position += Velocity * deltaTime;
-            //todo: revisit the drag math
+
+            // Apply drag as a proper force (mass-dependent)
             var dragForce = -Velocity * Drag;
-            Velocity += dragForce * deltaTime;
+            Accelerate(dragForce, deltaTime);
 
             if (Velocity.Length() < MinVelocityThreshold)
                 Velocity = Vector2.Zero;
@@ -58,9 +59,9 @@ namespace Enceladus.Core.Entities
             Rotation += AngularVelocity * deltaTime;
             Rotation = AngleHelper.ClampAngle0To360(Rotation);
 
-            // Apply angular drag
+            // Apply angular drag as a proper torque (mass-dependent)
             var angularDragTorque = -AngularVelocity * AngularDrag;
-            AngularVelocity += angularDragTorque * deltaTime;
+            ApplyTorque(angularDragTorque, deltaTime);
 
             // Zero out very small angular velocities
             if (Math.Abs(AngularVelocity) < MinAngularVelocityThreshold)

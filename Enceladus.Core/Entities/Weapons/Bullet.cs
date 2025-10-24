@@ -19,8 +19,8 @@ namespace Enceladus.Core.Entities.Weapons
         public Bullet()
         {
             //TODO: MAKE BULLET DRAG CONFIGURABLE IN CONFIG FILE
-            // Bullets need very low drag - close to 1.0 means almost no slowdown
-            Drag = 1f; //todo: this does not seem to be applying
+            // Bullets need very low drag 
+            Drag = .1f;
         }
     }
 }

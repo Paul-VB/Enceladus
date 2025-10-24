@@ -28,6 +28,8 @@ namespace Enceladus.Core.Entities
             // Player-specific config values
             var config = _configService.Config.Player;
             player.Mass = config.Mass;
+            player.Drag = config.Drag;
+            player.AngularDrag = config.AngularDrag;
             player.MainEngineThrust = config.MainEngineThrust;
             player.ManeuveringThrust = config.ManeuveringThrust;
             player.ManeuveringRotationalAuthority = config.ManeuveringRotationalAuthority;

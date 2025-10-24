@@ -3,6 +3,8 @@
 	<!-- ===== PLAYER SUBMARINE ===== -->
 	<Player>
 		<Mass>100</Mass>
+		<Drag>100</Drag>
+		<AngularDrag>100</AngularDrag>
 		<MainEngineThrust>2250</MainEngineThrust>
 		<ManeuveringThrust>2000</ManeuveringThrust>
 		<ManeuveringRotationalAuthority>400</ManeuveringRotationalAuthority>

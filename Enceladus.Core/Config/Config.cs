@@ -11,6 +11,8 @@ namespace Enceladus.Core.Config
     public class PlayerConfig
     {
         public float Mass { get; set; }
+        public float Drag { get; set; }
+        public float AngularDrag { get; set; }
         public float MainEngineThrust { get; set; }
         public float ManeuveringThrust { get; set; }
         public float ManeuveringRotationalAuthority { get; set; }
