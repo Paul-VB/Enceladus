@@ -1,5 +1,6 @@
 using Enceladus.Core.Config;
 using Enceladus.Core.World;
+using Enceladus.Core.World.Chunks;
 using Raylib_cs;
 using System.Numerics;
 

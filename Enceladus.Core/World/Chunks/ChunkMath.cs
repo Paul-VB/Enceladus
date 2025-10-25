@@ -3,7 +3,7 @@ using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Utils;
 using Raylib_cs;
 
-namespace Enceladus.Core.World
+namespace Enceladus.Core.World.Chunks
 {
     public static class ChunkMath
     {

@@ -9,6 +9,7 @@ using Enceladus.Core.Physics.Collision.Detection;
 using Enceladus.Core.Physics.Hitboxes.Helpers;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.World;
+using Enceladus.Core.World.Chunks;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Enceladus.Core
@@ -36,6 +37,7 @@ namespace Enceladus.Core
             services.AddSingleton<IWorldService, WorldService>();
             services.AddSingleton<IMapGenerator, MapGenerator>();
             services.AddSingleton<ICellFactory, CellFactory>();
+            services.AddSingleton<IChunkHitboxGenerator, ChunkHitboxGenerator>();
 
             // Entity services
             services.AddSingleton<IPlayerFactory, PlayerFactory>();

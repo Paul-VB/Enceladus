@@ -1,3 +1,5 @@
+using Enceladus.Core.World.Chunks;
+
 namespace Enceladus.Core.World
 {
     public interface IMapGenerator

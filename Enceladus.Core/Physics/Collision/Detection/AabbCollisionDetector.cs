@@ -1,6 +1,7 @@
 using Enceladus.Core.Entities;
 using Enceladus.Core.Utils;
 using Enceladus.Core.World;
+using Enceladus.Core.World.Chunks;
 
 
 namespace Enceladus.Core.Physics.Collision.Detection

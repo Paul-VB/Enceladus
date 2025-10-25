@@ -1,6 +1,6 @@
 
 using Enceladus.Core.Tests.Helpers;
-using Enceladus.Core.World;
+using Enceladus.Core.World.Chunks;
 
 namespace Enceladus.Core.Tests.World
 {
