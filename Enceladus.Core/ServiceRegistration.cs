@@ -59,6 +59,7 @@ namespace Enceladus.Core
             services.AddSingleton<ICollisionService, CollisionService>();
             services.AddSingleton<ICollisionChecker, CollisionChecker>();
             services.AddSingleton<ICollisionResolver, CollisionResolver>();
+            services.AddSingleton<IImpactHandlerService, ImpactHandlerService>();
             services.AddSingleton<IAabbCollisionDetector, AabbCollisionDetector>();
             services.AddSingleton<IAabbCalculator, AabbCalculator>();
             services.AddSingleton<ISatCollisionDetector, SatCollisionDetector>();

@@ -12,11 +12,13 @@ namespace Enceladus.Core.Physics.Collision
     {
         private readonly ICollisionChecker _collisionChecker;
         private readonly ICollisionResolver _collisionResolver;
+        private readonly IImpactHandlerService _impactHandlerService;
 
-        public CollisionService(ICollisionChecker collisionChecker, ICollisionResolver collisionResolver)
+        public CollisionService(ICollisionChecker collisionChecker, ICollisionResolver collisionResolver, IImpactHandlerService impactHandlerService)
         {
             _collisionChecker = collisionChecker;
             _collisionResolver = collisionResolver;
+            _impactHandlerService = impactHandlerService;
         }
 
         public void HandleCollisions(Map map)
@@ -26,6 +28,7 @@ namespace Enceladus.Core.Physics.Collision
             foreach (var collision in entityToCellCollisions)
             {
                 _collisionResolver.ResolveCollision(collision);
+                _impactHandlerService.HandleImpact(collision); 
             }
 
             // Entity-to-entity collisions
@@ -33,6 +36,7 @@ namespace Enceladus.Core.Physics.Collision
             foreach (var collision in entityToEntityCollisions)
             {
                 _collisionResolver.ResolveCollision(collision);
+                _impactHandlerService.HandleImpact(collision); 
             }
         }
     }
