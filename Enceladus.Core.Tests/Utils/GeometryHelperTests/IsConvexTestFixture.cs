@@ -3,12 +3,9 @@ using System.Numerics;
 
 namespace Enceladus.Core.Tests.Utils.GeometryHelperTests
 {
-    public class IsConvexTestFixture
+    public class IsConvexTestFixture : GeometryHelperTestBase
     {
-        private List<Vector2> _testVertices;
-
-        private void GivenVertices(params (float x, float y)[] vertices) => _testVertices = vertices.Select(v => new Vector2(v.x, v.y)).ToList();
-        private bool IsConvex() => GeometryHelper.IsConvex(_testVertices);
+        private bool IsConvex() => GeometryHelper.IsConvex(TestVertices);
 
 
         [Fact]
@@ -85,7 +82,7 @@ namespace Enceladus.Core.Tests.Utils.GeometryHelperTests
         [Fact]
         public void GivenEmptyList_WhenCheckingConvexity_ThenReturnsFalse()
         {
-            _testVertices = new List<Vector2>();
+            TestVertices = new List<Vector2>();
 
             var result = IsConvex();
 
@@ -95,7 +92,7 @@ namespace Enceladus.Core.Tests.Utils.GeometryHelperTests
         [Fact]
         public void GivenNullList_WhenCheckingConvexity_ThenReturnsFalse()
         {
-            _testVertices = null;
+            TestVertices = null;
 
             var result = IsConvex();
 
