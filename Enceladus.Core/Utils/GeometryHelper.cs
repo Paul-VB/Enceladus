@@ -131,6 +131,27 @@ namespace Enceladus.Core.Utils
             // All cross products had consistent sign (or all were collinear) - convex
             return true;
         }
+
+        /// <summary>
+        /// Calculates the signed area of a polygon using the shoelace formula.
+        /// Positive area = counter-clockwise winding.
+        /// Negative area = clockwise winding.
+        /// Magnitude of the result is 2x the actual area.
+        /// </summary>
+        public static float CalculateSignedArea(List<Vector2> vertices)
+        {
+            if (vertices == null || vertices.Count < 3)
+                return 0;
+
+            float sum = 0;
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                var current = vertices[i];
+                var next = vertices[(i + 1) % vertices.Count];
+                sum += (next.X - current.X) * (next.Y + current.Y);
+            }
+            return sum / 2f;
+        }
         /// <summary>
         /// Tests if two line segments intersect (not including endpoints touching).
         /// Uses cross product method to determine intersection.
