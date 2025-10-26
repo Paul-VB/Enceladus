@@ -131,5 +131,39 @@ namespace Enceladus.Core.Utils
             // All cross products had consistent sign (or all were collinear) - convex
             return true;
         }
+        /// <summary>
+        /// Tests if two line segments intersect (not including endpoints touching).
+        /// Uses cross product method to determine intersection.
+        /// </summary>
+        public static bool DoLineSegmentsIntersect(Vector2 p1, Vector2 p2, Vector2 p3, Vector2 p4)
+        {
+            // Calculate direction vectors
+            var d1 = p2 - p1;
+            var d2 = p4 - p3;
+            var d3 = p3 - p1;
+
+            // Calculate cross products
+            float cross1 = CrossProduct2D(d1, d2);
+
+            // Lines are parallel if cross product is zero
+            if (cross1 == 0)
+                return false;
+
+            // Calculate parameters for intersection point
+            float t1 = CrossProduct2D(d3, d2) / cross1;
+            float t2 = CrossProduct2D(d3, d1) / cross1;
+
+            // Intersection occurs if both parameters are strictly inside (0, 1)
+            // Exclude endpoints to avoid false positives at polygon corners
+            return 0 < t1 && t1 < 1 && 0 < t2 && t2 < 1; 
+        }
+
+        /// <summary>
+        /// Calculates 2D cross product (z-component of 3D cross product).
+        /// </summary>
+        private static float CrossProduct2D(Vector2 a, Vector2 b)
+        {
+            return a.X * b.Y - a.Y * b.X;
+        }
     }
 }
