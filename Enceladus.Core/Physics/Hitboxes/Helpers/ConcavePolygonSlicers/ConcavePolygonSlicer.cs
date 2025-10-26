@@ -1,6 +1,6 @@
 ﻿using System.Numerics;
 
-namespace Enceladus.Core.Physics.Hitboxes.Helpers
+namespace Enceladus.Core.Physics.Hitboxes.Helpers.ConcavePolygonSlicers
 {
     /// <summary>
     /// Decomposes concave polygons into a list of convex sub-polygons.
