@@ -157,6 +157,42 @@ namespace Enceladus.Core.Utils
             }
             return sum / 2f;
         }
+
+        /// <summary>
+        /// Checks if a polygon is simple (non-self-intersecting).
+        /// Tests all pairs of non-adjacent edges for intersections.
+        /// </summary>
+        public static bool IsSimplePolygon(List<Vector2> vertices)
+        {
+            if (vertices == null || vertices.Count < 3)
+                return false;
+
+            int n = vertices.Count;
+
+            // Check all pairs of non-adjacent edges
+            for (int i = 0; i < n; i++)
+            {
+                var edge1Start = vertices[i];
+                var edge1End = vertices[(i + 1) % n];
+
+                // Start checking from i+2 to avoid checking adjacent edges
+                for (int j = i + 2; j < n; j++)
+                {
+                    // Skip if j edge is adjacent to i edge (wraps around)
+                    if (j == (i + n - 1) % n)
+                        continue;
+
+                    var edge2Start = vertices[j];
+                    var edge2End = vertices[(j + 1) % n];
+
+                    if (DoLineSegmentsIntersect(edge1Start, edge1End, edge2Start, edge2End))
+                        return false; // Self-intersection found
+                }
+            }
+
+            return true; // No intersections found
+        }
+
         /// <summary>
         /// Tests if two line segments intersect (not including endpoints touching).
         /// Uses cross product method to determine intersection.
