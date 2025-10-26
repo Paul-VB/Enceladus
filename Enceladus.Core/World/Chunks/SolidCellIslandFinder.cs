@@ -64,5 +64,6 @@ namespace Enceladus.Core.World.Chunks
         }
     }
 
-    public class Island : List<(int x, int y)> { }
+    // For this particular usecase, a hashmap is faster than a List<(int, int)>
+    public class Island : HashSet<(int x, int y)> { }
 }
