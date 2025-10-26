@@ -72,11 +72,25 @@
   - Should be named constants for clarity
 
 ### Weapons & Combat
-- [ ] **Fix bullets getting stuck in ice (corner collision bug)**
-  - Bullets sometimes get stuck inside ice cells, likely when hitting corners
-  - Probably multi-cell collision at corners causing conflicting resolutions
-  - Or collision normal confusion at corner intersections
-  - Need to investigate collision resolution behavior at cell corners
+- [ ] **Implement merged chunk hitboxes to fix bullet corner collisions**
+  - Current issue: Bullets hit seams between individual cell hitboxes, causing wrong bounce angles and getting stuck
+  - Solution: Merge all connected ice cells within each chunk into single concave polygon hitbox(es)
+  - Use marching squares to trace ice outlines, flood fill to find islands
+  - Store merged hitboxes in MapChunk.MergedHitboxes list
+  - Regenerate chunk's merged hitboxes when cells are destroyed
+  - Reduces collision checks from ~256 cells/chunk to ~1-5 merged hitboxes/chunk
+  - Eliminates internal edges within chunks (seams only at chunk boundaries = 256x less frequent)
+  - Leverages existing ConcavePolygonHitbox and ear clipping slicer
+  - Note: SAT slicing may create internal slice seams, but GJK/EPA (future improvement) would eliminate this
+
+- [ ] **Research/implement GJK/EPA collision detection for concave shapes**
+  - Future improvement to replace SAT for entity-to-merged-chunk collisions
+  - GJK/EPA handles concave polygons natively without decomposition
+  - Eliminates internal slice seams that SAT decomposition creates
+  - Combined with merged chunks = perfect collision normals everywhere
+  - Can keep SAT for simple convex-to-convex cases (performance)
+  - Industry standard algorithm (Box2D, Bullet Physics)
+  - ~200-300 lines of code, medium complexity
 
 - [ ] **Implement weapon aiming strategies (Fixed, TrackTarget)**
   - Allow weapons to have different targeting behaviors

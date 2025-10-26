@@ -53,8 +53,51 @@ See `gameplayDetails.md` for complete gameplay design.
 - `VertexExtractorTestFixture.cs` - Regression tests for cell coordinate bug
 
 ## Testing Patterns
-- **Entity creation**: Always use `EntityHelpers.CreateTestEntity(position, hitbox, rotation)`
-- **Map creation**: Use `MapHelpers.CreateMapWithCells(...)` for auto-chunk creation
+
+### BDD-Style Test Structure (Preferred)
+Tests should follow **Behavior-Driven Development (BDD)** style with Given-When-Then structure:
+
+**Pattern:**
+- Test fixture should have private helper methods: `GivenA[Thing]()`, `When[Action]()`, `Then` is implicit in assertions
+- Keep helpers local to each test fixture - only extract to shared helpers when needed in 2+ fixtures
+- Test names: `Given[Scenario]_When[Action]_Then[Outcome]`
+- Use fixture-level fields to store test state (`_testMapChunk`, `_testCollision`, etc.)
+- Helpers should set fixture fields, not return values directly when possible
+
+**Example:**
+```csharp
+public class SolidCellIslandFinderTestFixture
+{
+    private readonly ISolidCellIslandFinder _finder;
+    private MapChunk _testMapChunk = new MapChunk(0, 0);
+
+    private Cell GivenACell(int x, int y, bool hasCollision = true)
+    {
+        var cell = new Cell { X = x, Y = y, ... };
+        _testMapChunk.Cells.Add(cell);
+        return cell;
+    }
+
+    private List<Island> FindIslands() => _finder.FindIslands(_testMapChunk);
+
+    [Fact]
+    public void GivenSingleCell_WhenFindingIslands_ThenReturnsSingleIsland()
+    {
+        // Given
+        GivenACell(5, 5);
+
+        // When
+        var islands = FindIslands();
+
+        // Then
+        Assert.Single(islands);
+    }
+}
+```
+
+### Legacy Test Patterns
+- **Entity creation**: `EntityHelpers.CreateTestEntity(position, hitbox, rotation)` (migrate to BDD)
+- **Map creation**: `MapHelpers.CreateMapWithCells(...)` for auto-chunk creation (migrate to BDD)
 - **Regression tests**: VertexExtractorTestFixture catches cell coordinate bugs
 
 ## Architecture Principles
@@ -113,5 +156,13 @@ See `gameplayDetails.md` for complete gameplay design.
 - Commit after major refactors work and tests pass
 - Line-by-line review before committing
 - Keep working code separate from experimental changes
-- Keep comments in code to a miniumum. Comments can become out-of-sync from the code if the code changes. I prefer commends be reserved for explaining weird or unclear complex logic. The code should be clean enough that it is mostly self-documenting
-- 
+- Keep comments in code to a minimum. Comments can become out-of-sync from the code if the code changes. I prefer comments be reserved for explaining weird or unclear complex logic. The code should be clean enough that it is mostly self-documenting
+- **Debugging preference**: When calling a complex function, assign the result to a variable before returning it. This makes debug inspection easier.
+  ```csharp
+  // Preferred - easier to inspect in debugger
+  var result = SomeComplexFunction(a, b, c);
+  return result;
+
+  // Avoid - harder to inspect return value
+  return SomeComplexFunction(a, b, c);
+  ```
