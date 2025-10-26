@@ -10,10 +10,7 @@ namespace Enceladus.Core.Tests.Helpers
     /// </summary>
     public static class CellHelpers
     {
-        /// <summary>
-        /// Creates a test cell with pre-computed hitbox vertices
-        /// </summary>
-        public static Cell CreateTestCell(int x, int y, bool hasCollision = true)
+        public static Cell GivenACell(int x, int y, bool hasCollision = true)
         {
             var vertices = new List<Vector2>
             {
@@ -23,16 +20,19 @@ namespace Enceladus.Core.Tests.Helpers
                 new(x, y + 1)        // bottom-left
             };
 
-            return new Cell
+            var cell = new Cell
             {
                 X = x,
                 Y = y,
-                CellType = new CellType { 
+                CellType = new CellType
+                {
                     Id = -1,
                     HasCollision = hasCollision,
                 },
                 Hitbox = new CellHitbox(vertices)
             };
+
+            return cell;
         }
     }
 }

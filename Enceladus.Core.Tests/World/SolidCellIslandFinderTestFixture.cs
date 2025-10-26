@@ -1,7 +1,6 @@
-using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Core.Tests.Helpers;
 using Enceladus.Core.World;
 using Enceladus.Core.World.Chunks;
-using System.Numerics;
 
 namespace Enceladus.Core.Tests.World
 {
@@ -18,26 +17,7 @@ namespace Enceladus.Core.Tests.World
 
         private Cell GivenACell(int x, int y, bool hasCollision = true)
         {
-            var vertices = new List<Vector2>
-            {
-                new(x, y),           // top-left
-                new(x + 1, y),       // top-right
-                new(x + 1, y + 1),   // bottom-right
-                new(x, y + 1)        // bottom-left
-            };
-
-            var cell = new Cell
-            {
-                X = x,
-                Y = y,
-                CellType = new CellType
-                {
-                    Id = -1,
-                    HasCollision = hasCollision,
-                },
-                Hitbox = new CellHitbox(vertices)
-            };
-
+            var cell = CellHelpers.GivenACell(x, y, hasCollision);
             _testMapChunk.Cells.Add(cell);
             return cell;
         }
