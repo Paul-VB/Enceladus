@@ -131,6 +131,32 @@ namespace Enceladus.Core.Utils
             // All cross products had consistent sign (or all were collinear) - convex
             return true;
         }
+
+        /// <summary>
+        /// Calculates the signed area of a polygon using the shoelace formula.
+        ///
+        /// Traditional convention (Cartesian, Y+ = up): CCW = positive, CW = negative.
+        /// Screen coordinates (Y+ = down): The Y-axis flip inverts this relationship.
+        ///   - Counter-clockwise winding = NEGATIVE area
+        ///   - Clockwise winding = POSITIVE area
+        ///
+        /// We do NOT compensate for the flipped Y-axis. The shoelace formula naturally
+        /// produces the inverted signs when given screen coordinates.
+        /// </summary>
+        public static float CalculateSignedArea(List<Vector2> vertices)
+        {
+            if (vertices == null || vertices.Count < 3)
+                return 0;
+
+            float sum = 0;
+            for (int i = 0; i < vertices.Count; i++)
+            {
+                var current = vertices[i];
+                var next = vertices[(i + 1) % vertices.Count];
+                sum += (next.X - current.X) * (next.Y + current.Y);
+            }
+            return sum / 2f;
+        }
         /// <summary>
         /// Tests if two line segments intersect (not including endpoints touching).
         /// Uses cross product method to determine intersection.
