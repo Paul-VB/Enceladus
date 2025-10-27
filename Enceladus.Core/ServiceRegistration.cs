@@ -38,8 +38,6 @@ namespace Enceladus.Core
             services.AddSingleton<IWorldService, WorldService>();
             services.AddSingleton<IMapGenerator, MapGenerator>();
             services.AddSingleton<ICellFactory, CellFactory>();
-            services.AddSingleton<ISolidCellIslandFinder, SolidCellIslandFinder>();
-            services.AddSingleton<IChunkHitboxGenerator, ChunkHitboxGenerator>();
 
             // Entity services
             services.AddSingleton<IPlayerFactory, PlayerFactory>();

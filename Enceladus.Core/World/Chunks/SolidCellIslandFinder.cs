@@ -2,6 +2,23 @@ using Enceladus.Core.Config;
 
 namespace Enceladus.Core.World.Chunks
 {
+    // NOTE: This class is NOT currently used in the runtime collision system.
+    //
+    // Original Purpose: Part of a "merged chunk hitbox" optimization to fix the "wrong corner bounce"
+    // problem where bullets hitting cell corners would get conflicting collision normals from adjacent cells.
+    //
+    // The plan was:
+    //   1. Use this class to find connected solid cell "islands" via flood fill
+    //   2. Use IslandOutlineTracer to trace the outline of each island
+    //   3. Triangulate the outline to create merged hitboxes
+    //   4. Replace individual cell hitboxes with merged polygonal hitboxes
+    //
+    // Current Status: DELAYED - Implementation was ~80% complete but we decided to solve the corner bounce
+    // problem with a simpler approach: batching multiple collisions per entity before resolution, which
+    // combines collision normals mathematically rather than geometrically merging hitboxes.
+    //
+    // This Code: Fully implemented and tested (see SolidCellIslandFinderTestFixture). Kept for potential
+    // future use incase we want to revisit the merged hitbox approach.
     public interface ISolidCellIslandFinder
     {
         /// <summary>

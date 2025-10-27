@@ -2,6 +2,28 @@ using System.Numerics;
 
 namespace Enceladus.Core.World.Chunks
 {
+    // NOTE: This class is NOT currently used in the runtime collision system.
+    //
+    // Original Purpose: Part of a "merged chunk hitbox" optimization to fix the "wrong corner bounce"
+    // problem where bullets hitting cell corners would get conflicting collision normals from adjacent cells.
+    //
+    // The plan was:
+    //   1. Use SolidCellIslandFinder to find connected solid cell "islands"
+    //   2. Use this class to trace the outline of each island using boundary following
+    //   3. Triangulate the outline to create merged hitboxes (with Triangle.NET)
+    //   4. Replace individual cell hitboxes with merged polygonal hitboxes
+    //
+    // Current Status: DELAYED - Implementation was ~80% complete but we decided to solve the corner bounce
+    // problem with a simpler approach: batching multiple collisions per entity before resolution.
+    //
+    // This Code: Fully implemented and tested (see IslandOutlineTracerTestFixture - 14+ passing tests).
+    // Uses boundary following algorithm (not marching squares) with left-hand rule for CCW traversal.
+    // Works in Cartesian space (Y+ up) to avoid coordinate system confusion.
+    //
+    // Limitation: Only traces OUTER contours. Does not handle holes (donut shapes). If needed in future,
+    // extend with Single-Pass Sequential Boundary Tracing to detect inner/outer boundaries.
+    //
+    // Kept for potential future use in case we want to go back to trying merged hitboxes
     public interface IIslandOutlineTracer
     {
         /// <summary>
@@ -13,7 +35,7 @@ namespace Enceladus.Core.World.Chunks
 
     public class IslandOutlineTracer : IIslandOutlineTracer
     {
-        internal enum Direction
+        private enum Direction
         {
             North = 0,
             East = 1,
@@ -159,10 +181,10 @@ namespace Enceladus.Core.World.Chunks
             return Direction.East;  // Face West, empty is to our right
         }
 
-        internal bool HasNorthNeighbor(Island island, (int x, int y) cell) => island.Contains((cell.x, cell.y + 1));
-        internal bool HasEastNeighbor(Island island, (int x, int y) cell) => island.Contains((cell.x + 1, cell.y));
-        internal bool HasSouthNeighbor(Island island, (int x, int y) cell) => island.Contains((cell.x, cell.y - 1));
-        internal bool HasWestNeighbor(Island island, (int x, int y) cell) => island.Contains((cell.x - 1, cell.y));
+        private bool HasNorthNeighbor(Island island, (int x, int y) cell) => island.Contains((cell.x, cell.y + 1));
+        private bool HasEastNeighbor(Island island, (int x, int y) cell) => island.Contains((cell.x + 1, cell.y));
+        private bool HasSouthNeighbor(Island island, (int x, int y) cell) => island.Contains((cell.x, cell.y - 1));
+        private bool HasWestNeighbor(Island island, (int x, int y) cell) => island.Contains((cell.x - 1, cell.y));
 
         private (int x, int y) StepInDirection(Direction direction, (int x, int y) currentCell)
         {
@@ -269,7 +291,7 @@ namespace Enceladus.Core.World.Chunks
             }
         }
 
-        internal (int x, int y) GetBackLeftCornerVertex(Direction currentDirection, (int x, int y) currentCell)
+        private (int x, int y) GetBackLeftCornerVertex(Direction currentDirection, (int x, int y) currentCell)
         {
             switch (currentDirection)
             {
@@ -284,7 +306,7 @@ namespace Enceladus.Core.World.Chunks
             }
         }
 
-        internal (int x, int y) GetBackRightCornerVertex(Direction currentDirection, (int x, int y) currentCell)
+        private (int x, int y) GetBackRightCornerVertex(Direction currentDirection, (int x, int y) currentCell)
         {
             switch (currentDirection)
             {
@@ -299,7 +321,7 @@ namespace Enceladus.Core.World.Chunks
             }
         }
 
-        internal (int x, int y) GetFrontRightCornerVertex(Direction currentDirection, (int x, int y) currentCell)
+        private (int x, int y) GetFrontRightCornerVertex(Direction currentDirection, (int x, int y) currentCell)
         {
             switch (currentDirection)
             {

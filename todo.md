@@ -72,16 +72,17 @@
   - Should be named constants for clarity
 
 ### Weapons & Combat
-- [ ] **Implement merged chunk hitboxes to fix bullet corner collisions**
+- [ ] **Fix bullet corner collisions**
   - Current issue: Bullets hit seams between individual cell hitboxes, causing wrong bounce angles and getting stuck
-  - Solution: Merge all connected ice cells within each chunk into single concave polygon hitbox(es)
-  - Use marching squares to trace ice outlines, flood fill to find islands
-  - Store merged hitboxes in MapChunk.MergedHitboxes list
-  - Regenerate chunk's merged hitboxes when cells are destroyed
-  - Reduces collision checks from ~256 cells/chunk to ~1-5 merged hitboxes/chunk
-  - Eliminates internal edges within chunks (seams only at chunk boundaries = 256x less frequent)
-  - Leverages existing ConcavePolygonHitbox and ear clipping slicer
-  - Note: SAT slicing may create internal slice seams, but GJK/EPA (future improvement) would eliminate this
+  - Root cause: Each cell collision is resolved independently with its own normal, causing conflicting normals at corners
+  - **PREVIOUS APPROACH (delayed):** Merged chunk hitboxes, using the **Single-Pass Sequential Boundary Tracing** algorithm
+    - we may revisit this approach later for performance or if simpler fixes dont work. 
+    - See: `SolidCellIslandFinder.cs` and `IslandOutlineTracer.cs` (fully implemented and tested, but NOT currently used)
+    - These classes were ~80% complete for the merged hitbox approach
+    - Plan was: flood fill → trace outlines → triangulate → merge hitboxes
+    - Paused to try simpler batched resolution approach first
+    - May still implement merged hitboxes later for performance (fewer collision checks)
+    - Note: Merged hitboxes still valuable for: performance optimization, visual effects, damage visualization, minimap
 
 - [ ] **Research/implement GJK/EPA collision detection for concave shapes**
   - Future improvement to replace SAT for entity-to-merged-chunk collisions
