@@ -36,7 +36,7 @@ namespace Enceladus.Core.World.Chunks
 
 
             // Start walking from the edge cell
-            var currentDirection = FindInitialDirectionCounterClockwise2(island, startCell);
+            var currentDirection = FindInitialDirectionCounterClockwise(island, startCell);
             var startDirection = currentDirection;
 
             // Walk the perimeter until we return to start
@@ -139,7 +139,7 @@ namespace Enceladus.Core.World.Chunks
             throw new InvalidOperationException("Island has no edge cells - this should be impossible!");
         }
 
-        private Direction FindInitialDirectionCounterClockwise2(Island island, (int x, int y) startCell)
+        private Direction FindInitialDirectionCounterClockwise(Island island, (int x, int y) startCell)
         {
             // Start by facing a direction where:
             // - Empty space is to our RIGHT (no neighbor in that direction)
