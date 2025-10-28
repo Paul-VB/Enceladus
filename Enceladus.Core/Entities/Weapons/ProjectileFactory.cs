@@ -44,7 +44,7 @@ namespace Enceladus.Core.Entities.Weapons
             var velocity = direction * weapon.MuzzleVelocity;
 
             // Add owner's velocity if owner is movable (inherit inertia)
-            if (weapon.Owner is IMovable movableOwner)
+            if (weapon.Owner is INewtonianMovable movableOwner)
             {
                 velocity += movableOwner.Velocity;
             }

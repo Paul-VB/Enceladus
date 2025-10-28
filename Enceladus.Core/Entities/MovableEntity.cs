@@ -6,7 +6,7 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities
 {
-    public abstract class MovableEntity : Entity, IMovable, ICollidable
+    public abstract class MovableEntity : Entity, INewtonianMovable, ICollidable
     {
         public Vector2 Velocity { get; set; }
         public virtual float Mass { get; set; } = 1f;

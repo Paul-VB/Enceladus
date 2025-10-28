@@ -3,7 +3,7 @@
 namespace Enceladus.Core.Physics.Motion
 {
     //both Movabe and Moveable are technically correct spelling. dont fret
-    public interface IMovable
+    public interface INewtonianMovable
     {
         Vector2 Position { get; set; }
         float Rotation { get; set; }
