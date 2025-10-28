@@ -72,17 +72,24 @@
   - Should be named constants for clarity
 
 ### Weapons & Combat
-- [ ] **Fix bullet corner collisions**
-  - Current issue: Bullets hit seams between individual cell hitboxes, causing wrong bounce angles and getting stuck
+- [x] **Bullet corner collision weirdness**
+  - Issue: Bullets hit seams between individual cell hitboxes, causing wrong bounce angles and getting stuck
   - Root cause: Each cell collision is resolved independently with its own normal, causing conflicting normals at corners
-  - **PREVIOUS APPROACH (delayed):** Merged chunk hitboxes, using the **Single-Pass Sequential Boundary Tracing** algorithm
-    - we may revisit this approach later for performance or if simpler fixes dont work. 
-    - See: `SolidCellIslandFinder.cs` and `IslandOutlineTracer.cs` (fully implemented and tested, but NOT currently used)
-    - These classes were ~80% complete for the merged hitbox approach
-    - Plan was: flood fill → trace outlines → triangulate → merge hitboxes
-    - Paused to try simpler batched resolution approach first
-    - May still implement merged hitboxes later for performance (fewer collision checks)
-    - Note: Merged hitboxes still valuable for: performance optimization, visual effects, damage visualization, minimap
+  - **CURRENT FIX:** It's a feature, not a bug! Ice caves formed naturally or mined with lasers aren't perfectly smooth.
+    - Only really affects small, fast entities (bullets) bouncing at high speeds
+    - Larger entities (player) have enough hitbox overlap that GetDeepestCollision picks correctly
+    - Realistic environmental physics - rough cave walls!
+  - **ALTERNATIVE APPROACHES (if we ever care):**
+    - Batch collisions per entity and combine normals before resolution
+    - Merged chunk hitboxes (see: `SolidCellIslandFinder.cs` and `IslandOutlineTracer.cs` - fully implemented and tested, but NOT currently used)
+      - These classes were ~80% complete for merged hitbox approach
+      - Plan was: flood fill → trace outlines → triangulate → merge hitboxes
+      - Note: Would lose ability to identify which specific cell was hit (needed for damage/mining)
+      - Still valuable for: performance optimization, visual effects, damage visualization, minimap
+
+- [ ] **Implement bullet tunneling prevention (CCD?)**
+  - Fast-moving bullets can pass through thin walls between frames
+  - Need continuous collision detection or raycast-based movement
 
 - [ ] **Research/implement GJK/EPA collision detection for concave shapes**
   - Future improvement to replace SAT for entity-to-merged-chunk collisions
