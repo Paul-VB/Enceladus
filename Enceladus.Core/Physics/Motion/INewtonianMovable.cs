@@ -3,14 +3,10 @@
 namespace Enceladus.Core.Physics.Motion
 {
     //both Movabe and Moveable are technically correct spelling. dont fret
-    public interface INewtonianMovable
+    public interface INewtonianMovable : IMovable
     {
-        Vector2 Position { get; set; }
-        float Rotation { get; set; }
         float Mass { get; set; }
-        Vector2 Velocity { get; set; }
         float Drag { get; set; }
-        float AngularVelocity { get; set; }
         float AngularDrag { get; set; }
         float MinVelocityThreshold { get; set; }
         float MinAngularVelocityThreshold { get; set; }
