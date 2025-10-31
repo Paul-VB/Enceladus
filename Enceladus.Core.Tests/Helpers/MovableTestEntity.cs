@@ -1,6 +1,6 @@
-﻿using Enceladus.Core.Entities;
+﻿using Enceladus.Core.Control.MotionControllers;
+using Enceladus.Core.Entities;
 using Enceladus.Core.Physics.Hitboxes;
-using Enceladus.Core.Physics.Motion.MotionControllers;
 using System.Numerics;
 
 namespace Enceladus.Core.Tests.Helpers

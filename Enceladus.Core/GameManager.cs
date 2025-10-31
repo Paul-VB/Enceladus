@@ -1,7 +1,6 @@
 using Enceladus.Core.Config;
+using Enceladus.Core.Control;
 using Enceladus.Core.Entities;
-using Enceladus.Core.Entities.Weapons;
-using Enceladus.Core.Input;
 using Enceladus.Core.Physics;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.Time;
@@ -25,10 +24,10 @@ namespace Enceladus.Core
         private readonly ICameraManager _cameraManager;
         private readonly ITimeService _timeService;
         private readonly IScheduledActionService _scheduledActionService;
+        private readonly IControlService _controlService;
         private readonly IPhysicsService _physicsService;
         private readonly IRenderingService _renderingService;
         private readonly ISpriteService _spriteService;
-        private readonly IWeaponService _weaponService;
 
         private Player _player;
 
@@ -36,8 +35,8 @@ namespace Enceladus.Core
 
         public GameManager(IConfigService configService, IWindowManager windowManager, IEntityFactory entityFactory,
             ICameraManager cameraManager, ITimeService timeService, IScheduledActionService scheduledActionService,
-            IPhysicsService physicsService, IRenderingService renderingService,
-            ISpriteService spriteService, IWeaponService weaponService)
+            IControlService controlService, IPhysicsService physicsService, IRenderingService renderingService,
+            ISpriteService spriteService)
         {
             _configService = configService;
             _windowManager = windowManager;
@@ -45,10 +44,10 @@ namespace Enceladus.Core
             _cameraManager = cameraManager;
             _timeService = timeService;
             _scheduledActionService = scheduledActionService;
+            _controlService = controlService;
             _physicsService = physicsService;
             _renderingService = renderingService;
             _spriteService = spriteService;
-            _weaponService = weaponService;
         }
 
         public void Initialize()
@@ -90,8 +89,8 @@ namespace Enceladus.Core
                 float deltaTime = Raylib.GetFrameTime();
                 _timeService.Update(deltaTime);
                 _scheduledActionService.TriggerScheduledActions();
+                _controlService.Update(deltaTime);
                 _physicsService.Update(deltaTime);
-                _weaponService.Update(deltaTime);
                 _renderingService.Render();
 
                 _windowManager.SetTitle($"Enceladus - FPS: {_windowManager.GetFps()}");
