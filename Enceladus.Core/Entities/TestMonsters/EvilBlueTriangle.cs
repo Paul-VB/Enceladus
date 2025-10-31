@@ -1,6 +1,6 @@
 using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
-using Enceladus.Core.Physics.Motion.MotionControllers;
+using Enceladus.Core.Control.MotionControllers;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.Utils;
 using Raylib_cs;

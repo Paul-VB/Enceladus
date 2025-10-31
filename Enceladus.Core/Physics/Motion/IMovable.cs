@@ -1,4 +1,4 @@
-﻿using Enceladus.Core.Physics.Motion.MotionControllers;
+﻿using Enceladus.Core.Control.MotionControllers;
 using System.Numerics;
 
 namespace Enceladus.Core.Physics.Motion
