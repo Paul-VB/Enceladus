@@ -1,7 +1,7 @@
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Rendering;
 
-namespace Enceladus.Core.Entities.Weapons
+namespace Enceladus.Core.Entities.Projectiles
 {
     public class Bullet : Projectile, ISpriteRendered
     {

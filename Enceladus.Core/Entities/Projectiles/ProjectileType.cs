@@ -1,4 +1,4 @@
-namespace Enceladus.Core.Entities.Weapons
+namespace Enceladus.Core.Entities.Projectiles
 {
     public enum ProjectileType
     {

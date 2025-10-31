@@ -2,6 +2,7 @@ using Enceladus.Core.Config;
 using Enceladus.Core.Control;
 using Enceladus.Core.Control.MotionControllers;
 using Enceladus.Core.Entities;
+using Enceladus.Core.Entities.Projectiles;
 using Enceladus.Core.Entities.Weapons;
 using Enceladus.Core.Entities.Weapons.WeaponControllers;
 using Enceladus.Core.Input;

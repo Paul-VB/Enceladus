@@ -1,8 +1,9 @@
+using Enceladus.Core.Entities.Weapons;
 using Enceladus.Core.Physics.Motion;
 using Enceladus.Core.Time;
 using Enceladus.Utils;
 
-namespace Enceladus.Core.Entities.Weapons
+namespace Enceladus.Core.Entities.Projectiles
 {
     public interface IProjectileFactory
     {

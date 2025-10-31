@@ -1,3 +1,4 @@
+using Enceladus.Core.Entities.Projectiles;
 using Enceladus.Core.Rendering;
 
 namespace Enceladus.Core.Entities.Weapons

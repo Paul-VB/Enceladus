@@ -1,4 +1,5 @@
 ﻿using Enceladus.Core.Config;
+using Enceladus.Core.Entities.Projectiles;
 using Enceladus.Core.Entities.TestMonsters;
 using Enceladus.Core.Entities.Weapons;
 using Enceladus.Core.Physics.Hitboxes.Helpers;

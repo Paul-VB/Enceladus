@@ -1,6 +1,7 @@
 ﻿using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.Entities.Weapons;
+using Enceladus.Core.Entities.Projectiles;
 
 namespace Enceladus.Core.Entities
 {

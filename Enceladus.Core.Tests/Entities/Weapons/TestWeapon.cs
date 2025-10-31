@@ -1,4 +1,5 @@
-﻿using Enceladus.Core.Entities.Weapons;
+﻿using Enceladus.Core.Entities.Projectiles;
+using Enceladus.Core.Entities.Weapons;
 using Enceladus.Core.Rendering;
 
 namespace Enceladus.Core.Tests.Entities.Weapons

@@ -1,7 +1,8 @@
 using Enceladus.Core.Control.MotionControllers;
+using Enceladus.Core.Entities.Weapons;
 using Enceladus.Core.Time;
 
-namespace Enceladus.Core.Entities.Weapons
+namespace Enceladus.Core.Entities.Projectiles
 {
     public abstract class Projectile : MovableEntity, IIdentifyFriendFoe
     {
