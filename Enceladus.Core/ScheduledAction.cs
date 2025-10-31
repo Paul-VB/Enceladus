@@ -2,18 +2,17 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Enceladus.Core
 {
-    public class ScheduledAction 
+    public class ScheduledAction
     {
         [SetsRequiredMembers]
         public ScheduledAction(Action action)
         {
-           Action = () => { if (!IsCancelled) action.Invoke(); };
+            Action = action;
         }
 
         public required Action Action;
         public bool IsCancelled { get; set; } = false;
-
-        public void Invoke() => Action.Invoke();
+        public ActionFailureSeverity FailureSeverity { get; set; } = ActionFailureSeverity.Log;
         public void Cancel() => IsCancelled = true;
     }
 }

@@ -10,12 +10,12 @@ namespace Enceladus.Core.Entities.Weapons
 
     public class ProjectileFactory : IProjectileFactory
     {
-        private readonly ITimeService _timeService;
+        private readonly IScheduledActionService _scheduledActionService;
         private readonly IEntityRegistry _entityRegistry;
 
-        public ProjectileFactory(ITimeService timeService, IEntityRegistry entityRegistry)
+        public ProjectileFactory(IScheduledActionService scheduledActionService, IEntityRegistry entityRegistry)
         {
-            _timeService = timeService;
+            _scheduledActionService = scheduledActionService;
             _entityRegistry = entityRegistry;
         }
 
@@ -55,10 +55,9 @@ namespace Enceladus.Core.Entities.Weapons
             projectile.Velocity = velocity;
             projectile.Owner = weapon.Owner;
             projectile.IffCodes = new List<int>(weapon.Owner.IffCodes); // Snapshot owner's IFF codes
-            projectile.SpawnTime = _timeService.GameTime;
 
             // Schedule automatic cleanup after TTL expires
-            projectile.DespawnAction = _timeService.ScheduleAction(projectile.TimeToLive, () =>
+            projectile.DespawnAction = _scheduledActionService.ScheduleAction(projectile.TimeToLive, () =>
             {
                 _entityRegistry.Unregister(projectile.Guid);
             });
