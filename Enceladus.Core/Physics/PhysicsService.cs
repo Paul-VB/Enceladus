@@ -1,5 +1,6 @@
 using Enceladus.Core.Entities;
 using Enceladus.Core.Physics.Collision;
+using Enceladus.Core.Physics.Motion;
 using Enceladus.Core.World;
 
 namespace Enceladus.Core.Physics
@@ -11,25 +12,21 @@ namespace Enceladus.Core.Physics
 
     public class PhysicsService : IPhysicsService
     {
-        private readonly IEntityRegistry _entityRegistry;
         private readonly IWorldService _worldService;
         private readonly ICollisionService _collisionService;
+        private readonly IMotionService _motionService;
 
-        public PhysicsService(IEntityRegistry entityRegistry, IWorldService worldService,
-            ICollisionService collisionService)
+        public PhysicsService(IWorldService worldService, ICollisionService collisionService, IMotionService motionService)
         {
-            _entityRegistry = entityRegistry;
             _worldService = worldService;
             _collisionService = collisionService;
+            _motionService = motionService;
         }
 
         public void Update(float deltaTime)
         {
             // Update all entities (movement, rotation, etc.)
-            foreach (var entity in _entityRegistry.Entities.Values)
-            {
-                entity.Update(deltaTime);
-            }
+            _motionService.UpdateAll(deltaTime);
 
             // Handle collisions (detection + resolution)
             _collisionService.HandleCollisions(_worldService.CurrentMap);

@@ -8,6 +8,8 @@ using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Collision.Detection;
 using Enceladus.Core.Physics.Hitboxes.Helpers;
 using Enceladus.Core.Physics.Hitboxes.Helpers.ConcavePolygonSlicers;
+using Enceladus.Core.Physics.Motion;
+using Enceladus.Core.Physics.Motion.MotionControllers;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.World;
 using Enceladus.Core.World.Chunks;
@@ -29,9 +31,7 @@ namespace Enceladus.Core
 
             services.AddSingleton<IWindowManager, WindowManager>();
             services.AddSingleton<IEntityRegistry, EntityRegistry>();
-            services.AddSingleton<IControllableRegistry, ControllableRegistry>();
             services.AddSingleton<IInputReader, InputReader>();
-            services.AddSingleton<IInputService, InputService>();
             services.AddSingleton<ISpriteService, SpriteService>();
             services.AddSingleton<ICameraManager, CameraManager>();
             services.AddSingleton<IGameManager, GameManager>();
@@ -56,8 +56,16 @@ namespace Enceladus.Core
             services.AddSingleton<IMapRenderer, MapRenderer>();
             services.AddSingleton<IEntityRenderer, EntityRenderer>();
 
-            // Physics services (including collision detection/resolution)
+            // Physics services
             services.AddSingleton<IPhysicsService, PhysicsService>();
+
+            // Motion services
+            services.AddSingleton<IVelocityUpdater, VelocityUpdater>();
+            services.AddSingleton<IMotionService, MotionService>();
+            services.AddSingleton<IPlayerInputController, PlayerInputController>();
+            services.AddSingleton<IArrowKeysMotionController, ArrowKeysMotionController>();
+
+            // Collision services
             services.AddSingleton<ICollisionService, CollisionService>();
             services.AddSingleton<ICollisionChecker, CollisionChecker>();
             services.AddSingleton<ICollisionResolver, CollisionResolver>();

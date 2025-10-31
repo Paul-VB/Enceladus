@@ -1,3 +1,5 @@
+using Enceladus.Core.Physics.Motion.MotionControllers;
+
 namespace Enceladus.Core.Entities.Weapons
 {
     public abstract class Projectile : MovableEntity, IIdentifyFriendFoe
@@ -6,5 +8,6 @@ namespace Enceladus.Core.Entities.Weapons
         public List<int> IffCodes { get; set; } = new();
         public float TimeToLive { get; set; } = 5f;
         public float SpawnTime { get; set; }
+        public override MotionControllerType MotionControllerType { get; set; } = MotionControllerType.None;
     }
 }

@@ -1,7 +1,6 @@
 ﻿using Enceladus.Core.Config;
 using Enceladus.Core.Entities.TestMonsters;
 using Enceladus.Core.Entities.Weapons;
-using Enceladus.Core.Input;
 using Enceladus.Core.Physics.Hitboxes.Helpers;
 using Enceladus.Core.Rendering;
 using System.Numerics;
@@ -22,21 +21,15 @@ namespace Enceladus.Core.Entities
     public class EntityFactory : IEntityFactory
     {
         private readonly IEntityRegistry _entityRegistry;
-        private readonly IConfigService _configService;
-        private readonly ISpriteService _spriteService;
         private readonly IPolygonHitboxBuilder _polygonHitboxBuilder;
-        private readonly IControllableRegistry _controllableRegistry;
         private readonly IPlayerFactory _playerFactory;
         private readonly IProjectileFactory _projectileFactory;
 
-        public EntityFactory(IEntityRegistry entityRegistry, IConfigService configService, ISpriteService spriteService,
-            IPolygonHitboxBuilder polygonHitboxBuilder, IControllableRegistry controllableRegistry, IPlayerFactory playerFactory, IProjectileFactory projectileFactory)
+        public EntityFactory(IEntityRegistry entityRegistry, IPolygonHitboxBuilder polygonHitboxBuilder, IPlayerFactory playerFactory, 
+            IProjectileFactory projectileFactory)
         {
             _entityRegistry = entityRegistry;
-            _configService = configService;
-            _spriteService = spriteService;
             _polygonHitboxBuilder = polygonHitboxBuilder;
-            _controllableRegistry = controllableRegistry;
             _playerFactory = playerFactory;
             _projectileFactory = projectileFactory;
         }
@@ -48,11 +41,6 @@ namespace Enceladus.Core.Entities
         /// </summary>
         private void RegisterEntity(Entity entity)
         {
-            if (entity is IControllable controllableEntity)
-            {
-                _controllableRegistry.Register(controllableEntity);
-            }
-
             _entityRegistry.Register(entity);
         }
 

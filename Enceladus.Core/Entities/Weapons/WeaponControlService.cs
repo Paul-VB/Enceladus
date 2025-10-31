@@ -4,8 +4,7 @@ namespace Enceladus.Core.Entities.Weapons
 {
     public interface IWeaponControlService
     {
-        void 
-            ApplyWeaponControl(WeaponMount mount, float deltaTime);
+        void ApplyWeaponControl(WeaponMount mount, float deltaTime);
     }
 
     public class WeaponControlService : IWeaponControlService

@@ -1,7 +1,7 @@
 using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Physics.Motion;
-using Enceladus.Utils;
+using Enceladus.Core.Physics.Motion.MotionControllers;
 using System.Numerics;
 
 namespace Enceladus.Core.Entities
@@ -10,62 +10,10 @@ namespace Enceladus.Core.Entities
     {
         public Vector2 Velocity { get; set; }
         public virtual float Mass { get; set; } = 1f;
-        public float Drag { get; set; } = 1f;  
+        public float Drag { get; set; } = 1f;
         public float AngularVelocity { get; set; }
-        public float AngularDrag { get; set; } = 1f; 
-        public float MinVelocityThreshold { get; set; } = 0.05f;
-        public float MinAngularVelocityThreshold { get; set; } = 0.05f;
+        public float AngularDrag { get; set; } = 1f;
         public abstract IHitbox Hitbox { get; set; }
-
-        public void Accelerate(Vector2 force, float deltaTime)
-        {
-            if (Mass <= 0f)
-                throw new InvalidOperationException($"Mass must be positive. Current value: {Mass}");
-
-            Vector2 acceleration = force / Mass;
-            Velocity += acceleration * deltaTime;
-        }
-
-        public void ApplyTorque(float torque, float deltaTime)
-        {
-            if (Mass <= 0f)
-                throw new InvalidOperationException($"Mass must be positive. Current value: {Mass}");
-
-            float angularAcceleration = torque / Mass;
-            AngularVelocity += angularAcceleration * deltaTime;
-        }
-
-        public override void Update(float deltaTime)
-        {
-            UpdateMovement(deltaTime);
-            UpdateRotation(deltaTime);
-        }
-
-        protected virtual void UpdateMovement(float deltaTime)
-        {
-            Position += Velocity * deltaTime;
-
-            // Apply drag as a proper force (mass-dependent)
-            var dragForce = -Velocity * Drag;
-            Accelerate(dragForce, deltaTime);
-
-            if (Velocity.Length() < MinVelocityThreshold)
-                Velocity = Vector2.Zero;
-
-        }
-
-        protected virtual void UpdateRotation(float deltaTime)
-        {
-            Rotation += AngularVelocity * deltaTime;
-            Rotation = AngleHelper.ClampAngle0To360(Rotation);
-
-            // Apply angular drag as a proper torque (mass-dependent)
-            var angularDragTorque = -AngularVelocity * AngularDrag;
-            ApplyTorque(angularDragTorque, deltaTime);
-
-            // Zero out very small angular velocities
-            if (Math.Abs(AngularVelocity) < MinAngularVelocityThreshold)
-                AngularVelocity = 0f;
-        }
+        public abstract MotionControllerType MotionControllerType { get; set; } 
     }
 }

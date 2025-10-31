@@ -1,6 +1,7 @@
 using Enceladus.Core.Input;
 using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Core.Physics.Motion.MotionControllers;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.Utils;
 using Raylib_cs;
@@ -8,20 +9,10 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
-    public class AwfulGreenStar : MovableEntity, IControllable, ICollidable, IGeometryRendered
+    public class AwfulGreenStar : MovableEntity, ICollidable, IGeometryRendered
     {
         public override IHitbox Hitbox { get; set; }
-
-        private readonly float _thrust = 50f;
-
-        public void HandleInputs(float deltaTime, IInputReader inputReader)
-        {
-            var movementInput = inputReader.GetArrowKeyMovementInput();
-            if (movementInput != Vector2.Zero)
-            {
-                Accelerate(movementInput * _thrust, deltaTime);
-            }
-        }
+        public override MotionControllerType MotionControllerType { get; set; } = MotionControllerType.ArrowKeys;
 
         public void DrawGeometry(Camera2D camera)
         {

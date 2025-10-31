@@ -1,5 +1,6 @@
 ﻿using Enceladus.Core.Entities;
 using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Core.Physics.Motion.MotionControllers;
 using System.Numerics;
 
 namespace Enceladus.Core.Tests.Helpers
@@ -13,11 +14,7 @@ namespace Enceladus.Core.Tests.Helpers
         }
 
         public override IHitbox Hitbox { get; set; }
+        public override MotionControllerType MotionControllerType { get; set; } = MotionControllerType.None;
 
-        public void Accelerate(Vector2 force, float deltaTime) { }
-
-        public void ApplyTorque(float torque, float deltaTime) { }
-
-        public override void Update(float deltaTime) { }
     }
 }

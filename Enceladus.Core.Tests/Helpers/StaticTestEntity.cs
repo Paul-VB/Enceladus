@@ -13,6 +13,5 @@ namespace Enceladus.Core.Tests.Helpers
         }
 
         public IHitbox Hitbox { get; set; }
-        public override void Update(float deltaTime) { }
     }
 }

@@ -1,4 +1,5 @@
 using Enceladus.Core.Input;
+using Enceladus.Core.Utils;
 using Enceladus.Utils;
 
 namespace Enceladus.Core.Entities.Weapons.WeaponControllers
@@ -7,27 +8,27 @@ namespace Enceladus.Core.Entities.Weapons.WeaponControllers
     {
         void Update(WeaponMount mount, float deltaTime);
     }
-    public class MouseWeaponController : IMouseWeaponController
+
+    public class MouseWeaponController : BaseWeaponController, IMouseWeaponController
     {
         private readonly IInputReader _inputReader;
-        private readonly IEntityFactory _entityFactory;
 
-        public MouseWeaponController(IInputReader inputReader, IEntityFactory entityFactory)
+        public MouseWeaponController(IInputReader inputReader, ITimeService timeService, IEntityFactory entityFactory)
+            : base(timeService, entityFactory)
         {
             _inputReader = inputReader;
-            _entityFactory = entityFactory;
         }
 
-        public void Update(WeaponMount mount, float deltaTime)
+        public override void Update(WeaponMount mount, float deltaTime)
         {
-            if (mount.EquippedWeapon == null) return;
+            var weapon = mount.EquippedWeapon;
+            if (weapon == null) return;
 
             AimWeaponAtMouse(mount);
 
-            if (_inputReader.GetFireWeaponInput() && mount.EquippedWeapon.CanFire())
+            if (_inputReader.GetFireWeaponInput() && CanFire(weapon))
             {
-                _entityFactory.CreateProjectile(mount.EquippedWeapon);
-                mount.EquippedWeapon.ResetCooldown();
+                Fire(weapon);
             }
         }
 
@@ -36,12 +37,10 @@ namespace Enceladus.Core.Entities.Weapons.WeaponControllers
             var mouseWorldPos = _inputReader.GetMouseWorldPosition();
             var weaponPos = mount.EquippedWeapon!.Position;
 
-            // Calculate angle from weapon to mouse
             var direction = mouseWorldPos - weaponPos;
             var angleRadians = MathF.Atan2(direction.Y, direction.X);
             var angleDegrees = AngleHelper.RadToDeg(angleRadians);
 
-            // Apply rotation to weapon
             mount.EquippedWeapon.Rotation = angleDegrees;
         }
     }

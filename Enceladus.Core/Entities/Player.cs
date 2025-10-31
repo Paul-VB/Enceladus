@@ -1,19 +1,18 @@
-﻿
-using Enceladus.Core.Input;
-using Enceladus.Core.Physics.Collision;
+﻿using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Core.Physics.Motion.MotionControllers;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.Entities.Weapons;
-using Enceladus.Utils;
 using System.Numerics;
 using Enceladus.Core.Entities.Weapons.WeaponControllers;
 
 namespace Enceladus.Core.Entities
 {
-    public class Player : MovableEntity, ICollidable, IControllable, ISpriteRendered, IArmed
+    public class Player : MovableEntity, ICollidable, ISpriteRendered, IArmed
     {
         public List<int> IffCodes { get; set; } = new() { 1 }; // Player team
         public override IHitbox Hitbox { get; set; }
+        public override MotionControllerType MotionControllerType { get; set; } = MotionControllerType.PlayerInput;
         public SpriteDefinition CurrentSprite { get; set; } = SpriteDefinitions.Entities.PlayerSubRight;
         public SpriteModifiers SpriteModifiers { get; set; } = new();
         public float MainEngineThrust { get; set; }
@@ -30,9 +29,7 @@ namespace Enceladus.Core.Entities
             new WeaponMount { Offset = new Vector2(-1f, 0f), ControllerType = WeaponControllerType.Mouse },
             new WeaponMount { Offset = new Vector2(0.875f, 0f), ControllerType = WeaponControllerType.Mouse }
         };
-
-        private bool _isFacingRight = true;
-
+        
         public static readonly Vector2[] PixelVertices =
         [
             new Vector2(111, 0),
@@ -47,73 +44,5 @@ namespace Enceladus.Core.Entities
             new Vector2(12, 8),
             new Vector2(52, 0)
         ];
-
-        public void HandleInputs(float deltaTime, IInputReader inputReader)
-        {
-            var movementInput = inputReader.GetMovementInput();
-            if (movementInput != Vector2.Zero)
-            {
-                var mainEngineEffectiveThrust = GetMainEngineEffectiveThrust();
-                var totalThrust = ManeuveringThrust + mainEngineEffectiveThrust;
-                Accelerate(movementInput * totalThrust, deltaTime);
-            }
-            if (inputReader.IsKeyDown(KnownKeyboardControls.Brake))
-            {
-                Accelerate(-Velocity * ManeuveringThrust * BrakeStrength, deltaTime);
-            }
-
-            RotateTowardsVelocityVector(deltaTime);
-            UpdateSpriteOrientation();
-        }
-
-        private void RotateTowardsVelocityVector(float deltaTime)
-        {
-            if (Velocity.Length() < MinVelocityForRotation) return;
-
-            // Control surfaces: authority scales with speed (fins/rudders work better when moving)
-            float finAuthority = Velocity.Length() * ManeuveringFinsAuthority;
-
-            // Active stabilization (D term of PD controller)
-            // Computer uses thrusters to counter unwanted spin
-            float activeDamping = -AngularVelocity * ManeuveringDampingStrength;
-
-            float totalTorque = MotionAlignmentError * (ManeuveringRotationalAuthority + finAuthority) + activeDamping;
-            ApplyTorque(totalTorque, deltaTime);
-        }
-
-        private float VelocityAngle => AngleHelper.RadToDeg(MathF.Atan2(Velocity.Y, Velocity.X));
-        private float MotionAlignmentError => AngleHelper.ShortestAngleDifference(Rotation, VelocityAngle);
-        private float GetMainEngineEffectiveThrust()
-        {
-            if (Velocity.Length() < MinVelocityForMainEngine)
-                return 0f; //main engine offline at extremely low speeds
-
-            // Calculate alignment factor (1.0 = perfectly aligned, 0.0 = perpendicular)
-            float alignmentError = Math.Abs(MotionAlignmentError);
-            float alignmentFactor = 1f - Math.Clamp(alignmentError / MaxAlignmentErrorDegrees, 0f, 1f);
-
-            return MainEngineThrust * alignmentFactor;
-        }
-
-        //todo: pull this out somewhere in case we wanna re use it on other entities?
-        private void UpdateSpriteOrientation()
-        {
-            if (_isFacingRight)
-            {
-                if (Rotation > 100f && Rotation < 260f)//todo: magic numbers
-                {
-                    _isFacingRight = false;
-                    CurrentSprite = SpriteDefinitions.Entities.PlayerSubLeft;
-                }
-            }
-            else
-            {
-                if (Rotation < 80f || Rotation > 280f)//todo: magic numbers
-                {
-                    _isFacingRight = true;
-                    CurrentSprite = SpriteDefinitions.Entities.PlayerSubRight;
-                }
-            }
-        }
     }
 }

@@ -1,5 +1,6 @@
 using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
+using Enceladus.Core.Physics.Motion.MotionControllers;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.Utils;
 using Enceladus.Utils;
@@ -11,6 +12,7 @@ namespace Enceladus.Core.Entities.TestMonsters
     public class MenacingRedPentagon : MovableEntity, ICollidable, IGeometryRendered
     {
         public override IHitbox Hitbox { get; set; }
+        public override MotionControllerType MotionControllerType { get; set; } = MotionControllerType.None;
 
         public MenacingRedPentagon()
         {
@@ -27,11 +29,6 @@ namespace Enceladus.Core.Entities.TestMonsters
             }
 
             Hitbox = new ConvexPolygonHitbox(vertices);
-        }
-
-        public override void Update(float deltaTime)
-        {
-            base.Update(deltaTime);
         }
 
         public void DrawGeometry(Camera2D camera)
