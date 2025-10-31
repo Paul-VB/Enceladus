@@ -25,20 +25,11 @@ namespace Enceladus.Core.Entities
         {
             var player = new Player();
 
-            // Player-specific config values
+            // Player physics config
             var config = _configService.Config.Player;
             player.Mass = config.Mass;
             player.Drag = config.Drag;
             player.AngularDrag = config.AngularDrag;
-            player.MainEngineThrust = config.MainEngineThrust;
-            player.ManeuveringThrust = config.ManeuveringThrust;
-            player.ManeuveringRotationalAuthority = config.ManeuveringRotationalAuthority;
-            player.ManeuveringDampingStrength = config.ManeuveringDampingStrength;
-            player.ManeuveringFinsAuthority = config.ManeuveringFinsAuthority;
-            player.BrakeStrength = config.BrakeStrength;
-            player.MinVelocityForRotation = config.MinVelocityForRotation;
-            player.MinVelocityForMainEngine = config.MinVelocityForMainEngine;
-            player.MaxAlignmentErrorDegrees = config.MaxAlignmentErrorDegrees;
 
             player.Hitbox = _polygonHitboxBuilder.BuildFromPixelCoordinates(
                 (int)SpriteDefinitions.Entities.PlayerSubRight.SourceRegion.Width,

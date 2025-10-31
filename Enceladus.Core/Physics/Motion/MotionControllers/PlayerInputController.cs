@@ -1,3 +1,4 @@
+using Enceladus.Core.Config;
 using Enceladus.Core.Entities;
 using Enceladus.Core.Input;
 using Enceladus.Core.Rendering;
@@ -15,11 +16,13 @@ namespace Enceladus.Core.Physics.Motion.MotionControllers
     {
         private readonly IInputReader _inputReader;
         private readonly IVelocityUpdater _velocityUpdater;
+        private readonly IConfigService _configService;
 
-        public PlayerInputController(IInputReader inputReader, IVelocityUpdater velocityUpdater)
+        public PlayerInputController(IInputReader inputReader, IVelocityUpdater velocityUpdater, IConfigService configService)
         {
             _inputReader = inputReader;
             _velocityUpdater = velocityUpdater;
+            _configService = configService;
         }
 
         public void Update(Player player, float deltaTime)
@@ -32,49 +35,53 @@ namespace Enceladus.Core.Physics.Motion.MotionControllers
 
         private void HandleMovementInput(Player player, float deltaTime)
         {
+            var config = _configService.Config.Player;
             var movementInput = _inputReader.GetMovementInput();
             if (movementInput != Vector2.Zero)
             {
                 var mainEngineEffectiveThrust = GetMainEngineEffectiveThrust(player);
-                var totalThrust = player.ManeuveringThrust + mainEngineEffectiveThrust;
+                var totalThrust = config.ManeuveringThrust + mainEngineEffectiveThrust;
                 _velocityUpdater.ApplyForce(player, movementInput * totalThrust, deltaTime);
             }
         }
 
         private void HandleBrakeInput(Player player, float deltaTime)
         {
+            var config = _configService.Config.Player;
             if (_inputReader.IsKeyDown(KnownKeyboardControls.Brake))
             {
-                _velocityUpdater.ApplyForce(player, -player.Velocity * player.ManeuveringThrust * player.BrakeStrength, deltaTime);
+                _velocityUpdater.ApplyForce(player, -player.Velocity * config.ManeuveringThrust * config.BrakeStrength, deltaTime);
             }
         }
 
         private void RotateTowardsVelocityVector(Player player, float deltaTime)
         {
-            if (player.Velocity.Length() < player.MinVelocityForRotation) return;
+            var config = _configService.Config.Player;
+            if (player.Velocity.Length() < config.MinVelocityForRotation) return;
 
             // Control surfaces: authority scales with speed (fins/rudders work better when moving)
-            float finAuthority = player.Velocity.Length() * player.ManeuveringFinsAuthority;
+            float finAuthority = player.Velocity.Length() * config.ManeuveringFinsAuthority;
 
             // Active stabilization (D term of PD controller)
             // Computer uses thrusters to counter unwanted spin
-            float activeDamping = -player.AngularVelocity * player.ManeuveringDampingStrength;
+            float activeDamping = -player.AngularVelocity * config.ManeuveringDampingStrength;
 
             float motionAlignmentError = GetMotionAlignmentError(player);
-            float totalTorque = motionAlignmentError * (player.ManeuveringRotationalAuthority + finAuthority) + activeDamping;
+            float totalTorque = motionAlignmentError * (config.ManeuveringRotationalAuthority + finAuthority) + activeDamping;
             _velocityUpdater.ApplyTorque(player, totalTorque, deltaTime);
         }
 
         private float GetMainEngineEffectiveThrust(Player player)
         {
-            if (player.Velocity.Length() < player.MinVelocityForMainEngine)
+            var config = _configService.Config.Player;
+            if (player.Velocity.Length() < config.MinVelocityForMainEngine)
                 return 0f; //main engine offline at extremely low speeds
 
             // Calculate alignment factor (1.0 = perfectly aligned, 0.0 = perpendicular)
             float alignmentError = Math.Abs(GetMotionAlignmentError(player));
-            float alignmentFactor = 1f - Math.Clamp(alignmentError / player.MaxAlignmentErrorDegrees, 0f, 1f);
+            float alignmentFactor = 1f - Math.Clamp(alignmentError / config.MaxAlignmentErrorDegrees, 0f, 1f);
 
-            return player.MainEngineThrust * alignmentFactor;
+            return config.MainEngineThrust * alignmentFactor;
         }
 
         private float GetVelocityAngle(Player player) => AngleHelper.RadToDeg(MathF.Atan2(player.Velocity.Y, player.Velocity.X));

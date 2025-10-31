@@ -15,15 +15,6 @@ namespace Enceladus.Core.Entities
         public override MotionControllerType MotionControllerType { get; set; } = MotionControllerType.PlayerInput;
         public SpriteDefinition CurrentSprite { get; set; } = SpriteDefinitions.Entities.PlayerSubRight;
         public SpriteModifiers SpriteModifiers { get; set; } = new();
-        public float MainEngineThrust { get; set; }
-        public float ManeuveringThrust { get; set; }
-        public float ManeuveringRotationalAuthority { get; set; }
-        public float ManeuveringDampingStrength { get; set; }
-        public float ManeuveringFinsAuthority { get; set; }
-        public float BrakeStrength { get; set; }
-        public float MinVelocityForRotation { get; set; }
-        public float MinVelocityForMainEngine { get; set; }
-        public float MaxAlignmentErrorDegrees { get; set; }
         public List<WeaponMount> WeaponMounts { get; set; } = new()
         {
             new WeaponMount { Offset = new Vector2(-1f, 0f), ControllerType = WeaponControllerType.Mouse },
