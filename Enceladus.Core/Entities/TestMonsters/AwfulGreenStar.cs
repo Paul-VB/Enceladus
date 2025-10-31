@@ -9,7 +9,7 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
-    public class AwfulGreenStar : MovableEntity, ICollidable, IGeometryRendered
+    public class AwfulGreenStar : MovableEntity, IGeometryRendered
     {
         public override IHitbox Hitbox { get; set; }
         public override MotionControllerType MotionControllerType { get; set; } = MotionControllerType.ArrowKeys;

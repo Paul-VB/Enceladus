@@ -8,7 +8,7 @@ using Enceladus.Core.Entities.Weapons.WeaponControllers;
 
 namespace Enceladus.Core.Entities
 {
-    public class Player : MovableEntity, ICollidable, ISpriteRendered, IArmed
+    public class Player : MovableEntity, ISpriteRendered, IArmed
     {
         public List<int> IffCodes { get; set; } = new() { 1 }; // Player team
         public override IHitbox Hitbox { get; set; }

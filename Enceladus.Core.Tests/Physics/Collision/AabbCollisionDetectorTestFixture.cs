@@ -45,7 +45,7 @@ namespace Enceladus.Core.Tests.Physics.Collision
             Assert.Equal(2, result.Count);
             Assert.Contains(result, c => c.X == 0 && c.Y == 0);
             Assert.Contains(result, c => c.X == 1 && c.Y == 1);
-            Assert.True(result.All(x => x.HasCollision));
+            Assert.True(result.All(x => x.CollisionEnabled));
         }
 
         [Fact]

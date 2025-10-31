@@ -37,6 +37,8 @@ namespace Enceladus.Core.Physics.Collision
             //todo: stretch goal, can we leverage GPU for this?
             Parallel.ForEach(_entityRegistry.MovableEntities, entity =>
             {
+                if (!entity.CollisionEnabled) return;
+
                 var entityCollisions = CheckEntityToCells(entity, _worldService.CurrentMap);
                 foreach (var collision in entityCollisions)
                 {
@@ -102,6 +104,10 @@ namespace Enceladus.Core.Physics.Collision
 
         private void CheckPair(MovableEntity moveable, ICollidable other, List<CollisionResult> collisions)
         {
+            // Skip if either entity has collision disabled
+            if (!moveable.CollisionEnabled || !other.CollisionEnabled)
+                return;
+
             // Skip collision if entities share IFF codes (friendly fire)
             if (ShouldSkipCollisionDueToIff(moveable, other))
                 return;

@@ -1,4 +1,5 @@
 ﻿using Enceladus.Core.Input;
+using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Rendering;
 
 namespace Enceladus.Core.Entities.Weapons
@@ -12,5 +13,7 @@ namespace Enceladus.Core.Entities.Weapons
         public float LastShotTime { get; set; } = 0f; 
         public abstract SpriteDefinition CurrentSprite { get; set; }
         public SpriteModifiers SpriteModifiers { get; set; } = new();
+        public override IHitbox Hitbox { get; set; } = null!;
+        public override bool CollisionEnabled => false;
     }
 }

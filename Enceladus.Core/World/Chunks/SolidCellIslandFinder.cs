@@ -74,7 +74,7 @@ namespace Enceladus.Core.World.Chunks
             visited.Add((cellX, cellY));
 
             var cell = chunk.Cells.FirstOrDefault(cell => cell.X == cellX && cell.Y == cellY);
-            if (cell.Equals(default(Cell)) || !cell.HasCollision)
+            if (cell.Equals(default(Cell)) || !cell.CollisionEnabled)
                 return false;
 
             return true;

@@ -258,7 +258,20 @@
 
 ## Completed
 
-### Recent (Latest Session - Weapon System)
+### Recent (Latest Session - SRP/Controller Refactor)
+- [x] Extract entity Update() logic to MotionService with controller pattern
+- [x] Create VelocityUpdater for low-level physics operations (ApplyForce, ApplyTorque, UpdatePosition)
+- [x] Create MotionService as conductor (orchestrates controllers + updater)
+- [x] Implement PlayerInputController (extracted from Player.HandleInputs)
+- [x] Implement ArrowKeysMotionController for test entities
+- [x] Add MotionControllerType enum for controller assignment (PlayerInput, ArrowKeys, None, etc.)
+- [x] Create BaseWeaponController with shared CanFire/Fire logic
+- [x] Refactor Weapon to use LastShotTime pattern (like projectiles' SpawnTime)
+- [x] Remove ControllableRegistry, IControllable, and InputService
+- [x] Remove Update(), Accelerate(), ApplyTorque() from Entity/MovableEntity
+- [x] Entities are now data-only with behavior delegated to services
+
+### Previous Session (Weapon System)
 - [x] Weapon system implementation (Weapon, TestGun, FastTestGun)
 - [x] Projectile system with abstract Projectile base class (eliminates casting)
 - [x] Generic CreateWeapon<T>() factory method for easy weapon creation

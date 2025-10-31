@@ -12,6 +12,6 @@ namespace Enceladus.Core.Tests.Helpers
             Hitbox = new RectHitbox(new(1, 1)); // Default hitbox
         }
 
-        public IHitbox Hitbox { get; set; }
+        public override IHitbox Hitbox { get; set; } = null!;
     }
 }

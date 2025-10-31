@@ -27,7 +27,7 @@ namespace Enceladus.Core.Physics.Collision.Detection
             // ChunkMath.GetCellsInBounds handles the chunk iteration and cell filtering for us
             foreach (var cell in ChunkMath.GetCellsInBounds(map, aabbRect))
             {
-                if (cell.HasCollision)
+                if (cell.CollisionEnabled)
                 {
                     candidates.Add(cell);
                 }

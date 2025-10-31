@@ -8,7 +8,7 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
-    public class HorribleYellowCircle : MovableEntity, ICollidable, IGeometryRendered
+    public class HorribleYellowCircle : MovableEntity, IGeometryRendered
     {
         public override IHitbox Hitbox { get; set; }
         public override MotionControllerType MotionControllerType { get; set; } = MotionControllerType.None;

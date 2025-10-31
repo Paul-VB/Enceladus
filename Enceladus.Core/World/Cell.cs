@@ -14,8 +14,7 @@ namespace Enceladus.Core.World
         public int Y { get; init; } = 0;
         public required CellType CellType { get; set; }
         public int Health { get; set; }
-        public readonly bool HasCollision => CellType.HasCollision;
-
+        public readonly bool CollisionEnabled => CellType.HasCollision;
         public readonly Vector2 Position => new(X, Y);
 
         public readonly float Rotation => 0; //cells dont rotate

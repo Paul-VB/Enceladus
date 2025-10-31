@@ -6,14 +6,13 @@ using System.Numerics;
 
 namespace Enceladus.Core.Entities
 {
-    public abstract class MovableEntity : Entity, IMovable, ICollidable
+    public abstract class MovableEntity : Entity, IMovable
     {
         public Vector2 Velocity { get; set; }
         public virtual float Mass { get; set; } = 1f;
         public float Drag { get; set; } = 1f;
         public float AngularVelocity { get; set; }
         public float AngularDrag { get; set; } = 1f;
-        public abstract IHitbox Hitbox { get; set; }
-        public abstract MotionControllerType MotionControllerType { get; set; } 
+        public abstract MotionControllerType MotionControllerType { get; set; }
     }
 }
