@@ -10,7 +10,7 @@ namespace Enceladus.Core.Tests.Entities.Weapons
     {
         private readonly IProjectileFactory _projectileFactory;
 
-        private readonly Mock<ITimeService> _timeService = new Mock<ITimeService>();
+        private readonly Mock<IScheduledActionService> _scheduledActionService = new Mock<IScheduledActionService>();
         private readonly Mock<IEntityRegistry> _entityRegistry = new Mock<IEntityRegistry>();
 
 
@@ -19,7 +19,7 @@ namespace Enceladus.Core.Tests.Entities.Weapons
 
         public ProjectileFactoryTestFixture()
         {
-            _projectileFactory = new ProjectileFactory(_timeService.Object, _entityRegistry.Object);
+            _projectileFactory = new ProjectileFactory(_scheduledActionService.Object, _entityRegistry.Object);
         }
 
         private void GivenTestArmedEntity(List<int> iffCodes)
