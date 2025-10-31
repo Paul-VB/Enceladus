@@ -8,14 +8,8 @@ namespace Enceladus.Core.Entities.Weapons
         public override IHitbox Hitbox { get; set; } = new CircleHitbox(.5f);
         public SpriteDefinition CurrentSprite { get; set; } = SpriteDefinitions.Entities.Bullet;
         public SpriteModifiers SpriteModifiers { get; set; } = new();
-
-        public override float Mass { get; set; } = 2f;
-
-        public Bullet()
-        {
-            //TODO: MAKE BULLET DRAG CONFIGURABLE IN CONFIG FILE
-            // Bullets need very low drag
-            Drag = .1f;
-        }
+        public override float Mass { get; set; } = 2f; //todo: make this configurable per bullet type
+        public override float TimeToLive { get; set; } = 5f;
+        public new float Drag = .1f;
     }
 }

@@ -6,8 +6,9 @@ namespace Enceladus.Core.Entities.Weapons
     {
         public IArmed Owner { get; set; }
         public List<int> IffCodes { get; set; } = new();
-        public float TimeToLive { get; set; } = 5f;
+        public abstract float TimeToLive { get; set; }
         public float SpawnTime { get; set; }
         public override MotionControllerType MotionControllerType { get; set; } = MotionControllerType.None;
+        public ScheduledAction DespawnAction { get; set; }
     }
 }

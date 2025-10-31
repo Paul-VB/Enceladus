@@ -12,13 +12,11 @@ namespace Enceladus.Core.Entities.Weapons
     {
         private readonly IEntityRegistry _entityRegistry;
         private readonly IWeaponControlService _weaponControlService;
-        private readonly ITimeService _timeService;
 
-        public WeaponService(IEntityRegistry entityRegistry, IWeaponControlService weaponControlService, ITimeService timeService)
+        public WeaponService(IEntityRegistry entityRegistry, IWeaponControlService weaponControlService)
         {
             _entityRegistry = entityRegistry;
             _weaponControlService = weaponControlService;
-            _timeService = timeService;
         }
 
         public void Update(float deltaTime)
@@ -31,23 +29,6 @@ namespace Enceladus.Core.Entities.Weapons
 
                     UpdateWeaponPosition(mount, armed.Position, armed.Rotation);
                     _weaponControlService.ApplyWeaponControl(mount, deltaTime);
-                }
-            }
-
-            // Cleanup expired projectiles
-            CleanupExpiredProjectiles();
-        }
-
-        private void CleanupExpiredProjectiles()
-        {
-            var gameTime = _timeService.GameTime;
-            var projectiles = _entityRegistry.Projectiles.ToList(); // Copy to avoid modification during iteration
-
-            foreach (var projectile in projectiles)
-            {
-                if (gameTime - projectile.SpawnTime >= projectile.TimeToLive)
-                {
-                    _entityRegistry.Unregister(projectile.Guid);
                 }
             }
         }

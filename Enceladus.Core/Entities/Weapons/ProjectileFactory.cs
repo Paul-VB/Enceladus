@@ -1,4 +1,3 @@
-using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Physics.Motion;
 using Enceladus.Utils;
 
@@ -12,10 +11,12 @@ namespace Enceladus.Core.Entities.Weapons
     public class ProjectileFactory : IProjectileFactory
     {
         private readonly ITimeService _timeService;
+        private readonly IEntityRegistry _entityRegistry;
 
-        public ProjectileFactory(ITimeService timeService)
+        public ProjectileFactory(ITimeService timeService, IEntityRegistry entityRegistry)
         {
             _timeService = timeService;
+            _entityRegistry = entityRegistry;
         }
 
         public Projectile CreateProjectile(Weapon weapon)
@@ -55,6 +56,12 @@ namespace Enceladus.Core.Entities.Weapons
             projectile.Owner = weapon.Owner;
             projectile.IffCodes = new List<int>(weapon.Owner.IffCodes); // Snapshot owner's IFF codes
             projectile.SpawnTime = _timeService.GameTime;
+
+            // Schedule automatic cleanup after TTL expires
+            projectile.DespawnAction = _timeService.ScheduleAction(projectile.TimeToLive, () =>
+            {
+                _entityRegistry.Unregister(projectile.Guid);
+            });
         }
 
         private Bullet CreateBullet(Weapon weapon)
