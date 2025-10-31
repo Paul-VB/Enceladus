@@ -1,4 +1,4 @@
-namespace Enceladus.Core
+namespace Enceladus.Core.Time
 {
     public interface ITimeService
     {

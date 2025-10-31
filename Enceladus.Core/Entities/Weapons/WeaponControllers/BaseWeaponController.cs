@@ -1,3 +1,5 @@
+using Enceladus.Core.Time;
+
 namespace Enceladus.Core.Entities.Weapons.WeaponControllers
 {
     /// <summary>

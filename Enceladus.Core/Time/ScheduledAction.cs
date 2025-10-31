@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Enceladus.Core
+namespace Enceladus.Core.Time
 {
     public class ScheduledAction
     {

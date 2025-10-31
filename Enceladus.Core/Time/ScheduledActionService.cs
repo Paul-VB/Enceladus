@@ -1,4 +1,4 @@
-namespace Enceladus.Core
+namespace Enceladus.Core.Time
 {
     public interface IScheduledActionService
     {
@@ -39,7 +39,7 @@ namespace Enceladus.Core
         }
 
         private bool NextActionIsReady() =>
-            _scheduledActions.TryPeek(out _, out float triggerTime) && _timeService.GameTime >= triggerTime;
+            _scheduledActions.TryPeek(out _, out var triggerTime) && _timeService.GameTime >= triggerTime;
 
         private void Execute(ScheduledAction scheduledAction)
         {
