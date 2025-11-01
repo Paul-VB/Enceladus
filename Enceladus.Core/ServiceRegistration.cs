@@ -1,5 +1,4 @@
 using Enceladus.Core.Config;
-using Enceladus.Core.Control;
 using Enceladus.Core.Entities;
 using Enceladus.Core.Entities.Projectiles;
 using Enceladus.Core.Entities.Weapons;
@@ -14,9 +13,9 @@ using Enceladus.Core.Physics.Motion;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.Time;
 using Enceladus.Core.World;
-using Enceladus.Core.World.Chunks;
 using Microsoft.Extensions.DependencyInjection;
 using Enceladus.Core.MotionControl.PlayerMotion;
+using Enceladus.Core.MotionControl.AIMotion;
 
 namespace Enceladus.Core
 {
@@ -60,9 +59,9 @@ namespace Enceladus.Core
             services.AddSingleton<IMapRenderer, MapRenderer>();
             services.AddSingleton<IEntityRenderer, EntityRenderer>();
 
-            // Control services
-            services.AddSingleton<IControlService, ControlService>();
-            services.AddSingleton<IMotionControlService, MotionControlService>();
+            // Motion control services
+            services.AddSingleton<IPlayerMotionService, PlayerMotionService>();
+            services.AddSingleton<IAIMotionService, AIMotionService>();
             services.AddSingleton<IPlayerInputController, PlayerInputController>();
             services.AddSingleton<IArrowKeysMotionController, ArrowKeysMotionController>();
 

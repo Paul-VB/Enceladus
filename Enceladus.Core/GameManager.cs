@@ -1,6 +1,8 @@
 using Enceladus.Core.Config;
-using Enceladus.Core.Control;
 using Enceladus.Core.Entities;
+using Enceladus.Core.Entities.Weapons;
+using Enceladus.Core.MotionControl.PlayerMotion;
+using Enceladus.Core.MotionControl.AIMotion;
 using Enceladus.Core.Physics;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.Time;
@@ -24,7 +26,9 @@ namespace Enceladus.Core
         private readonly ICameraManager _cameraManager;
         private readonly ITimeService _timeService;
         private readonly IScheduledActionService _scheduledActionService;
-        private readonly IControlService _controlService;
+        private readonly IPlayerMotionService _playerMotionService;
+        private readonly IAIMotionService _aiMotionService;
+        private readonly IWeaponService _weaponService;
         private readonly IPhysicsService _physicsService;
         private readonly IRenderingService _renderingService;
         private readonly ISpriteService _spriteService;
@@ -35,8 +39,8 @@ namespace Enceladus.Core
 
         public GameManager(IConfigService configService, IWindowManager windowManager, IEntityFactory entityFactory,
             ICameraManager cameraManager, ITimeService timeService, IScheduledActionService scheduledActionService,
-            IControlService controlService, IPhysicsService physicsService, IRenderingService renderingService,
-            ISpriteService spriteService)
+            IPlayerMotionService playerMotionService, IAIMotionService aiMotionService, IWeaponService weaponService,
+            IPhysicsService physicsService, IRenderingService renderingService, ISpriteService spriteService)
         {
             _configService = configService;
             _windowManager = windowManager;
@@ -44,7 +48,9 @@ namespace Enceladus.Core
             _cameraManager = cameraManager;
             _timeService = timeService;
             _scheduledActionService = scheduledActionService;
-            _controlService = controlService;
+            _playerMotionService = playerMotionService;
+            _aiMotionService = aiMotionService;
+            _weaponService = weaponService;
             _physicsService = physicsService;
             _renderingService = renderingService;
             _spriteService = spriteService;
@@ -89,7 +95,9 @@ namespace Enceladus.Core
                 float deltaTime = Raylib.GetFrameTime();
                 _timeService.Update(deltaTime);
                 _scheduledActionService.TriggerScheduledActions();
-                _controlService.Update(deltaTime);
+                _playerMotionService.Update(deltaTime);
+                _aiMotionService.Update(deltaTime);
+                _weaponService.Update(deltaTime);
                 _physicsService.Update(deltaTime);
                 _renderingService.Render();
 
