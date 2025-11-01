@@ -7,6 +7,7 @@ namespace Enceladus.Core.Entities
 {
     public interface IEntityRegistry
     {
+        Player? Player { get; }
         IReadOnlyDictionary<Guid, Entity> Entities { get; }
         IReadOnlyList<MovableEntity> MovableEntities { get; }
         IReadOnlyList<ICollidable> StaticCollidables { get; }
@@ -27,7 +28,9 @@ namespace Enceladus.Core.Entities
         private readonly List<IGeometryRendered> _geometryRenderedEntities = new();
         private readonly List<IArmed> _armedEntities = new();
         private readonly List<Projectile> _projectiles = new();
+        private Player? _player;
 
+        public Player? Player => _player;
         public IReadOnlyDictionary<Guid, Entity> Entities => _entities;
         public IReadOnlyList<MovableEntity> MovableEntities => _movableEntities;
         public IReadOnlyList<ICollidable> StaticCollidables => _staticCollidables;
@@ -39,6 +42,9 @@ namespace Enceladus.Core.Entities
         public T Register<T>(T entity) where T : Entity
         {
             _entities[entity.Guid] = entity;
+
+            if (entity is Player player)
+                _player = player;
 
             if (entity is MovableEntity moveable)
                 _movableEntities.Add(moveable);
@@ -65,6 +71,9 @@ namespace Enceladus.Core.Entities
                 return;
 
             _entities.Remove(guid);
+
+            if (entity is Player)
+                _player = null;
 
             if (entity is MovableEntity moveable)
                 _movableEntities.Remove(moveable);
