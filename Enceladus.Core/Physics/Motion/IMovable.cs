@@ -1,5 +1,4 @@
-﻿using Enceladus.Core.MotionControl.PlayerMotion;
-using System.Numerics;
+﻿using System.Numerics;
 
 namespace Enceladus.Core.Physics.Motion
 {
@@ -13,6 +12,5 @@ namespace Enceladus.Core.Physics.Motion
         float Drag { get; set; }
         float AngularVelocity { get; set; }
         float AngularDrag { get; set; }
-        public PlayerMotionControllerType MotionControllerType { get; set; }
     }
 }

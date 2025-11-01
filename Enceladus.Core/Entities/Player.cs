@@ -8,11 +8,11 @@ using Enceladus.Core.MotionControl.PlayerMotion;
 
 namespace Enceladus.Core.Entities
 {
-    public class Player : MovableEntity, ISpriteRendered, IArmed
+    public class Player : MovableEntity, ISpriteRendered, IArmed, IPlayerMovable
     {
         public List<int> IffCodes { get; set; } = new() { 1 }; // Player team
         public override IHitbox Hitbox { get; set; }
-        public override PlayerMotionControllerType MotionControllerType { get; set; } = PlayerMotionControllerType.PlayerInput;
+        public PlayerMotionControllerType MotionControllerType { get; } = PlayerMotionControllerType.PlayerInput;
         public SpriteDefinition CurrentSprite { get; set; } = SpriteDefinitions.Entities.PlayerSubRight;
         public SpriteModifiers SpriteModifiers { get; set; } = new();
         public List<WeaponMount> WeaponMounts { get; set; } = new()

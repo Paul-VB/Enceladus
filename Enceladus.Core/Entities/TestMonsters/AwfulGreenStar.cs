@@ -9,10 +9,10 @@ using Enceladus.Core.MotionControl.PlayerMotion;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
-    public class AwfulGreenStar : MovableEntity, IGeometryRendered
+    public class AwfulGreenStar : MovableEntity, IGeometryRendered, IPlayerMovable
     {
         public override IHitbox Hitbox { get; set; }
-        public override PlayerMotionControllerType MotionControllerType { get; set; } = PlayerMotionControllerType.ArrowKeys;
+        public PlayerMotionControllerType MotionControllerType { get; } = PlayerMotionControllerType.ArrowKeys;
 
         public void DrawGeometry(Camera2D camera)
         {

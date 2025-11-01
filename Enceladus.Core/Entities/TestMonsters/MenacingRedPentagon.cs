@@ -5,14 +5,12 @@ using Enceladus.Core.Utils;
 using Enceladus.Utils;
 using Raylib_cs;
 using System.Numerics;
-using Enceladus.Core.MotionControl.PlayerMotion;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
     public class MenacingRedPentagon : MovableEntity, IGeometryRendered
     {
         public override IHitbox Hitbox { get; set; }
-        public override PlayerMotionControllerType MotionControllerType { get; set; } = PlayerMotionControllerType.None;
 
         public MenacingRedPentagon()
         {

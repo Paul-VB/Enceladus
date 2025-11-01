@@ -27,24 +27,27 @@ namespace Enceladus.Core.Control
 
         public void UpdateAll(float deltaTime)
         {
-            foreach (var entity in _entityRegistry.MovableEntities)
+            foreach (var movable in _entityRegistry.PlayerMovableEntities)
             {
-                ApplyMotionController(entity, deltaTime);
+                ApplyPlayerMotionController(movable, deltaTime);
             }
+
+            // AI-controlled entities would be handled here in the future
+            // foreach (var movable in _entityRegistry.AIMovableEntities)
+            // {
+            //     ApplyAIMotionController(movable, deltaTime);
+            // }
         }
 
-        private void ApplyMotionController(IMovable entity, float deltaTime)
+        private void ApplyPlayerMotionController(IPlayerMovable movable, float deltaTime)
         {
-            switch (entity.MotionControllerType)
+            switch (movable.MotionControllerType)
             {
                 case PlayerMotionControllerType.PlayerInput:
-                    _playerInputController.Update((Player)entity, deltaTime);
+                    _playerInputController.Update((Player)movable, deltaTime);
                     break;
                 case PlayerMotionControllerType.ArrowKeys:
-                    _arrowKeysMotionController.Update(entity, deltaTime);
-                    break;
-                case PlayerMotionControllerType.None:
-                    // No controller logic
+                    _arrowKeysMotionController.Update(movable, deltaTime);
                     break;
             }
         }
