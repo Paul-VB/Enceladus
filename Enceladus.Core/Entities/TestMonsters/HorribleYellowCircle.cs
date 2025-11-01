@@ -1,17 +1,17 @@
 using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
-using Enceladus.Core.Control.MotionControllers;
 using Enceladus.Core.Rendering;
 using Enceladus.Utils;
 using Raylib_cs;
 using System.Numerics;
+using Enceladus.Core.MotionControl.PlayerMotion;
 
 namespace Enceladus.Core.Entities.TestMonsters
 {
     public class HorribleYellowCircle : MovableEntity, IGeometryRendered
     {
         public override IHitbox Hitbox { get; set; }
-        public override MotionControllerType MotionControllerType { get; set; } = MotionControllerType.None;
+        public override PlayerMotionControllerType MotionControllerType { get; set; } = PlayerMotionControllerType.None;
 
         public HorribleYellowCircle()
         {

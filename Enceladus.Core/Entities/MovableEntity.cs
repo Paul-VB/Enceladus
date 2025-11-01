@@ -1,8 +1,8 @@
 using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
 using Enceladus.Core.Physics.Motion;
-using Enceladus.Core.Control.MotionControllers;
 using System.Numerics;
+using Enceladus.Core.MotionControl.PlayerMotion;
 
 namespace Enceladus.Core.Entities
 {
@@ -13,6 +13,6 @@ namespace Enceladus.Core.Entities
         public float Drag { get; set; } = 1f;
         public float AngularVelocity { get; set; }
         public float AngularDrag { get; set; } = 1f;
-        public abstract MotionControllerType MotionControllerType { get; set; }
+        public abstract PlayerMotionControllerType MotionControllerType { get; set; }
     }
 }

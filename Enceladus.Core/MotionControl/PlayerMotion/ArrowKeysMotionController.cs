@@ -2,7 +2,7 @@ using Enceladus.Core.Input;
 using Enceladus.Core.Physics.Motion;
 using System.Numerics;
 
-namespace Enceladus.Core.Control.MotionControllers
+namespace Enceladus.Core.MotionControl.PlayerMotion
 {
     public interface IArrowKeysMotionController
     {

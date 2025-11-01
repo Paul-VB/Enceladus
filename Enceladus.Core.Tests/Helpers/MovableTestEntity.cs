@@ -1,4 +1,4 @@
-﻿using Enceladus.Core.Control.MotionControllers;
+﻿using Enceladus.Core.MotionControl.PlayerMotion;
 using Enceladus.Core.Entities;
 using Enceladus.Core.Physics.Hitboxes;
 using System.Numerics;
@@ -14,7 +14,7 @@ namespace Enceladus.Core.Tests.Helpers
         }
 
         public override IHitbox Hitbox { get; set; }
-        public override MotionControllerType MotionControllerType { get; set; } = MotionControllerType.None;
+        public override PlayerMotionControllerType MotionControllerType { get; set; } = PlayerMotionControllerType.None;
 
     }
 }

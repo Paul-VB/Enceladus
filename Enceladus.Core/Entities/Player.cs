@@ -1,10 +1,10 @@
 ﻿using Enceladus.Core.Physics.Collision;
 using Enceladus.Core.Physics.Hitboxes;
-using Enceladus.Core.Control.MotionControllers;
 using Enceladus.Core.Rendering;
 using Enceladus.Core.Entities.Weapons;
 using System.Numerics;
 using Enceladus.Core.Entities.Weapons.WeaponControllers;
+using Enceladus.Core.MotionControl.PlayerMotion;
 
 namespace Enceladus.Core.Entities
 {
@@ -12,7 +12,7 @@ namespace Enceladus.Core.Entities
     {
         public List<int> IffCodes { get; set; } = new() { 1 }; // Player team
         public override IHitbox Hitbox { get; set; }
-        public override MotionControllerType MotionControllerType { get; set; } = MotionControllerType.PlayerInput;
+        public override PlayerMotionControllerType MotionControllerType { get; set; } = PlayerMotionControllerType.PlayerInput;
         public SpriteDefinition CurrentSprite { get; set; } = SpriteDefinitions.Entities.PlayerSubRight;
         public SpriteModifiers SpriteModifiers { get; set; } = new();
         public List<WeaponMount> WeaponMounts { get; set; } = new()

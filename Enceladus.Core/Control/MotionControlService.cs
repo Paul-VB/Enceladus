@@ -1,6 +1,6 @@
-using Enceladus.Core.Control.MotionControllers;
 using Enceladus.Core.Entities;
 using Enceladus.Core.Physics.Motion;
+using Enceladus.Core.MotionControl.PlayerMotion;
 
 namespace Enceladus.Core.Control
 {
@@ -37,13 +37,13 @@ namespace Enceladus.Core.Control
         {
             switch (entity.MotionControllerType)
             {
-                case MotionControllerType.PlayerInput:
+                case PlayerMotionControllerType.PlayerInput:
                     _playerInputController.Update((Player)entity, deltaTime);
                     break;
-                case MotionControllerType.ArrowKeys:
+                case PlayerMotionControllerType.ArrowKeys:
                     _arrowKeysMotionController.Update(entity, deltaTime);
                     break;
-                case MotionControllerType.None:
+                case PlayerMotionControllerType.None:
                     // No controller logic
                     break;
             }

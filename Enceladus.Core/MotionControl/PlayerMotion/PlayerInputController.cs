@@ -6,7 +6,7 @@ using Enceladus.Core.Rendering;
 using Enceladus.Utils;
 using System.Numerics;
 
-namespace Enceladus.Core.Control.MotionControllers
+namespace Enceladus.Core.MotionControl.PlayerMotion
 {
     public interface IPlayerInputController
     {
@@ -61,14 +61,14 @@ namespace Enceladus.Core.Control.MotionControllers
             if (player.Velocity.Length() < config.MinVelocityForRotation) return;
 
             // Control surfaces: authority scales with speed (fins/rudders work better when moving)
-            float finAuthority = player.Velocity.Length() * config.ManeuveringFinsAuthority;
+            var finAuthority = player.Velocity.Length() * config.ManeuveringFinsAuthority;
 
             // Active stabilization (D term of PD controller)
             // Computer uses thrusters to counter unwanted spin
-            float activeDamping = -player.AngularVelocity * config.ManeuveringDampingStrength;
+            var activeDamping = -player.AngularVelocity * config.ManeuveringDampingStrength;
 
-            float motionAlignmentError = GetMotionAlignmentError(player);
-            float totalTorque = motionAlignmentError * (config.ManeuveringRotationalAuthority + finAuthority) + activeDamping;
+            var motionAlignmentError = GetMotionAlignmentError(player);
+            var totalTorque = motionAlignmentError * (config.ManeuveringRotationalAuthority + finAuthority) + activeDamping;
             _velocityUpdater.ApplyTorque(player, totalTorque, deltaTime);
         }
 
@@ -79,8 +79,8 @@ namespace Enceladus.Core.Control.MotionControllers
                 return 0f; //main engine offline at extremely low speeds
 
             // Calculate alignment factor (1.0 = perfectly aligned, 0.0 = perpendicular)
-            float alignmentError = Math.Abs(GetMotionAlignmentError(player));
-            float alignmentFactor = 1f - Math.Clamp(alignmentError / config.MaxAlignmentErrorDegrees, 0f, 1f);
+            var alignmentError = Math.Abs(GetMotionAlignmentError(player));
+            var alignmentFactor = 1f - Math.Clamp(alignmentError / config.MaxAlignmentErrorDegrees, 0f, 1f);
 
             return config.MainEngineThrust * alignmentFactor;
         }
@@ -93,7 +93,7 @@ namespace Enceladus.Core.Control.MotionControllers
         {
             // Access private field via public property pattern or make this a separate service
             // For now, we'll handle this inline
-            bool isFacingRight = player.CurrentSprite == SpriteDefinitions.Entities.PlayerSubRight;
+            var isFacingRight = player.CurrentSprite == SpriteDefinitions.Entities.PlayerSubRight;
 
             if (isFacingRight)
             {
